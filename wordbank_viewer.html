@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#6C63FF">
+<title>보카 레벨 테스트 — 1,500단어 리스트</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+<style>
+  :root {
+    --primary:       #6C63FF;
+    --primary-light: #9B95FF;
+    --primary-dark:  #4A42CC;
+    --bg:            #F0EFFF;
+    --text:          #2D2D3F;
+    --text-light:    #7B7B9E;
+    --t1:            #16a34a;
+    --t2:            #1d4ed8;
+    --t3:            #c2410c;
+  }
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body {
+    font-family:'Noto Sans KR','Nunito',sans-serif;
+    background:var(--bg); color:var(--text);
+    min-height:100vh; padding:20px 14px 60px;
+  }
+  .container { max-width:760px; margin:0 auto; }
+
+  .logo-area { text-align:center; margin-bottom:14px; }
+  .logo-area img { max-width:180px; height:auto; }
+
+  .card-title {
+    font-size:1.4rem; font-weight:900; text-align:center;
+    color:var(--primary-dark); margin-bottom:6px;
+  }
+  .card-sub {
+    text-align:center; font-size:0.82rem; color:var(--text-light);
+    line-height:1.6; margin-bottom:18px;
+  }
+
+  /* 통계 */
+  .stat-grid {
+    display:grid; grid-template-columns:repeat(4,1fr); gap:8px;
+    margin-bottom:16px;
+  }
+  .stat-item {
+    background:#fff; border-radius:14px; padding:12px 6px;
+    text-align:center; box-shadow:0 3px 14px rgba(108,99,255,0.10);
+  }
+  .stat-num  { display:block; font-family:'Nunito'; font-size:1.25rem; font-weight:900; color:var(--primary); }
+  .stat-label{ font-size:0.62rem; color:var(--text-light); font-weight:700; }
+
+  /* 검색 + 필터 */
+  .toolbar { display:flex; flex-direction:column; gap:10px; margin-bottom:14px; }
+  .search-box {
+    display:flex; align-items:center; gap:8px;
+    background:#fff; border:1.5px solid #DDD8FF; border-radius:50px;
+    padding:10px 18px;
+  }
+  .search-box i { color:var(--primary-light); }
+  .search-box input {
+    flex:1; border:none; outline:none;
+    font-family:'Noto Sans KR'; font-size:0.95rem; font-weight:500;
+    background:transparent; color:var(--text);
+  }
+  .filter-row { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; }
+  .filter-btn {
+    padding:7px 16px; border-radius:50px; border:1.5px solid #DDD8FF;
+    background:#fff; font-family:'Noto Sans KR'; font-size:0.78rem; font-weight:700;
+    color:var(--text-light); cursor:pointer; transition:all .15s;
+  }
+  .filter-btn.active { background:var(--primary); border-color:var(--primary); color:#fff; }
+  .filter-btn.f-t1.active { background:var(--t1); border-color:var(--t1); }
+  .filter-btn.f-t2.active { background:var(--t2); border-color:var(--t2); }
+  .filter-btn.f-t3.active { background:var(--t3); border-color:var(--t3); }
+
+  .result-count {
+    text-align:center; font-size:0.75rem; color:var(--text-light);
+    margin-bottom:10px; font-weight:700;
+  }
+
+  /* 테이블 */
+  .table-wrap {
+    background:#fff; border-radius:16px; overflow:hidden;
+    box-shadow:0 4px 20px rgba(108,99,255,0.12);
+  }
+  table { width:100%; border-collapse:collapse; }
+  thead th {
+    background:var(--primary); color:#fff;
+    font-size:0.72rem; font-weight:800; padding:10px 8px;
+    position:sticky; top:0; white-space:nowrap;
+  }
+  tbody td {
+    padding:9px 8px; font-size:0.8rem;
+    border-bottom:1px solid #F0EFFF; vertical-align:middle;
+  }
+  tbody tr:nth-child(even) { background:#FAFAFF; }
+  tbody tr:hover { background:#F0EFFF; }
+  .td-rank { color:#aaa; font-size:0.68rem; text-align:center; width:44px; }
+  .td-word { font-family:'Nunito'; font-weight:800; color:var(--primary-dark); }
+  .td-test { font-size:0.68rem; font-weight:800; white-space:nowrap; text-align:center; }
+  .td-test.t1 { color:var(--t1); }
+  .td-test.t2 { color:var(--t2); }
+  .td-test.t3 { color:var(--t3); }
+  .td-group { font-size:0.7rem; color:var(--text-light); text-align:center; white-space:nowrap; }
+  .cat-badge {
+    display:inline-block; font-size:0.65rem; font-weight:700;
+    background:#EEF0FF; color:var(--primary);
+    border-radius:12px; padding:2px 8px; white-space:nowrap;
+  }
+
+  .load-more {
+    display:block; width:100%; padding:13px;
+    background:#fff; border:none; border-top:1px solid #F0EFFF;
+    font-family:'Noto Sans KR'; font-size:0.85rem; font-weight:800;
+    color:var(--primary); cursor:pointer;
+  }
+  .load-more:hover { background:#F5F4FF; }
+
+  .empty-msg {
+    text-align:center; padding:40px 20px;
+    color:var(--text-light); font-size:0.88rem;
+  }
+
+  /* 하단 */
+  .back-link-wrap { text-align:center; margin-top:20px; }
+  .back-link {
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--primary); color:#fff;
+    border-radius:50px; padding:12px 26px;
+    font-size:0.88rem; font-weight:800; text-decoration:none;
+    box-shadow:0 4px 16px rgba(108,99,255,0.32);
+    transition:transform .15s;
+  }
+  .back-link:active { transform:scale(0.96); }
+
+  .notice {
+    margin-top:18px; background:#F8F7FF;
+    border:1.5px solid #E0DDFF; border-left:4px solid var(--primary);
+    border-radius:12px; padding:14px 16px;
+    font-size:0.74rem; color:var(--text-light); line-height:1.65;
+  }
+  .notice strong { color:var(--text); }
+
+  @media (max-width:480px) {
+    .stat-grid { grid-template-columns:repeat(2,1fr); }
+    thead th:nth-child(4), tbody td:nth-child(4) { display:none; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="logo-area">
+    <img src="images/logo-horizontal-white-bg.png" alt="현서네 HYUNSUHNE ENGLISH"
+         onerror="this.style.display='none'">
+  </div>
+
+  <h1 class="card-title">📚 1,500단어 리스트</h1>
+  <p class="card-sub">
+    보카 레벨 테스트에서 사용 중인 전체 단어예요.<br>
+    검색하거나 테스트별로 골라서 볼 수 있어요.
+  </p>
+
+  <!-- 통계 -->
+  <div class="stat-grid">
+    <div class="stat-item"><span class="stat-num" id="stat-total">-</span><span class="stat-label">총 단어</span></div>
+    <div class="stat-item"><span class="stat-num" id="stat-t1">-</span><span class="stat-label">📗 TEST1</span></div>
+    <div class="stat-item"><span class="stat-num" id="stat-t2">-</span><span class="stat-label">📘 TEST2</span></div>
+    <div class="stat-item"><span class="stat-num" id="stat-t3">-</span><span class="stat-label">📙 TEST3</span></div>
+  </div>
+
+  <!-- 검색 + 필터 -->
+  <div class="toolbar">
+    <div class="search-box">
+      <i class="fas fa-search"></i>
+      <input type="text" id="search-input" placeholder="영어 단어 또는 한국어 뜻 검색" autocomplete="off">
+    </div>
+    <div class="filter-row">
+      <button class="filter-btn active" data-filter="all">전체</button>
+      <button class="filter-btn f-t1" data-filter="test1">📗 TEST1 (1~500)</button>
+      <button class="filter-btn f-t2" data-filter="test2">📘 TEST2 (501~1000)</button>
+      <button class="filter-btn f-t3" data-filter="test3">📙 TEST3 (1001~1500)</button>
+    </div>
+  </div>
+
+  <div class="result-count" id="result-count"></div>
+
+  <!-- 테이블 -->
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>순위</th><th>영단어</th><th>한국어 뜻</th><th>그룹</th><th>테스트</th><th>품사</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+    <button class="load-more" id="load-more" style="display:none">더 보기 ▾</button>
+    <div class="empty-msg" id="empty-msg" style="display:none">검색 결과가 없어요 🔍</div>
+  </div>
+
+  <div class="back-link-wrap">
+    <a href="index.html" class="back-link">
+      <i class="fas fa-arrow-left"></i> 테스트 하러 가기
+    </a>
+  </div>
+
+  <div class="notice">
+    <strong>📌 안내</strong><br>
+    이 단어 리스트는 현서네 영어 보카 레벨 테스트 전용 자료입니다.<br>
+    테스트는 각 그룹(100단어)에서 10문항씩 랜덤 출제됩니다.
+  </div>
+
+</div>
+
+<script type="module">
+import { WORD_BANK } from './js/wordbank.js';
+
+const PAGE_SIZE = 100;
+let currentFilter = 'all';
+let currentQuery  = '';
+let shownCount    = PAGE_SIZE;
+
+const getTest = g => g <= 5 ? 'test1' : g <= 10 ? 'test2' : 'test3';
+const TEST_LABEL = { test1:'📗 TEST1', test2:'📘 TEST2', test3:'📙 TEST3' };
+const TEST_CLASS = { test1:'t1', test2:'t2', test3:'t3' };
+
+// 통계
+document.getElementById('stat-total').textContent = WORD_BANK.length.toLocaleString();
+document.getElementById('stat-t1').textContent = WORD_BANK.filter(w => getTest(w.group)==='test1').length;
+document.getElementById('stat-t2').textContent = WORD_BANK.filter(w => getTest(w.group)==='test2').length;
+document.getElementById('stat-t3').textContent = WORD_BANK.filter(w => getTest(w.group)==='test3').length;
+
+function getFiltered() {
+  let list = WORD_BANK;
+  if (currentFilter !== 'all') {
+    list = list.filter(w => getTest(w.group) === currentFilter);
+  }
+  if (currentQuery) {
+    const q = currentQuery.toLowerCase();
+    list = list.filter(w =>
+      w.word.toLowerCase().includes(q) || w.korean.includes(currentQuery)
+    );
+  }
+  return list;
+}
+
+function render() {
+  const list  = getFiltered();
+  const tbody = document.getElementById('table-body');
+  const shown = list.slice(0, shownCount);
+
+  tbody.innerHTML = shown.map(w => {
+    const t = getTest(w.group);
+    return `<tr>
+      <td class="td-rank">${w.rank}</td>
+      <td class="td-word">${w.word}</td>
+      <td>${w.korean}</td>
+      <td class="td-group">그룹 ${w.group}</td>
+      <td class="td-test ${TEST_CLASS[t]}">${TEST_LABEL[t]}</td>
+      <td><span class="cat-badge">${w.category}</span></td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('result-count').textContent =
+    `총 ${list.length.toLocaleString()}개 중 ${Math.min(shownCount, list.length).toLocaleString()}개 표시`;
+  document.getElementById('load-more').style.display =
+    list.length > shownCount ? 'block' : 'none';
+  document.getElementById('empty-msg').style.display =
+    list.length === 0 ? 'block' : 'none';
+}
+
+// 필터 버튼
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    shownCount = PAGE_SIZE;
+    render();
+  });
+});
+
+// 검색
+let searchTimer;
+document.getElementById('search-input').addEventListener('input', e => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    currentQuery = e.target.value.trim();
+    shownCount = PAGE_SIZE;
+    render();
+  }, 250);
+});
+
+// 더 보기
+document.getElementById('load-more').addEventListener('click', () => {
+  shownCount += PAGE_SIZE;
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
