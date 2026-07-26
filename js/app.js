@@ -174,10 +174,9 @@ const _pronounce = (() => {
   // (Free Dict API에서 엉뚱한 음원이 오는 단어들)
   const FORCE_SPEECH = new Set([
     'vet', 'outside', 'upstairs', 'downstairs',
-    'grow up', 'turn on', 'walk around', 'step into', 'have fun',
-    'fire truck', 'traffic light', 'dining room', 'living room',
-    'post office',
   ]);
+  // 참고: 여러 단어로 된 구(phrase)는 위 isPhrase 체크로 전부 자동 처리되므로
+  // 여기 목록에 별도로 추가할 필요 없음
 
   async function fetchAudioUrl(word) {
     const full  = word.toLowerCase().replace(/[^a-z ]/g, '').trim();
@@ -249,7 +248,16 @@ const _pronounce = (() => {
       utt.pitch   = 1.05;
       utt.volume  = 1;
       const voices = window.speechSynthesis.getVoices();
-      const voice  = voices.find(v => v.lang === 'en-US') || voices.find(v => v.lang.startsWith('en'));
+      // 고품질(자연스러운) 음성 우선 선택 — 로봇 음성 방지
+      // 브라우저별 고품질 엔진 이름 패턴 우선순위로 탐색
+      const HQ_PATTERNS = ['Google US English', 'Google', 'Natural', 'Neural', 'Premium', 'Enhanced', 'Samantha', 'Microsoft Aria', 'Microsoft Jenny'];
+      let voice = null;
+      for (const pattern of HQ_PATTERNS) {
+        voice = voices.find(v => v.lang.startsWith('en') && v.name.includes(pattern));
+        if (voice) break;
+      }
+      if (!voice) voice = voices.find(v => v.lang === 'en-US');
+      if (!voice) voice = voices.find(v => v.lang.startsWith('en'));
       if (voice) utt.voice = voice;
       const done = () => resolve();
       utt.onend   = done;
@@ -313,9 +321,12 @@ const _pronounce = (() => {
     const ROUNDS = 3;
     const GAP_MS = 1800;
 
-    // FORCE_SPEECH 단어는 API 건너뛰고 바로 Web Speech 사용
+    // FORCE_SPEECH 단어이거나 여러 단어로 된 구(phrase)면 API를 건너뛰고 Web Speech 사용
+    // (Free Dictionary API는 공식적으로 구 단위 조회를 지원하지 않음 →
+    //  "meet up" 조회 시 항상 실패 후 "meet"만 재조회되어 뒷단어가 누락되는 문제 방지)
     const wordKey = word.toLowerCase().replace(/[^a-z ]/g, '').trim();
-    const skipApi = FORCE_SPEECH.has(wordKey);
+    const isPhrase = word.trim().includes(' ');
+    const skipApi = FORCE_SPEECH.has(wordKey) || isPhrase;
 
     // API 호출 (한 번만, FORCE_SPEECH 단어는 스킵)
     let audioUrl = null;
