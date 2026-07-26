@@ -1,4 +1,4 @@
-import { pickQuestions, buildQuestionFromWord } from './wordbank.js?v=13.13';
+import { pickQuestions, buildQuestionFromWord } from './wordbank.js?v=1.13';
 import { getResultGrade, getRecommendation } from './vocabulary.js';
 import { getResultGrade2, getRecommendation2 } from './vocabulary2.js';
 import { getResultGrade3, getRecommendation3 } from './vocabulary3.js';
