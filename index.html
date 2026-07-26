@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#6C63FF" />
+  <title>보카 레벨 테스트 📖 우리 아이 1,500단어 어휘 진단</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css?v=13.13" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     SCREEN 1 : 시작 화면
+══════════════════════════════════════════ -->
+<div id="screen-intro" class="screen active">
+  <!-- 배경 장식 레이어 -->
+  <div class="intro-bg">
+    <!-- 물결 SVG -->
+    <svg class="intro-wave intro-wave-1" viewBox="0 0 1440 320" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="rgba(167,139,250,0.18)" d="M0,160L48,176C96,192,192,224,288,213.3C384,203,480,149,576,138.7C672,128,768,160,864,181.3C960,203,1056,213,1152,197.3C1248,181,1344,139,1392,117.3L1440,96L1440,320L0,320Z"/>
+    </svg>
+    <svg class="intro-wave intro-wave-2" viewBox="0 0 1440 320" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="rgba(99,202,183,0.13)" d="M0,224L60,213.3C120,203,240,181,360,186.7C480,192,600,224,720,218.7C840,213,960,171,1080,160C1200,149,1320,171,1380,181.3L1440,192L1440,320L0,320Z"/>
+    </svg>
+    <!-- 반투명 원 -->
+    <div class="bg-circle bc-1"></div>
+    <div class="bg-circle bc-2"></div>
+    <div class="bg-circle bc-3"></div>
+    <div class="bg-circle bc-4"></div>
+    <!-- 플로팅 이모지 -->
+    <div class="floating-emoji fe-1" style="top:4%;left:8%">📖</div>
+    <div class="floating-emoji fe-2" style="top:8%;right:10%">🌟</div>
+    <div class="floating-emoji fe-3" style="top:16%;left:4%">✨</div>
+    <div class="floating-emoji fe-4" style="top:20%;right:5%">🎉</div>
+    <div class="floating-emoji fe-5" style="top:72%;left:6%">🎧</div>
+    <div class="floating-emoji fe-6" style="top:78%;right:8%">🚀</div>
+    <div class="floating-emoji fe-7" style="top:87%;left:32%">🌈</div>
+    <div class="floating-emoji fe-8" style="top:62%;right:4%">🏆</div>
+  </div>
+
+  <div class="intro-content">
+    <!-- 로고 -->
+    <div class="logo-wrap">
+      <!-- 현서네 BI 로고 (가로형, mix-blend로 배경에 자연스럽게) -->
+      <div class="brand-logo-wrap">
+        <img src="images/logo-horizontal-white-bg.png" alt="현서네 HYUNSUHNE ENGLISH" class="brand-logo" />
+      </div>
+      <h1 class="app-title">보카 레벨 테스트</h1>
+      <p class="app-subtitle">우리 아이 영어 단어 실력,<br/><strong>지금 바로 진단</strong>해봐요!</p>
+      <div class="title-word-count">
+        <span class="twc-item">📗 1~500단어</span>
+        <span class="twc-dot">·</span>
+        <span class="twc-item">📘 501~1000단어</span>
+        <span class="twc-dot">·</span>
+        <span class="twc-item twc-new">📙 1001~1500단어</span>
+      </div>
+
+    </div>
+
+    <!-- 이름 입력 -->
+    <div class="child-info-form">
+      <h3>✏️ 아이 이름을 입력해주세요</h3>
+      <div class="form-group">
+        <input type="text" id="child-name" placeholder="예: 현서" maxlength="10" autocomplete="off" />
+      </div>
+    </div>
+
+    <!-- 나이대 선택 -->
+    <div class="child-info-form">
+      <h3>🎂 아이의 나이대를 선택해주세요</h3>
+      <div class="age-grid" id="age-grid">
+        <button class="age-btn" data-value="유아" onclick="selectAge(this)">
+          <span class="age-emoji">🐣</span>
+          <span class="age-label">유아</span>
+          <span class="age-sub">3~6세</span>
+        </button>
+        <button class="age-btn" data-value="초1-2" onclick="selectAge(this)">
+          <span class="age-emoji">🌱</span>
+          <span class="age-label">초1-2</span>
+          <span class="age-sub">7~8세</span>
+        </button>
+        <button class="age-btn" data-value="초3-4" onclick="selectAge(this)">
+          <span class="age-emoji">🌿</span>
+          <span class="age-label">초3-4</span>
+          <span class="age-sub">9~10세</span>
+        </button>
+        <button class="age-btn" data-value="초5-6" onclick="selectAge(this)">
+          <span class="age-emoji">🌳</span>
+          <span class="age-label">초5-6</span>
+          <span class="age-sub">11~12세</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 영어 노출 기간 -->
+    <div class="child-info-form">
+      <h3>⏳ 영어 노출 기간이 얼마나 됐나요?</h3>
+      <div class="exposure-grid exposure-grid-3" id="exposure-grid">
+        <button class="exposure-btn" data-value="under1" onclick="selectExposure(this)">
+          <span class="exp-emoji">🌱</span>
+          <span class="exp-label">1년 이하</span>
+          <span class="exp-sub">1~500 단어 추천</span>
+        </button>
+        <button class="exposure-btn" data-value="1to3" onclick="selectExposure(this)">
+          <span class="exp-emoji">🌳</span>
+          <span class="exp-label">1년~3년</span>
+          <span class="exp-sub">501~1000 단어 추천</span>
+        </button>
+        <button class="exposure-btn" data-value="over3" onclick="selectExposure(this)">
+          <span class="exp-emoji">🚀</span>
+          <span class="exp-label">3년 이상</span>
+          <span class="exp-sub">1001~1500 단어 추천</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 테스트 선택 (노출 기간 선택 후 표시) -->
+    <div class="test-select-wrap" id="test-select-wrap">
+      <h3 class="test-select-title" id="test-select-title">테스트를 선택해주세요</h3>
+
+      <!-- 1~500 버튼 -->
+      <button class="test-select-btn" id="btn-test1" onclick="startTest('test1')">
+        <div class="test-btn-inner">
+          <div class="test-btn-left">
+            <div class="test-btn-badge" id="badge-test1">추천</div>
+            <div class="test-btn-title">1 ~ 500 단어</div>
+            <div class="test-btn-desc">기초 · 초급 어휘<br/>CoComelon, Peppa Pig 수준</div>
+          </div>
+          <div class="test-btn-right">
+            <div class="test-btn-count">50<span>문항</span></div>
+            <div class="test-btn-time">약 5분</div>
+          </div>
+        </div>
+      </button>
+
+      <!-- 501~1000 버튼 -->
+      <button class="test-select-btn" id="btn-test2" onclick="startTest('test2')">
+        <div class="test-btn-inner">
+          <div class="test-btn-left">
+            <div class="test-btn-badge" id="badge-test2">추천</div>
+            <div class="test-btn-title">501 ~ 1000 단어</div>
+            <div class="test-btn-desc">중급 · 고급 어휘<br/>자연·감정·이야기·추상 표현</div>
+          </div>
+          <div class="test-btn-right">
+            <div class="test-btn-count">50<span>문항</span></div>
+            <div class="test-btn-time">약 5분</div>
+          </div>
+        </div>
+      </button>
+
+      <!-- 1001~1500 버튼 -->
+      <button class="test-select-btn" id="btn-test3" onclick="startTest('test3')">
+        <div class="test-btn-inner">
+          <div class="test-btn-left">
+            <div class="test-btn-badge" id="badge-test3">상급 도전</div>
+            <div class="test-btn-title">1001 ~ 1500 단어</div>
+            <div class="test-btn-desc">고급 · 전문 어휘<br/>논리 · 경제 · 세계시민 · 디지털</div>
+          </div>
+          <div class="test-btn-right">
+            <div class="test-btn-count">50<span>문항</span></div>
+            <div class="test-btn-time">약 5분</div>
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <!-- 테스트 방법 안내 -->
+    <div class="how-to">
+      <h3>📌 테스트 방법</h3>
+      <ul>
+        <li><span class="badge-icon">🔊</span><span>단어가 나오면 <strong>발음 버튼</strong>을 눌러 들어요</span></li>
+        <li><span class="badge-icon">✅</span><span>뜻을 알면 <strong>한국어 보기</strong>를 골라요</span></li>
+        <li><span class="badge-icon">❓</span><span>모르면 <strong>"모르겠어요"</strong>를 눌러요</span></li>
+        <li><span class="badge-icon">😊</span><span>솔직하게 답해야 정확한 결과가 나와요!</span></li>
+      </ul>
+      <!-- 오디오 오류 시에만 표시되는 폴백 안내 -->
+      <div id="audio-fallback-notice" class="audio-fallback-notice" style="display:none">
+        <span class="afn-icon">🗣️</span>
+        <span>발음이 재생되지 않으면 <strong>부모님이 직접 읽어주세요</strong></span>
+      </div>
+    </div>
+    <p class="start-note">* 아이와 함께 앉아서 진행해 주세요 😊</p>
+    <!-- 버전 정보 -->
+    <div class="app-version-info">
+      <span>v13.13</span>
+      <span class="avi-dot">·</span>
+      <span>2025년 7월 26일 업데이트</span>
+    </div>
+
+    <!-- 단어 DB 다운로드 링크 -->
+    <div class="dl-link-wrap">
+      <a href="download_wordbank.html" class="dl-link-btn">
+        <i class="fas fa-file-excel"></i>
+        <span>1,500단어 엑셀 다운로드</span>
+        <span class="dl-link-sub">v10.1 · TEST1~3 전체</span>
+      </a>
+      <a href="wordbank_viewer.html" class="dl-link-btn dl-link-btn--viewer">
+        <i class="fas fa-table"></i>
+        <span>단어 DB 부어보기</span>
+        <span class="dl-link-sub">검색 · 필터 · 통계</span>
+      </a>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     SCREEN 2 : 테스트 화면
+══════════════════════════════════════════ -->
+<div id="screen-test" class="screen">
+
+  <header class="test-header">
+    <div class="level-badge" id="current-level-badge">🌱 그룹 1</div>
+    <div class="progress-wrap">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+      <span class="progress-text" id="progress-text">0 / 50</span>
+      <span class="progress-pct" id="progress-pct">0%</span>
+    </div>
+    <div class="score-mini">
+      <i class="fas fa-check"></i> <span id="correct-count">0</span>
+    </div>
+  </header>
+
+  <!-- 그룹 전환 배너 -->
+  <div class="level-transition" id="level-transition">
+    <div class="level-transition-inner">
+      <div class="transition-prev-score" id="transition-prev-score"></div>
+      <div class="level-emoji" id="transition-emoji">🌿</div>
+      <h2 id="transition-title">그룹 2 시작!</h2>
+      <p id="transition-desc">101~200위 단어</p>
+      <div class="transition-bar">
+        <div class="transition-fill" id="transition-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <main class="test-main">
+    <div class="question-card" id="question-card">
+      <div class="question-number" id="question-number">그룹 1 · 1/10</div>
+      <div class="english-word" id="english-word">apple</div>
+      <span class="category-badge" id="category-badge">명사</span>
+
+      <!-- 발음 재생 영역 (카드 내부) -->
+      <div class="pronounce-bar" id="pronounce-bar">
+        <button class="pronounce-btn" id="pronounce-btn" onclick="window.playPronounce()" aria-label="발음 듣기">
+          <span class="pronounce-icon" id="pronounce-icon">🔊</span>
+          <span class="pronounce-label" id="pronounce-label">발음 듣기</span>
+        </button>
+        <div class="pronounce-dots" id="pronounce-dots">
+          <span class="pd" id="pd1"></span>
+          <span class="pd" id="pd2"></span>
+          <span class="pd" id="pd3"></span>
+        </div>
+      </div>
+
+      <p class="word-hint">이 단어의 뜻은 무엇일까요?</p>
+      <div class="choices-grid" id="choices-grid"></div>
+      <button class="btn-skip" onclick="handleSkip()">
+        <i class="fas fa-times-circle"></i> 모르겠어요
+      </button>
+      <div class="feedback-overlay" id="feedback-overlay">
+        <div class="feedback-icon" id="feedback-icon">⭐</div>
+        <div class="feedback-text" id="feedback-text">정답!</div>
+      </div>
+    </div>
+  </main>
+
+  <div class="encouragement">
+    <span id="encouragement-text">잘하고 있어요! 🎉</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     SCREEN 3 : 결과 화면
+══════════════════════════════════════════ -->
+<div id="screen-result" class="screen">
+  <div class="result-container">
+
+    <div class="result-hero">
+      <div class="result-confetti" id="result-confetti"></div>
+      <div class="result-emoji" id="result-emoji">🌟</div>
+      <h2 class="result-name" id="result-name">결과 리포트</h2>
+
+      <div class="vocab-estimate-wrap">
+        <!-- 총 어휘 (1~1000 통합) -->
+        <p class="vocab-label" id="vocab-label">1~1000단어 중 알고 있는 단어 수</p>
+        <div class="vocab-number">
+          <span id="vocab-count">0</span>
+          <span class="vocab-unit">개</span>
+        </div>
+        <div class="vocab-grade" id="vocab-grade">새싹 단계</div>
+        <!-- test2일 때만 표시되는 합산 설명 -->
+        <div class="vocab-breakdown" id="vocab-breakdown" style="display:none">
+          <span id="breakdown-base">기초 500</span>
+          <span class="breakdown-plus">+</span>
+          <span id="breakdown-this">이번 테스트 0</span>
+          <span class="breakdown-eq">=</span>
+          <span id="breakdown-total">500개</span>
+        </div>
+        <div class="gauge-wrap">
+          <div class="gauge-bar">
+            <div class="gauge-fill" id="gauge-fill"></div>
+          </div>
+          <div class="gauge-label" id="gauge-label"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 그룹별 정답 -->
+    <section class="result-section">
+      <h3 class="section-title"><i class="fas fa-chart-bar"></i> 그룹별 정답 수</h3>
+      <div class="level-scores" id="level-scores"></div>
+    </section>
+
+    <!-- 레이더 차트 -->
+    <section class="result-section">
+      <h3 class="section-title"><i class="fas fa-bullseye"></i> 어휘력 레이더</h3>
+      <div class="radar-wrap" style="height:280px">
+        <canvas id="radar-chart"></canvas>
+      </div>
+    </section>
+
+    <!-- 추천 채널 -->
+    <section class="result-section">
+      <h3 class="section-title"><i class="fas fa-lightbulb"></i> 다음 단계 추천</h3>
+      <div class="recommendation-card" id="recommendation-card"></div>
+    </section>
+
+    <!-- 틀린 단어 목록 -->
+    <section class="result-section" id="wrong-words-section">
+      <h3 class="section-title"><i class="fas fa-times-circle"></i> 틀린 단어 모아보기</h3>
+      <p class="wrong-words-desc">다음에 집중해서 익혀봐요! 📚</p>
+      <div class="wrong-words-grid" id="wrong-words-grid"></div>
+    </section>
+
+    <!-- 히스토리 비교 섹션 -->
+    <section class="result-section" id="history-section" style="display:none">
+      <h3 class="section-title"><i class="fas fa-history"></i> 성장 히스토리</h3>
+      <div class="history-list" id="history-list"></div>
+    </section>
+
+    <!-- 다른 테스트 도전 배너 -->
+    <div class="other-test-banner" id="other-test-banner">
+      <!-- JS로 주입 -->
+    </div>
+
+    <div class="result-actions">
+      <button class="btn-share" onclick="shareResult()">
+        <i class="fas fa-share-alt"></i> 결과 공유
+      </button>
+      <button class="btn-save-image" onclick="saveResultImage()">
+        <i class="fas fa-image"></i> 이미지 저장
+      </button>
+      <button class="btn-retry" onclick="retryTest()">
+        <i class="fas fa-redo"></i> 다시 테스트
+      </button>
+    </div>
+    <!-- 현서네 브랜드 서명 -->
+    <div class="result-brand-footer">
+      <img src="images/logo-blue-bg-wide.png" alt="현서네 HYUNSUHNE ENGLISH" class="result-brand-logo" />
+      <p class="result-brand-tagline">엄마표 영어 콘텐츠 크리에이터 <strong>현서 아빠</strong>가 만들었어요 💙</p>
+    </div>
+
+    <!-- 결과 화면 다운로드 링크 -->
+    <div class="dl-link-wrap">
+      <a href="download_wordbank.html" class="dl-link-btn">
+        <i class="fas fa-file-excel"></i>
+        <span>1,500단어 엑셀 다운로드</span>
+        <span class="dl-link-sub">v10.1 · TEST1~3 전체</span>
+      </a>
+      <a href="wordbank_viewer.html" class="dl-link-btn dl-link-btn--viewer">
+        <i class="fas fa-table"></i>
+        <span>단어 DB 둘러보기</span>
+        <span class="dl-link-sub">검색 · 필터 · 통계</span>
+      </a>
+    </div>
+
+    <div class="result-disclaimer">
+      <p class="result-disclaimer-title">📌 이 테스트에 대해</p>
+      <ul class="result-disclaimer-list">
+        <li>이 도구는 <strong>정확한 어휘량 측정 도구가 아닙니다.</strong><br>엄마표 영어를 시작하기 전, <strong>첫 진단용</strong>으로 활용해 주세요.</li>
+        <li>각 그룹(100단어)에서 10문항을 <strong>매번 다르게</strong> 랜덤 출제하므로,<br>2~3회 반복 테스트 시 신뢰도가 높아집니다.</li>
+        <li>샘플링 방식 특성상 실제 어휘 수와 <strong>±100~150단어</strong> 차이가 날 수 있어요.</li>
+        <li>결과는 아이를 평가하는 지표가 아니라,<br><strong>다음 영어 노출 방향</strong>을 잡는 데 참고해 주세요. 🌱</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- 나가기 확인 팝업 -->
+<div class="exit-modal" id="exit-modal">
+  <div class="exit-modal-box">
+    <div class="exit-modal-emoji">🚪</div>
+    <h3>테스트를 종료할까요?</h3>
+    <p>지금까지의 기록은 <strong>저장되지 않아요</strong></p>
+    <div class="exit-modal-btns">
+      <button class="exit-btn-cancel" onclick="closeExitModal()">계속할게요</button>
+      <button class="exit-btn-confirm" onclick="confirmExit()">종료할게요</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script src="js/app.js?v=13.13" type="module"></script>
+</body>
+</html>
