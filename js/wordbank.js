@@ -7,6 +7,275 @@
 // category: CSV 의미분류 그대로 유지
 // 한글 뜻 + 품사(category_pos): 자동 보완
 
+export const CLUSTER_TAGS = {
+  "actor": "open:직업",
+  "actress": "open:직업",
+  "airplane": "open:탈것",
+  "alligator": "open:동물",
+  "angry": "open:감정",
+  "ankle": "open:신체",
+  "ant": "open:동물",
+  "apple": "open:과일",
+  "arm": "open:신체",
+  "artist": "open:직업",
+  "astronaut": "open:직업",
+  "aunt": "open:가족",
+  "back": "open:신체",
+  "bake": "open:요리동작",
+  "banana": "open:과일",
+  "bat": "open:동물",
+  "bean": "open:채소",
+  "bear": "open:동물",
+  "bed": "open:가구·집",
+  "bee": "open:동물",
+  "bike": "open:탈것",
+  "bird": "open:동물",
+  "black": "closed:색깔",
+  "blue": "closed:색깔",
+  "boat": "open:탈것",
+  "boil": "open:요리동작",
+  "bone": "open:신체",
+  "book": "open:학용품",
+  "bored": "open:감정",
+  "brain": "open:신체",
+  "brother": "open:가족",
+  "brown": "closed:색깔",
+  "bus": "open:탈것",
+  "butterfly": "open:동물",
+  "cabbage": "open:채소",
+  "camel": "open:동물",
+  "cap": "open:옷",
+  "car": "open:탈것",
+  "carrot": "open:채소",
+  "cat": "open:동물",
+  "caterpillar": "open:동물",
+  "chair": "open:가구·집",
+  "cheek": "open:신체",
+  "chef": "open:직업",
+  "chest": "open:신체",
+  "chick": "open:동물",
+  "chicken": "open:동물",
+  "chin": "open:신체",
+  "chop": "open:요리동작",
+  "circle": "closed:도형",
+  "closet": "open:가구·집",
+  "cloudy": "open:날씨",
+  "cook": "open:직업",
+  "corn": "open:채소",
+  "cousin": "open:가족",
+  "cow": "open:동물",
+  "crab": "open:동물",
+  "crayon": "open:학용품",
+  "crocodile": "open:동물",
+  "cucumber": "open:채소",
+  "dancer": "open:직업",
+  "daughter": "open:가족",
+  "deer": "open:동물",
+  "dentist": "open:직업",
+  "desk": "open:가구·집",
+  "dinosaur": "open:동물",
+  "doctor": "open:직업",
+  "dog": "open:동물",
+  "dolphin": "open:동물",
+  "drawer": "open:가구·집",
+  "driver": "open:직업",
+  "duck": "open:동물",
+  "eagle": "open:동물",
+  "ear": "open:신체",
+  "eight": "closed:숫자",
+  "elbow": "open:신체",
+  "elephant": "open:동물",
+  "engineer": "open:직업",
+  "eraser": "open:학용품",
+  "excited": "open:감정",
+  "eye": "open:신체",
+  "eyebrow": "open:신체",
+  "face": "open:신체",
+  "farmer": "open:직업",
+  "father": "open:가족",
+  "fifth": "closed:숫자",
+  "finger": "open:신체",
+  "firefighter": "open:직업",
+  "first": "closed:숫자",
+  "fish": "open:동물",
+  "five": "closed:숫자",
+  "foggy": "open:날씨",
+  "foot": "open:신체",
+  "forehead": "open:신체",
+  "four": "closed:숫자",
+  "fourth": "closed:숫자",
+  "fox": "open:동물",
+  "friday": "closed:요일",
+  "frog": "open:동물",
+  "fry": "open:요리동작",
+  "garlic": "open:채소",
+  "ginger": "open:채소",
+  "giraffe": "open:동물",
+  "glad": "open:감정",
+  "glove": "open:옷",
+  "glue": "open:학용품",
+  "goat": "open:동물",
+  "grandma": "open:가족",
+  "grandpa": "open:가족",
+  "grape": "open:과일",
+  "gray": "closed:색깔",
+  "green": "closed:색깔",
+  "grill": "open:요리동작",
+  "hair": "open:신체",
+  "hand": "open:신체",
+  "happy": "open:감정",
+  "hat": "open:옷",
+  "head": "open:신체",
+  "heart": "open:신체",
+  "helicopter": "open:탈것",
+  "hip": "open:신체",
+  "hippopotamus": "open:동물",
+  "horse": "open:동물",
+  "hundred": "closed:숫자",
+  "jaw": "open:신체",
+  "kitten": "open:동물",
+  "knee": "open:신체",
+  "ladybug": "open:동물",
+  "leg": "open:신체",
+  "lion": "open:동물",
+  "lip": "open:신체",
+  "lizard": "open:동물",
+  "lobster": "open:동물",
+  "lonely": "open:감정",
+  "million": "closed:숫자",
+  "mix": "open:요리동작",
+  "monday": "closed:요일",
+  "monkey": "open:동물",
+  "moth": "open:동물",
+  "mother": "open:가족",
+  "motorcycle": "open:탈것",
+  "mouse": "open:동물",
+  "mouth": "open:신체",
+  "muscle": "open:신체",
+  "mushroom": "open:채소",
+  "musician": "open:직업",
+  "neck": "open:신체",
+  "nephew": "open:가족",
+  "nervous": "open:감정",
+  "niece": "open:가족",
+  "nine": "closed:숫자",
+  "nose": "open:신체",
+  "notebook": "open:학용품",
+  "nurse": "open:직업",
+  "octopus": "open:동물",
+  "one": "closed:숫자",
+  "onion": "open:채소",
+  "orange": "open:과일",
+  "ostrich": "open:동물",
+  "oval": "closed:도형",
+  "painter": "open:직업",
+  "pants": "open:옷",
+  "paper": "open:학용품",
+  "pea": "open:채소",
+  "peach": "open:과일",
+  "pear": "open:과일",
+  "peel": "open:요리동작",
+  "pencil": "open:학용품",
+  "penguin": "open:동물",
+  "pepper": "open:채소",
+  "pig": "open:동물",
+  "pigeon": "open:동물",
+  "piglet": "open:동물",
+  "pilot": "open:직업",
+  "pineapple": "open:과일",
+  "pink": "closed:색깔",
+  "plum": "open:과일",
+  "potato": "open:채소",
+  "proud": "open:감정",
+  "pumpkin": "open:채소",
+  "puppy": "open:동물",
+  "purple": "closed:색깔",
+  "rabbit": "open:동물",
+  "rainy": "open:날씨",
+  "rat": "open:동물",
+  "red": "closed:색깔",
+  "roast": "open:요리동작",
+  "rocket": "open:탈것",
+  "ruler": "open:학용품",
+  "sad": "open:감정",
+  "saturday": "closed:요일",
+  "scared": "open:감정",
+  "scientist": "open:직업",
+  "scissors": "open:학용품",
+  "scorpion": "open:동물",
+  "seagull": "open:동물",
+  "second": "closed:숫자",
+  "seven": "closed:숫자",
+  "shark": "open:동물",
+  "sheep": "open:동물",
+  "shelf": "open:가구·집",
+  "ship": "open:탈것",
+  "shirt": "open:옷",
+  "shoe": "open:옷",
+  "shoulder": "open:신체",
+  "shy": "open:감정",
+  "sink": "open:가구·집",
+  "sister": "open:가족",
+  "six": "closed:숫자",
+  "skin": "open:신체",
+  "skirt": "open:옷",
+  "snail": "open:동물",
+  "snake": "open:동물",
+  "snowy": "open:날씨",
+  "sock": "open:옷",
+  "son": "open:가족",
+  "spider": "open:동물",
+  "spinach": "open:채소",
+  "square": "closed:도형",
+  "squirrel": "open:동물",
+  "starfish": "open:동물",
+  "stir": "open:요리동작",
+  "stomach": "open:신체",
+  "strawberry": "open:과일",
+  "submarine": "open:탈것",
+  "subway": "open:탈것",
+  "sunday": "closed:요일",
+  "sunny": "open:날씨",
+  "surprised": "open:감정",
+  "swan": "open:동물",
+  "table": "open:가구·집",
+  "taxi": "open:탈것",
+  "teacher": "open:직업",
+  "ten": "closed:숫자",
+  "third": "closed:숫자",
+  "thousand": "closed:숫자",
+  "three": "closed:숫자",
+  "throat": "open:신체",
+  "thursday": "closed:요일",
+  "tiger": "open:동물",
+  "tired": "open:감정",
+  "toe": "open:신체",
+  "tomato": "open:채소",
+  "tongue": "open:신체",
+  "tooth": "open:신체",
+  "train": "open:탈것",
+  "triangle": "closed:도형",
+  "truck": "open:탈것",
+  "tuesday": "closed:요일",
+  "turtle": "open:동물",
+  "two": "closed:숫자",
+  "uncle": "open:가족",
+  "uniform": "open:옷",
+  "upset": "open:감정",
+  "vet": "open:직업",
+  "watermelon": "open:과일",
+  "wednesday": "closed:요일",
+  "whale": "open:동물",
+  "white": "closed:색깔",
+  "windy": "open:날씨",
+  "wolf": "open:동물",
+  "worm": "open:동물",
+  "wrist": "open:신체",
+  "yacht": "open:탈것",
+  "yellow": "closed:색깔",
+  "zebra": "open:동물",
+};
+
 export const WORD_BANK = [
 
   // ── GROUP 1 (rank 1–100)
@@ -1652,17 +1921,51 @@ function isExcluded(word, groupNums) {
   return false;
 }
 
+// ── 의미 군집 캡 적용 선정 ──────────────────────────
+// 닫힌 군집(숫자/색깔/도형/요일): 최대 1개 — 세트로 암기되어 1개만 확인해도 충분
+// 열린 군집(동물/과일/신체 등):   최대 2개 — 개별 편차가 있어 완전히 줄이면 진단력 저하
+// 군집 미지정 단어: 제한 없음(고유 개념이라 여러 개 뽑혀도 문제 없음)
+const CLUSTER_CAP = { closed: 1, open: 2 };
+
+function pickWithClusterCap(pool, count) {
+  const shuffled = [...pool].sort(() => Math.random() - 0.5);
+  const picked = [];
+  const clusterCount = {};
+  const deferred = [];
+
+  for (const w of shuffled) {
+    if (picked.length >= count) break;
+    const tag = CLUSTER_TAGS[w.word];
+    if (!tag) { picked.push(w); continue; }
+    const [type, cat] = tag.split(':');
+    const cap = CLUSTER_CAP[type] ?? 99;
+    const used = clusterCount[cat] || 0;
+    if (used < cap) {
+      picked.push(w);
+      clusterCount[cat] = used + 1;
+    } else {
+      deferred.push(w); // 캡 초과 — 일단 보류
+    }
+  }
+
+  // 캡 때문에 부족하면 보류된 단어로 채움 (군집 쏠림보다 총 개수 보장 우선)
+  for (const w of deferred) {
+    if (picked.length >= count) break;
+    picked.push(w);
+  }
+
+  return picked.sort(() => Math.random() - 0.5);
+}
+
 export function pickQuestions(groupNums, secondArg = null) {
   const nums = Array.isArray(groupNums) ? groupNums : [groupNums];
   let pool = WORD_BANK.filter(w => nums.includes(w.group) && !isExcluded(w, nums));
 
   if (secondArg instanceof Set) {
     pool = pool.filter(w => !secondArg.has(w.word));
-    const shuffled = [...pool].sort(() => Math.random() - 0.5);
-    return shuffled.slice(0, 10);
+    return pickWithClusterCap(pool, 10);
   } else if (typeof secondArg === 'number') {
-    const shuffled = [...pool].sort(() => Math.random() - 0.5);
-    return shuffled.slice(0, secondArg);
+    return pickWithClusterCap(pool, secondArg);
   } else {
     return [...pool].sort(() => Math.random() - 0.5);
   }
