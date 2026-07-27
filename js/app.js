@@ -174,9 +174,25 @@ const _pronounce = (() => {
   // (Free Dict API에서 엉뚱한 음원이 오는 단어들)
   const FORCE_SPEECH = new Set([
     'vet', 'outside', 'upstairs', 'downstairs',
+    // 동철이음이의어 — wordbank.js에 등록된 뜻과 다른 발음이 API/TTS에서
+    // 우선 선택되는 문제 방지 (예: lead=이끌다/리드 인데 납/레드로 발음됨)
+    'lead', 'record', 'live', 'bow', 'tear', 'close', 'use',
   ]);
   // 참고: 여러 단어로 된 구(phrase)는 위 isPhrase 체크로 전부 자동 처리되므로
   // 여기 목록에 별도로 추가할 필요 없음
+
+  // 동철이음이의어 발음 교정용 — Web Speech에 실제로 전달할 철자
+  // (화면에 보이는 단어는 그대로 두고, 음성 엔진에 넘기는 텍스트만 교체해
+  //  wordbank.js에 등록된 뜻(품사)에 맞는 발음이 나오도록 강제)
+  const SPEECH_TEXT_OVERRIDE = {
+    'lead':   'leed',    // 이끌다(동사) — 납(명사) 발음(레드) 방지
+    'record': 'rikord',  // 기록하다(동사) — 음반(명사) 발음(레코드) 방지, 강세를 뒤로 유도
+    'live':   'liv',     // 살다(동사) — 라이브(형용사) 발음 방지
+    'bow':    'bough',   // 절하다(동사) — 활(명사) 발음 방지. bough(나뭇가지)와 완전 동음이의어라 안전
+    'tear':   'tier',    // 눈물(명사) — 찢다(동사) 발음(테어) 방지. tier(단/층)와 완전 동음이의어라 안전
+    'close':  'clothes', // 닫다(동사) — 가까운(형용사) 발음(클로스) 방지. 근접 동음이의어(근사치)
+    'use':    'yooz',    // 사용하다(동사) — 용도(명사) 발음(유스) 방지
+  };
 
   async function fetchAudioUrl(word) {
     const full  = word.toLowerCase().replace(/[^a-z ]/g, '').trim();
@@ -358,7 +374,8 @@ const _pronounce = (() => {
         await playAudio(audioUrl, id);
         anyPlayed = true;
       } else {
-        await speakOnce(word, id);
+        const speechText = SPEECH_TEXT_OVERRIDE[wordKey] || word;
+        await speakOnce(speechText, id);
         anyPlayed = true;
       }
       if (_playId !== id) break;
