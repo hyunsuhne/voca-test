@@ -884,9 +884,23 @@ function showResults() {
   // test2 / test3일 때 합산 구성 표시
   if (isTest2 || isTest3) {
     document.getElementById('vocab-breakdown').style.display = 'flex';
-    document.getElementById('breakdown-base').textContent  = isTest3 ? '기초 1000' : '기초 500';
+    document.getElementById('breakdown-base').textContent  = (isTest3 ? '기초 1000' : '기초 500') + '(가정)';
     document.getElementById('breakdown-this').textContent  = `이번 테스트 ${estimate}`;
     document.getElementById('breakdown-total').textContent = `약 ${totalVocab}개`;
+
+    // 기초 단계 습득이 의심되는 경우(이번 테스트 자체 점수가 낮음) 하위 테스트 확인 유도
+    const baseCheckBanner = document.getElementById('base-check-banner');
+    if (baseCheckBanner) {
+      if (estimate <= 100) {
+        baseCheckBanner.style.display = 'flex';
+        baseCheckBanner.querySelector('.base-check-text').textContent =
+          isTest3
+            ? '501~1000단어가 아직 익숙하지 않다면, TEST2도 함께 확인해보세요'
+            : '1~500단어가 아직 익숙하지 않다면, TEST1도 함께 확인해보세요';
+      } else {
+        baseCheckBanner.style.display = 'none';
+      }
+    }
   } else {
     document.getElementById('vocab-breakdown').style.display = 'none';
   }
