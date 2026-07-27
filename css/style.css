@@ -953,6 +953,14 @@ body {
 .breakdown-eq { font-size: 1rem; color: rgba(255,255,255,0.7); }
 .breakdown-total { font-size: 1rem; font-weight: 900; color: #FFE082; }
 
+.base-check-banner {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  margin: 0 auto 12px; padding: 8px 14px; max-width: 90%;
+  background: rgba(255,255,255,0.16); border-radius: 10px;
+  font-size: 0.74rem; font-weight: 700; color: #fff; line-height: 1.4;
+}
+.base-check-banner i { color: #FFE082; flex-shrink: 0; }
+
 /* 게이지 */
 .gauge-wrap  { margin-top: 4px; }
 .gauge-bar   { height: 14px; background: rgba(255,255,255,0.25); border-radius: 10px; overflow: hidden; margin-bottom: 6px; }
