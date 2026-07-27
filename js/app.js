@@ -1336,8 +1336,8 @@ function loadHistory() {
 
 function renderHistory(currentTotal, testType) {
   const history = loadHistory();
-  // 현재 테스트와 동일한 testType만 필터
-  const filtered = history.filter(h => h.testType === testType);
+  // testType 상관없이 전체 히스토리 비교 (totalVocab은 이미 누적 총 어휘량이라 비교 가능)
+  const filtered = history;
   const section  = document.getElementById('history-section');
   const list     = document.getElementById('history-list');
 
@@ -1355,11 +1355,13 @@ function renderHistory(currentTotal, testType) {
       else if (diff < 0) diffHTML = `<span class="history-diff down">▼${Math.abs(diff)}</span>`;
       else               diffHTML = `<span class="history-diff same">━ 동일</span>`;
     }
+    const testLabel = { test1: 'T1', test2: 'T2', test3: 'T3' }[h.testType] || '';
     const item = document.createElement('div');
     item.className = 'history-item' + (isCurrent ? ' history-current' : '');
     item.innerHTML = `
       <span class="history-date">${h.date}</span>
       <span class="history-name">${h.childName}</span>
+      <span class="history-testtype">${testLabel}</span>
       ${diffHTML}
       <span class="history-score">${h.totalVocab}<small style="font-size:0.6em;font-weight:600">개</small></span>
       <span class="history-grade" style="background:${h.color}">${h.grade}</span>
