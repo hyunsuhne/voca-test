@@ -1104,6 +1104,7 @@ body {
 }
 .history-date  { font-size: 0.72rem; color: var(--text-light); min-width: 60px; }
 .history-name  { font-weight: 800; font-size: 0.9rem; flex: 1; }
+.history-testtype { font-size: 0.65rem; font-weight: 800; color: var(--text-light); background: #EEF0FF; padding: 2px 6px; border-radius: 8px; }
 .history-score { font-size: 1.3rem; font-weight: 900; color: var(--primary); min-width: 44px; text-align: right; }
 .history-grade { font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 12px; background: var(--primary); color: white; }
 .history-diff  { font-size: 0.75rem; font-weight: 700; padding: 2px 8px; border-radius: 12px; }
