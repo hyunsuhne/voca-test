@@ -168,6 +168,30 @@ const _pronounce = (() => {
   let _stopFlag = false;
   let _curAudio = null;
   let _playId   = 0;   // 재생 세션 ID — 중복 호출 무시용
+  let _unlocked = false; // 모바일: <audio>/speechSynthesis 잠금 해제 여부
+
+  // 모바일 첫 터치(사용자 제스처) 시 <audio> 요소와 speechSynthesis를
+  // 미리 한 번 "재생"해서 잠금 해제 — 이후 setTimeout으로 지연 재생해도 막히지 않음
+  // (Web Audio API 효과음과 별개 시스템이라 각각 따로 풀어줘야 함)
+  function unlock() {
+    if (_unlocked) return;
+    _unlocked = true;
+    try {
+      // 무음 mp3 데이터 URI로 <audio> 잠금 해제
+      const silent = new Audio(
+        'data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4LjI5LjEwMAAAAAAAAAAAAAAA//tQxAADB8AhSmxhIIEVCSKJvPCAAP8AAABQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA='
+      );
+      silent.volume = 0;
+      silent.play().catch(() => {});
+    } catch (e) {}
+    try {
+      if (window.speechSynthesis) {
+        const utt = new SpeechSynthesisUtterance('');
+        utt.volume = 0;
+        window.speechSynthesis.speak(utt);
+      }
+    } catch (e) {}
+  }
 
   // Free Dictionary API → 미국 발음 mp3 URL
   // ── 발음 API가 이상한 단어 → Web Speech로 강제 폴백 ──
@@ -242,21 +266,21 @@ const _pronounce = (() => {
   // Audio 1회 재생 (promise)
   function playAudio(url, id) {
     return new Promise((resolve) => {
-      if (_playId !== id) { resolve(); return; }
+      if (_playId !== id) { resolve(true); return; }
       const audio  = new Audio(url);
       _curAudio    = audio;
-      const done   = () => { if (_playId === id) resolve(); };
-      audio.onended  = done;
-      audio.onerror  = done;
-      audio.play().catch(done);
-      setTimeout(done, 6000);
+      const done   = (ok) => { if (_playId === id) resolve(ok); };
+      audio.onended  = () => done(true);
+      audio.onerror  = () => done(false);
+      audio.play().then(() => {}).catch(() => done(false)); // 자동재생 차단 등 재생 실패 감지
+      setTimeout(() => done(true), 6000);
     });
   }
 
   // Web Speech 폴백 1회
   function speakOnce(word, id) {
     return new Promise((resolve) => {
-      if (_playId !== id || !window.speechSynthesis) { resolve(); return; }
+      if (_playId !== id || !window.speechSynthesis) { resolve(false); return; }
       window.speechSynthesis.cancel();
       const utt   = new SpeechSynthesisUtterance(word);
       utt.lang    = 'en-US';
@@ -275,11 +299,11 @@ const _pronounce = (() => {
       if (!voice) voice = voices.find(v => v.lang === 'en-US');
       if (!voice) voice = voices.find(v => v.lang.startsWith('en'));
       if (voice) utt.voice = voice;
-      const done = () => resolve();
-      utt.onend   = done;
-      utt.onerror = done;
+      const done = (ok) => resolve(ok);
+      utt.onend   = () => done(true);
+      utt.onerror = () => done(false); // 'not-allowed' 등 재생 차단 감지
       window.speechSynthesis.speak(utt);
-      setTimeout(done, 5000);
+      setTimeout(() => done(true), 5000);
     });
   }
 
@@ -319,7 +343,7 @@ const _pronounce = (() => {
 
   // 폴백 notice DOM 토글
   function setFallbackNotice(visible) {
-    const el = document.getElementById('audio-fallback-notice');
+    const el = document.getElementById('audio-fallback-notice-test') || document.getElementById('audio-fallback-notice');
     if (!el) return;
     el.style.display = visible ? 'flex' : 'none';
   }
@@ -370,14 +394,15 @@ const _pronounce = (() => {
     for (let i = 1; i <= ROUNDS; i++) {
       if (_playId !== id) break;
       setUI(true, i);
+      let ok;
       if (audioUrl) {
-        await playAudio(audioUrl, id);
-        anyPlayed = true;
+        ok = await playAudio(audioUrl, id);
       } else {
         const speechText = SPEECH_TEXT_OVERRIDE[wordKey] || word;
-        await speakOnce(speechText, id);
-        anyPlayed = true;
+        ok = await speakOnce(speechText, id);
       }
+      anyPlayed = anyPlayed || ok;
+      if (!ok) setFallbackNotice(true); // 자동재생 차단 등으로 재생 실패 시 안내 표시
       if (_playId !== id) break;
       if (i < ROUNDS) await wait(GAP_MS, id);
     }
@@ -403,7 +428,7 @@ const _pronounce = (() => {
     setUI(false);
   }
 
-  return { play, stop };
+  return { play, stop, unlock };
 })();
 
 // ── 그룹 메타 정보 (이름·이모지·범위·테마) ─────────────
@@ -559,6 +584,7 @@ window.startTest = function (testType) {
   if (state.radarChart) { state.radarChart.destroy(); state.radarChart = null; }
 
   _audio.unlock(); // 모바일 AudioContext 잠금 해제 (터치 이벤트 직접 핸들러 안에서 호출)
+  _pronounce.unlock(); // 모바일: <audio>/speechSynthesis 잠금 해제 (효과음과 별개 시스템)
   _audio.launch();
   // 뒤로가기 가로체기용 history 스택 주입
   history.pushState({ test: true }, '', location.href);
@@ -652,6 +678,8 @@ function renderQuestion() {
   const pronounceLabel = document.getElementById('pronounce-label');
   const pronounceIcon  = document.getElementById('pronounce-icon');
   if (pronounceLabel) pronounceLabel.textContent = '발음 듣기';
+  const prevNotice = document.getElementById('audio-fallback-notice-test');
+  if (prevNotice) prevNotice.style.display = 'none';
   if (pronounceIcon)  pronounceIcon.textContent  = '🔊';
   setTimeout(() => _pronounce.play(q.word), 600);
 
@@ -707,6 +735,7 @@ function handleAnswer(isCorrect, clickedBtn, grid, correctIndex) {
   state.isAnswering = true;
 
   _audio.unlock(); // 모바일: 터치 직후 AudioContext resume 보장
+  _pronounce.unlock();
   // 답 선택 즉시 발음 중단
   _pronounce.stop();
 
@@ -746,6 +775,7 @@ window.handleSkip = function () {
   state.isAnswering = true;
 
   _audio.unlock(); // 모바일: 터치 직후 AudioContext resume 보장
+  _pronounce.unlock();
   // 스킵 즉시 발음 중단
   _pronounce.stop();
 
