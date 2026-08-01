@@ -4008,6 +4008,7 @@ function isTooSimilar(k1, k2) {
     ['훔치다', '빼앗다'],
     ['구조하다', '구하다', '보호하다'],
     ['흥미로운', '관심'],
+    ['나중에', '후에'],
   ];
   for (const g of similarGroups) {
     if (g.some(s => k1.includes(s)) && g.some(s => k2.includes(s))) return true;
