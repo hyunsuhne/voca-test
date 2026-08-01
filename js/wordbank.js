@@ -276,6 +276,12 @@ export const CLUSTER_TAGS = {
   "zebra": "open:동물",
 };
 
+// 자체 제작 오디오(Genspark TTS) 완성된 단어 목록
+// 아직 준비된 게 없어서 비어있음 — 오디오 파일 업로드되는 대로
+// 이 목록에 추가하면 자동으로 자체 오디오가 우선 재생됨
+export const AUDIO_WORDS = new Set([
+]);
+
 export const IMAGE_WORDS = new Set([
   "activity",
   "afraid",
