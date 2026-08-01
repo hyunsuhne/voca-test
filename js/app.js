@@ -692,10 +692,19 @@ function renderQuestion() {
 
   const grid = document.getElementById('choices-grid');
   grid.innerHTML = '';
+  grid.classList.toggle('choices-grid--images', !!q.hasImages);
   q.choices.forEach((choice, i) => {
     const btn = document.createElement('button');
-    btn.className = 'choice-btn';
-    btn.textContent = choice;
+    if (q.hasImages) {
+      // 그림 선택형 (TEST1, 이미지 4개 전부 준비된 경우만)
+      btn.className = 'choice-btn choice-btn--img';
+      const imgWord = q.choiceWords[i].toLowerCase().replace(/ /g, '_');
+      btn.innerHTML = `<img src="images/words/${imgWord}.jpg" alt="" loading="lazy">`;
+    } else {
+      // 기존 텍스트 선택형 (TEST2/3 또는 이미지 미준비 단어)
+      btn.className = 'choice-btn';
+      btn.textContent = choice;
+    }
     btn.onclick = () => handleAnswer(i === q.correctIndex, btn, grid, q.correctIndex);
     grid.appendChild(btn);
   });
