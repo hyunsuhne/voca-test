@@ -2204,7 +2204,7 @@ export const WORD_BANK = [
   { rank: 394, word: "today",        korean: "오늘",           group: 4,  category: "부사" },
   { rank: 395, word: "tomorrow",     korean: "내일",           group: 4,  category: "부사" },
   { rank: 396, word: "yesterday",    korean: "어제",           group: 4,  category: "부사" },
-  { rank: 397, word: "then",         korean: "그때",           group: 4,  category: "부사" },
+  { rank: 397, word: "then",         korean: "그다음에",       group: 4,  category: "부사" },
   { rank: 398, word: "volleyball",   korean: "배구",           group: 4,  category: "명사" },
   { rank: 399, word: "basketball",   korean: "농구",           group: 4,  category: "명사" },
   { rank: 400, word: "score",        korean: "점수",           group: 4,  category: "명사" },
