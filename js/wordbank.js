@@ -4049,7 +4049,7 @@ const TRAP_SEEDS = {
 // → 같은 묶음끼리는 그림 모드 오답 후보로 같이 나오지 않게 함
 // (텍스트 모드에선 뜻이 명확히 다르므로 문제없음, 그림 모드에서만 생기는 혼동 방지)
 const VISUAL_SIMILAR_GROUPS = [
-  ['boy', 'girl', 'kid', 'child', 'baby'],
+  ['boy', 'girl', 'kid', 'child', 'baby', 'young', 'son'],
   ['man', 'woman'],
   ['grandma', 'grandpa'],
   ['son', 'daughter'],
@@ -4060,6 +4060,15 @@ const VISUAL_SIMILAR_GROUPS = [
 ];
 function isVisuallySimilar(wordA, wordB) {
   return VISUAL_SIMILAR_GROUPS.some(group => group.includes(wordA) && group.includes(wordB));
+}
+
+// "아이 캐릭터"를 재사용해서 그린 동사들 전부 — boy/girl/kid/child/baby/young/son과
+// 그림이 겹쳐 보일 수 있어서, 이 명사·형용사군과는 동사 카테고리 전체를 회피 대상으로 취급
+const CHILD_NOUN_GROUP = ['boy', 'girl', 'kid', 'child', 'baby', 'young', 'son'];
+function isPersonVsVerbConflict(wordA, catA, wordB, catB) {
+  const aIsChildNoun = CHILD_NOUN_GROUP.includes(wordA);
+  const bIsChildNoun = CHILD_NOUN_GROUP.includes(wordB);
+  return (aIsChildNoun && catB === '동사') || (bIsChildNoun && catA === '동사');
 }
 
 export function buildQuestionFromWord(targetWord) {
@@ -4083,6 +4092,7 @@ export function buildQuestionFromWord(targetWord) {
       if (sameCatOnly && w.category !== cat) continue;
       if (similarityCheck && isTooSimilar(correctKorean, w.korean)) continue;
       if (tier === 1 && isVisuallySimilar(targetWord.word, w.word)) continue;
+      if (tier === 1 && isPersonVsVerbConflict(targetWord.word, cat, w.word, w.category)) continue;
       distractors.push(w.korean);
       distractorWords.push(w.word);
       usedKoreans.add(w.korean);
