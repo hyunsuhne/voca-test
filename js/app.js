@@ -394,10 +394,16 @@ const _pronounce = (() => {
     for (let i = 1; i <= ROUNDS; i++) {
       if (_playId !== id) break;
       setUI(true, i);
-      let ok;
+      let ok = false;
       if (audioUrl) {
         ok = await playAudio(audioUrl, id);
-      } else {
+        if (!ok && speechOk) {
+          // 사전 API가 URL은 줬지만 실제 재생이 실패한 경우
+          // (깨진 오디오 파일, 네트워크 차단 등) → Web Speech로 재시도
+          const speechText = SPEECH_TEXT_OVERRIDE[wordKey] || word;
+          ok = await speakOnce(speechText, id);
+        }
+      } else if (speechOk) {
         const speechText = SPEECH_TEXT_OVERRIDE[wordKey] || word;
         ok = await speakOnce(speechText, id);
       }
