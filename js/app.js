@@ -1,4 +1,4 @@
-import { pickQuestions, buildQuestionFromWord } from './wordbank.js?v=1.13';
+import { pickQuestions, buildQuestionFromWord, AUDIO_WORDS } from './wordbank.js?v=1.14';
 import { getResultGrade, getRecommendation } from './vocabulary.js';
 import { getResultGrade2, getRecommendation2 } from './vocabulary2.js';
 import { getResultGrade3, getRecommendation3 } from './vocabulary3.js';
@@ -366,6 +366,31 @@ const _pronounce = (() => {
     //  "meet up" 조회 시 항상 실패 후 "meet"만 재조회되어 뒷단어가 누락되는 문제 방지)
     const wordKey = word.toLowerCase().replace(/[^a-z ]/g, '').trim();
     const isPhrase = word.trim().includes(' ');
+
+    // ① 자체 제작 오디오(현서네 자체 녹음) 최우선 사용
+    //    AUDIO_WORDS에 등록된 단어면 사전 API/Web Speech를 아예 건너뜀
+    //    → 아직 준비 안 된 단어는 자동으로 기존 방식(②③)으로 폴백
+    const ownAudioKey = word.toLowerCase().trim().replace(/ /g, '_');
+    if (AUDIO_WORDS.has(ownAudioKey)) {
+      const ownUrl = `audio/words/${ownAudioKey}.mp3`;
+      setFallbackNotice(false);
+      let anyPlayedOwn = false;
+      for (let i = 1; i <= ROUNDS; i++) {
+        if (_playId !== id) break;
+        setUI(true, i);
+        const ok = await playAudio(ownUrl, id);
+        anyPlayedOwn = anyPlayedOwn || ok;
+        if (!ok) setFallbackNotice(true);
+        if (_playId !== id) break;
+        if (i < ROUNDS) await wait(GAP_MS, id);
+      }
+      if (_playId === id) { _playing = false; setUI(false); }
+      return;
+    }
+
+    // FORCE_SPEECH 단어이거나 여러 단어로 된 구(phrase)면 API를 건너뛰고 Web Speech 사용
+    // (Free Dictionary API는 공식적으로 구 단위 조회를 지원하지 않음 →
+    //  "meet up" 조회 시 항상 실패 후 "meet"만 재조회되어 뒷단어가 누락되는 문제 방지)
     const skipApi = FORCE_SPEECH.has(wordKey) || isPhrase;
 
     // API 호출 (한 번만, FORCE_SPEECH 단어는 스킵)
@@ -1514,3 +1539,26 @@ function showToast(msg) {
   toast.classList.add('show');
   setTimeout(() => toast.classList.remove('show'), 2500);
 }
+
+// ══════════════════════════════════════════
+//  업데이트 안내 팝업 (기간 한정 노출 + 1회 확인 후 재노출 안 함)
+// ══════════════════════════════════════════
+(function initUpdateModal() {
+  const UPDATE_ID   = 'v1.15-2026-08-01';         // 이 업데이트의 고유 식별자
+  const EXPIRE_DATE = new Date('2026-08-08T23:59:59'); // 노출 종료일 (공개일로부터 1주일)
+  const STORAGE_KEY = 'updateNoticeSeen';
+
+  try {
+    const now = new Date();
+    if (now > EXPIRE_DATE) return;                       // 기간 지나면 아예 노출 안 함
+    if (localStorage.getItem(STORAGE_KEY) === UPDATE_ID) return; // 이미 확인한 사용자면 스킵
+
+    const overlay = document.getElementById('update-modal-overlay');
+    if (overlay) overlay.style.display = 'flex';
+
+    window.closeUpdateModal = function () {
+      try { localStorage.setItem(STORAGE_KEY, UPDATE_ID); } catch (e) {}
+      if (overlay) overlay.style.display = 'none';
+    };
+  } catch (e) {}
+})();
