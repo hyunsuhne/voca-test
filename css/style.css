@@ -544,15 +544,15 @@ body {
   display: flex; align-items: flex-start; gap: 8px;
   margin-top: 12px;
   padding: 10px 14px;
-  background: rgba(255,179,71,0.10);
-  border: 1px solid rgba(255,179,71,0.25);
+  background: #FFF4E5;
+  border: 1px solid #FFD9A0;
   border-radius: var(--radius-sm);
   font-size: 0.82rem;
-  color: rgba(255,255,255,0.8);
+  color: #8A5A00;
   animation: fadeIn .35s ease;
 }
 .audio-fallback-notice .afn-icon { font-size: 1.1rem; flex-shrink: 0; }
-.audio-fallback-notice strong { color: #FFE082; }
+.audio-fallback-notice strong { color: #B45309; }
 
 /* Start btn */
 .btn-start {
