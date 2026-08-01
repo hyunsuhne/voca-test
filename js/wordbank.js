@@ -4057,6 +4057,7 @@ const VISUAL_SIMILAR_GROUPS = [
   ['uncle', 'aunt'],
   ['prince', 'princess'],
   ['king', 'queen'],
+  ['note', 'write'],
 ];
 function isVisuallySimilar(wordA, wordB) {
   return VISUAL_SIMILAR_GROUPS.some(group => group.includes(wordA) && group.includes(wordB));
