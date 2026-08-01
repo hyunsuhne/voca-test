@@ -8,13 +8,26 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="css/style.css?v=1.13" />
+  <link rel="stylesheet" href="css/style.css?v=1.14" />
 </head>
 <body>
 
 <!-- ═══════════════════════════════════════
      SCREEN 1 : 시작 화면
 ══════════════════════════════════════════ -->
+<!-- 업데이트 안내 팝업 (기간 한정 노출, 1회 확인 시 다시 안 뜸) -->
+<div id="update-modal-overlay" class="update-modal-overlay" style="display:none">
+  <div class="update-modal">
+    <div class="update-modal-emoji">✨</div>
+    <h2 class="update-modal-title">새로운 업데이트!</h2>
+    <ul class="update-modal-list">
+      <li>🖼️ <strong>TEST1</strong>이 그림을 보고 고르는 방식으로 바뀌었어요</li>
+      <li>🔊 단어 발음이 더 선명하고 안정적으로 나와요</li>
+    </ul>
+    <button class="update-modal-btn" onclick="window.closeUpdateModal()">확인했어요</button>
+  </div>
+</div>
+
 <div id="screen-intro" class="screen active">
   <!-- 배경 장식 레이어 -->
   <div class="intro-bg">
@@ -185,9 +198,9 @@
     <p class="start-note">* 아이와 함께 앉아서 진행해 주세요 😊</p>
     <!-- 버전 정보 -->
     <div class="app-version-info">
-      <span>v1.13</span>
+      <span>v1.15</span>
       <span class="avi-dot">·</span>
-      <span>2025년 7월 26일 업데이트</span>
+      <span>2026년 8월 1일 업데이트</span>
     </div>
 
     <!-- 단어 DB 뷰어 링크 -->
@@ -409,6 +422,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-<script src="js/app.js?v=1.13" type="module"></script>
+<script src="js/app.js?v=1.14" type="module"></script>
 </body>
 </html>
