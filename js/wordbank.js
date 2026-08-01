@@ -4066,6 +4066,39 @@ function isVisuallySimilar(wordA, wordB) {
 // "아이 캐릭터"를 재사용해서 그린 동사들 전부 — boy/girl/kid/child/baby/young/son과
 // 그림이 겹쳐 보일 수 있어서, 이 명사·형용사군과는 동사 카테고리 전체를 회피 대상으로 취급
 const CHILD_NOUN_GROUP = ['boy', 'girl', 'kid', 'child', 'baby', 'young', 'son'];
+
+// 상위 카테고리 단어(food/animal/fruit/vegetable/clothes)와 그 하위 구성원 단어가
+// 그림 모드에서 함께 오답으로 나오면 안 됨 (예: food 정답에 watermelon이 오답으로 나오면
+// watermelon도 엄연히 음식이라 답이 두 개처럼 보이는 문제)
+// 기존 CLUSTER_TAGS(의미 군집 태깅)를 그대로 재사용해서 구성원 목록을 뽑음
+function getClusterMembers(clusterName) {
+  return Object.entries(CLUSTER_TAGS)
+    .filter(([w, tag]) => tag === `open:${clusterName}`)
+    .map(([w]) => w);
+}
+const ANIMAL_MEMBERS    = getClusterMembers('동물');
+const FRUIT_MEMBERS     = getClusterMembers('과일');
+const VEGETABLE_MEMBERS = getClusterMembers('채소');
+const CLOTHES_MEMBERS   = getClusterMembers('옷');
+// food는 별도 클러스터가 없어 과일·채소 + 그 외 개별 음식 단어를 수동으로 합침
+const FOOD_EXTRA = ['bread','milk','water','cookie','cake','cheese','juice','soup',
+                     'meat','egg','rice','honey','sugar','beef','pork'];
+const FOOD_MEMBERS = [...FRUIT_MEMBERS, ...VEGETABLE_MEMBERS, ...FOOD_EXTRA];
+
+const CATEGORY_CONTAINMENT = {
+  'food':      FOOD_MEMBERS,
+  'animal':    ANIMAL_MEMBERS,
+  'fruit':     FRUIT_MEMBERS,
+  'vegetable': VEGETABLE_MEMBERS,
+  'clothes':   CLOTHES_MEMBERS,
+};
+function isCategoryContainment(wordA, wordB) {
+  const aMembers = CATEGORY_CONTAINMENT[wordA];
+  if (aMembers && aMembers.includes(wordB)) return true;
+  const bMembers = CATEGORY_CONTAINMENT[wordB];
+  if (bMembers && bMembers.includes(wordA)) return true;
+  return false;
+}
 function isPersonVsVerbConflict(wordA, catA, wordB, catB) {
   const aIsChildNoun = CHILD_NOUN_GROUP.includes(wordA);
   const bIsChildNoun = CHILD_NOUN_GROUP.includes(wordB);
@@ -4094,6 +4127,7 @@ export function buildQuestionFromWord(targetWord) {
       if (similarityCheck && isTooSimilar(correctKorean, w.korean)) continue;
       if (tier === 1 && isVisuallySimilar(targetWord.word, w.word)) continue;
       if (tier === 1 && isPersonVsVerbConflict(targetWord.word, cat, w.word, w.category)) continue;
+      if (tier === 1 && isCategoryContainment(targetWord.word, w.word)) continue;
       distractors.push(w.korean);
       distractorWords.push(w.word);
       usedKoreans.add(w.korean);
