@@ -4100,10 +4100,18 @@ function isCategoryContainment(wordA, wordB) {
   if (bMembers && bMembers.includes(wordA)) return true;
   return false;
 }
+// 감정 표현 형용사(전부 같은 아이 캐릭터의 표정으로 그림)도
+// 사람 명사군(child/boy 등)과 겹칠 수 있어서 함께 회피 대상으로 취급
+const EMOTION_STATE_WORDS = [
+  'angry','bored','excited','glad','happy','lonely','nervous','proud',
+  'sad','scared','shy','surprised','tired','upset','hungry','thirsty','sleepy',
+];
 function isPersonVsVerbConflict(wordA, catA, wordB, catB) {
   const aIsChildNoun = CHILD_NOUN_GROUP.includes(wordA);
   const bIsChildNoun = CHILD_NOUN_GROUP.includes(wordB);
-  return (aIsChildNoun && catB === '동사') || (bIsChildNoun && catA === '동사');
+  const bIsMascot = catB === '동사' || EMOTION_STATE_WORDS.includes(wordB);
+  const aIsMascot = catA === '동사' || EMOTION_STATE_WORDS.includes(wordA);
+  return (aIsChildNoun && bIsMascot) || (bIsChildNoun && aIsMascot);
 }
 
 export function buildQuestionFromWord(targetWord) {
