@@ -2945,7 +2945,7 @@ export const WORD_BANK = [
   { rank: 643, word: "question",     korean: "질문",           group: 7,  category: "명사" },
   { rank: 644, word: "class",        korean: "수업/반",        group: 7,  category: "명사" },
   { rank: 645, word: "exam",         korean: "(학교) 시험",           group: 7,  category: "명사" },
-  { rank: 646, word: "uniform",      korean: "교복",           group: 7,  category: "명사" },
+  { rank: 646, word: "uniform",      korean: "제복/유니폼",     group: 7,  category: "명사" },
   { rank: 647, word: "niece",        korean: "조카딸",         group: 7,  category: "명사" },
   { rank: 648, word: "cousin",       korean: "사촌",           group: 7,  category: "명사" },
   { rank: 649, word: "nephew",       korean: "조카",           group: 7,  category: "명사" },
@@ -3135,7 +3135,7 @@ export const WORD_BANK = [
   { rank: 829, word: "torch",        korean: "횃불",           group: 9,  category: "명사" },
   { rank: 830, word: "hunt",         korean: "사냥하다",       group: 9,  category: "동사" },
   { rank: 831, word: "chain",        korean: "사슬",           group: 9,  category: "명사" },
-  { rank: 832, word: "type",         korean: "타이핑하다",     group: 9,  category: "동사" },
+  { rank: 832, word: "type",         korean: "타자를 치다",     group: 9,  category: "동사" },
   { rank: 833, word: "lead",         korean: "이끌다",         group: 9,  category: "동사" },
   { rank: 834, word: "change",       korean: "바꾸다",         group: 9,  category: "동사" },
   { rank: 835, word: "forgive",      korean: "용서하다",       group: 9,  category: "동사" },
@@ -3488,7 +3488,7 @@ export const WORD_BANK = [
   { rank: 1176,word: "presentation", korean: "발표",           group: 12, category: "명사" },
   { rank: 1177,word: "luck",         korean: "행운",           group: 12, category: "명사" },
   { rank: 1178,word: "view",         korean: "경치/풍경",      group: 12, category: "명사" },
-  { rank: 1179,word: "mood",         korean: "기분",           group: 12, category: "명사" },
+  { rank: 1179,word: "mood",         korean: "기분/분위기",     group: 12, category: "명사" },
   { rank: 1180,word: "mind",         korean: "마음",           group: 12, category: "명사" },
   { rank: 1181,word: "invent",       korean: "발명하다",       group: 12, category: "동사" },
   { rank: 1182,word: "predict",    korean: "예측하다",           group: 12, category: "동사" },
@@ -4050,15 +4050,14 @@ const TRAP_SEEDS = {
 // → 같은 묶음끼리는 그림 모드 오답 후보로 같이 나오지 않게 함
 // (텍스트 모드에선 뜻이 명확히 다르므로 문제없음, 그림 모드에서만 생기는 혼동 방지)
 const VISUAL_SIMILAR_GROUPS = [
-  ['boy', 'girl', 'kid', 'child', 'baby', 'young', 'son'],
+  ['boy', 'girl', 'kid', 'child', 'baby', 'young', 'son', 'daughter', 'brother', 'sister', 'doll', 'family'],
   ['man', 'woman'],
   ['grandma', 'grandpa'],
-  ['son', 'daughter'],
-  ['brother', 'sister'],
   ['uncle', 'aunt'],
   ['prince', 'princess'],
   ['king', 'queen'],
   ['note', 'write'],
+  ['sunny', 'beach', 'sea'],
 ];
 function isVisuallySimilar(wordA, wordB) {
   return VISUAL_SIMILAR_GROUPS.some(group => group.includes(wordA) && group.includes(wordB));
@@ -4066,7 +4065,7 @@ function isVisuallySimilar(wordA, wordB) {
 
 // "아이 캐릭터"를 재사용해서 그린 동사들 전부 — boy/girl/kid/child/baby/young/son과
 // 그림이 겹쳐 보일 수 있어서, 이 명사·형용사군과는 동사 카테고리 전체를 회피 대상으로 취급
-const CHILD_NOUN_GROUP = ['boy', 'girl', 'kid', 'child', 'baby', 'young', 'son'];
+const CHILD_NOUN_GROUP = ['boy', 'girl', 'kid', 'child', 'baby', 'young', 'son', 'daughter', 'brother', 'sister', 'doll', 'family'];
 
 // 상위 카테고리 단어(food/animal/fruit/vegetable/clothes)와 그 하위 구성원 단어가
 // 그림 모드에서 함께 오답으로 나오면 안 됨 (예: food 정답에 watermelon이 오답으로 나오면
@@ -4105,6 +4104,7 @@ function isCategoryContainment(wordA, wordB) {
 const EMOTION_STATE_WORDS = [
   'angry','bored','excited','glad','happy','lonely','nervous','proud',
   'sad','scared','shy','surprised','tired','upset','hungry','thirsty','sleepy',
+  'together',
 ];
 function isPersonVsVerbConflict(wordA, catA, wordB, catB) {
   const aIsChildNoun = CHILD_NOUN_GROUP.includes(wordA);
