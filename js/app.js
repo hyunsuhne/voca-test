@@ -1,4 +1,5 @@
-import { pickQuestions, buildQuestionFromWord, AUDIO_WORDS } from './wordbank.js?v=1.17';
+import { pickQuestions, buildQuestionFromWord, AUDIO_WORDS } from './wordbank.js?v=1.18';
+import { track, submitResult } from './analytics.js?v=1.18';
 import { getResultGrade, getRecommendation } from './vocabulary.js';
 import { getResultGrade2, getRecommendation2 } from './vocabulary2.js';
 import { getResultGrade3, getRecommendation3 } from './vocabulary3.js';
@@ -509,6 +510,7 @@ const state = {
   wrongWords: [],        // { word, korean, category, correctAnswer } 틀린 단어 목록
   usedWords: new Set(),  // 테스트 전체 구간에서 출제된 word Set (그룹 간 중복 방지)
   comboCount: 0,         // 정답 연속 횟수
+  startedAt: 0,          // 테스트 시작 시각 (소요 시간 계산용)
 };
 
 const TOTAL_QUESTIONS = 50;
@@ -613,6 +615,9 @@ window.startTest = function (testType) {
   state.usedWords = new Set();  // 매 테스트마다 초기화
   state.comboCount = 0;         // 콤보 초기화
   if (state.radarChart) { state.radarChart.destroy(); state.radarChart = null; }
+
+  state.startedAt = Date.now();
+  track('test-start-' + testType);   // 퍼널: 테스트 시작
 
   _audio.unlock(); // 모바일 AudioContext 잠금 해제 (터치 이벤트 직접 핸들러 안에서 호출)
   _pronounce.unlock(); // 모바일: <audio>/speechSynthesis 잠금 해제 (효과음과 별개 시스템)
@@ -846,6 +851,7 @@ function nextStep() {
   if (state.currentQIndex >= 10) {
     state.groupResults.push({ correct: state.currentGroupCorrect, total: 10 });
     state.currentGroupIndex++;
+    track(`group-done-${state.testType}-${state.currentGroupIndex}`);   // 퍼널: 그룹 완료 (1~5)
     if (state.currentGroupIndex >= getCurrentMeta().length) {
       showResults();
     } else {
@@ -1006,6 +1012,18 @@ function showResults() {
   renderWrongWords();                              // 틀린 단어 목록
   renderRecommendation(isTest2, isTest3, estimate); // 틀린 단어 기반 추천
   renderOtherTestBanner(isTest2, isTest3, estimate);
+
+  // 퍼널: 완주 + 익명 결과 수집 (개인정보 없음)
+  track('test-complete-' + state.testType);
+  submitResult({
+    ageGroup:    state.ageGroup,
+    exposure:    state.exposure,
+    testType:    state.testType,
+    estimate:    estimate,
+    totalVocab:  totalVocab,
+    groupScores: state.groupResults.map(g => g.correct),
+    durationSec: state.startedAt ? Math.round((Date.now() - state.startedAt) / 1000) : null,
+  });
 
   // localStorage 저장 + 히스토리 렌더링
   saveResultToHistory(totalVocab, grade, state.testType, state.childName);
@@ -1387,6 +1405,7 @@ function copyText(text) {
 window.saveResultImage = function () {
   const hero = document.querySelector('.result-hero');
   if (!hero) return;
+  track('save-image');   // 퍼널: 결과 이미지 저장
   if (typeof html2canvas === 'undefined') {
     showToast('이미지 라이브러리 로딩 중이에요. 잠시 후 다시 눌러주세요!');
     return;
