@@ -1,5 +1,5 @@
-import { pickQuestions, buildQuestionFromWord, AUDIO_WORDS } from './wordbank.js?v=1.20';
-import { track, submitResult } from './analytics.js?v=1.20';
+import { pickQuestions, buildQuestionFromWord, AUDIO_WORDS } from './wordbank.js?v=1.21';
+import { track, submitResult } from './analytics.js?v=1.21';
 import { getResultGrade, getRecommendation } from './vocabulary.js';
 import { getResultGrade2, getRecommendation2 } from './vocabulary2.js';
 import { getResultGrade3, getRecommendation3 } from './vocabulary3.js';

@@ -4019,6 +4019,70 @@ function isTooSimilar(k1, k2) {
 
 // TIER 3 전용: 뜻이 그럴듯하게 헷갈리는 함정 단어 쌍
 // 정답 한글 뜻 키워드 → 함정으로 쓸 법한 한글 뜻 키워드 목록
+
+// ══ v1.21: 의미 클러스터 (TEST3 근접 오답용) ══
+// 같은 클러스터의 단어끼리 오답으로 우선 출제 → 정밀한 의미 변별 요구
+const MEANING_CLUSTERS = {
+  cook_v: ['bake','fry','steam','boil','chop','grill','slice','roast'],
+  clean_v: ['rinse','mop','rub','spray','wash up'],
+  move_v: ['slide','roll','spin','rush','slip','float'],
+  talk_v: ['communicate','explain','describe','discuss','suggest'],
+  think_v: ['observe','investigate','compare','measure','predict','guess','imagine','review'],
+  social_v: ['thank','encourage','respect','bless','cheer'],
+  fight_v: ['attack','block','shoot','strike','kill','rob','steal','chase'],
+  hand_v: ['tie','fold','spread','arrange','pack','carry','dig'],
+  make_v: ['create','invent','design','decorate'],
+  decide_v: ['decide','choose','promise','prepare'],
+  weather_n: ['dew','lightning','rainfall','hail','frost','thunder','typhoon','tornado','hurricane'],
+  body_n: ['ankle','wrist','muscle','eyelash','thigh','navel'],
+  ailment_n: ['headache','stomachache','toothache','earache','allergy'],
+  animalpart_n: ['fur','paw','claw','beak','feather','horn','nest'],
+  food_n: ['seafood','nut','noodle','ginger','sauce','mushroom','radish','spice','herb','ingredient','seasoning','vitamin','flavor'],
+  job_n: ['lawyer','designer','cashier','carpenter','journalist','clerk','reporter','principal','judge'],
+  visitor_n: ['tourist','passenger','visitor','customer','buyer','audience'],
+  age_n: ['teenager','youth','toddler','infant','peer','childhood'],
+  waterplace_n: ['stream','swamp','puddle','waterfall','ocean','shore'],
+  building_n: ['palace','prison','temple','tomb','gallery','laboratory'],
+  accessory_n: ['necklace','ring','earring','bracelet','perfume'],
+  space_n: ['planet','galaxy','earth','universe','space'],
+  science_n: ['gravity','energy','cell','experiment','microscope','evidence','research','telescope','sample','electricity','magnet'],
+  abstract_n: ['freedom','danger','opportunity','challenge','effort','truth','peace','mystery','secret','luck','joy','happiness','shame'],
+  compass_n: ['south','north','east','west','direction'],
+  position_n: ['corner','side','middle','edge','row','spot','position'],
+  shape_n: ['dot','cube','angle','cone'],
+  shop_n: ['wallet','fee','receipt','sale','goods','trade','business'],
+  event_n: ['ceremony','celebration','event','exhibition','presentation'],
+  fantasy_n: ['dwarf','wizard','goddess','heroine','god'],
+  personality_adj: ['rude','polite','honest','confident','generous','wise','greedy','foolish'],
+  state_adj: ['full','empty','crowded','loose','cozy','clear','frozen'],
+  scope_adj: ['modern','ancient','local','global','daily'],
+  feeling_adj: ['upset','nervous','merry','thankful','scary'],
+  good_adj: ['successful','popular','excellent','proper','fair'],
+  size_adj: ['wide','narrow','straight'],
+};
+const WORD_TO_CLUSTER = {};
+for (const [cid, words] of Object.entries(MEANING_CLUSTERS)) {
+  words.forEach(w => { WORD_TO_CLUSTER[w] = cid; });
+}
+
+// 의미 포함/유의 관계라 오답 동시 출현 금지 (영단어 기준 하드 차단)
+const AVOID_WORD_PAIRS = [
+  ['universe','space'], ['community','society'], ['toddler','infant'],
+  ['get together','meet up'], ['get together','gather'],
+  ['scary','horrible'], ['medicine','pill'], ['medicine','drug'], ['pill','drug'],
+];
+function isAvoidPair(a, b) {
+  return AVOID_WORD_PAIRS.some(([x, y]) => (a === x && b === y) || (a === y && b === x));
+}
+
+// 병기 뜻 조각 겹침 검사: 슬래시 분리 + 괄호 제거 후 동일 조각이 있으면 차단
+// 예: believe(믿다) ↔ trust(신뢰하다/믿다) → "믿다" 겹침 → 오답 금지
+function meaningPartsOverlap(k1, k2) {
+  const parts = k => k.split('/').map(p => p.replace(/\([^)]*\)/g, '').trim()).filter(Boolean);
+  const p1 = parts(k1), p2 = parts(k2);
+  return p1.some(x => p2.includes(x));
+}
+
 const TRAP_SEEDS = {
   '구조하다':    ['돕다', '찾다', '모으다', '막다'],
   '보호하다':    ['돕다', '지키다', '구조하다', '막다'],
@@ -4091,6 +4155,14 @@ const CATEGORY_CONTAINMENT = {
   'fruit':     FRUIT_MEMBERS,
   'vegetable': VEGETABLE_MEMBERS,
   'clothes':   CLOTHES_MEMBERS,
+  // v1.21: 텍스트 선택지(tier2/3)용 상위어 포함 관계 추가
+  'insect':         ['ladybug','moth','bee','ant','butterfly','spider','fly'],
+  'seafood':        ['crab','lobster','octopus','shrimp','fish'],
+  'transportation': ['bus','taxi','train','airplane','subway','boat','ship','bicycle','truck'],
+  'jewelry':        ['necklace','ring','earring','bracelet'],
+  'beverage':       ['juice','milk','water','tea','coffee','soda'],
+  'furniture':      ['couch','desk','chair','table','bed','shelf','drawer','closet'],
+  'grocery':        ['food','fruit','vegetable'],
 };
 function isCategoryContainment(wordA, wordB) {
   const aMembers = CATEGORY_CONTAINMENT[wordA];
@@ -4133,10 +4205,15 @@ export function buildQuestionFromWord(targetWord) {
       if (distractors.length >= 3) break;
       if (usedKoreans.has(w.korean)) continue;
       if (sameCatOnly && w.category !== cat) continue;
+      // v1.21 상시 하드 차단: 뜻 조각 겹침 / 상위어 포함 / 유의 쌍
+      if (meaningPartsOverlap(correctKorean, w.korean)) continue;
+      if (isCategoryContainment(targetWord.word, w.word)) continue;
+      if (isAvoidPair(targetWord.word, w.word)) continue;
+      // 이미 뽑힌 오답들과도 겹치면 차단 (오답끼리 정답성 혼동 방지)
+      if (distractorWords.some((dw, di) => isAvoidPair(dw, w.word) || isCategoryContainment(dw, w.word) || meaningPartsOverlap(distractors[di], w.korean))) continue;
       if (similarityCheck && isTooSimilar(correctKorean, w.korean)) continue;
       if (tier === 1 && isVisuallySimilar(targetWord.word, w.word)) continue;
       if (tier === 1 && isPersonVsVerbConflict(targetWord.word, cat, w.word, w.category)) continue;
-      if (tier === 1 && isCategoryContainment(targetWord.word, w.word)) continue;
       distractors.push(w.korean);
       distractorWords.push(w.word);
       usedKoreans.add(w.korean);
@@ -4171,10 +4248,23 @@ export function buildQuestionFromWord(targetWord) {
     if (distractors.length < 3) tryAdd(fallback, { similarityCheck: true });
 
   } else {
-    // ── TIER 3 (GROUP 11~15): 같은 품사 필수 + 함정 단어 적극 포함
-    // 구성: 같은 품사 2개(의미 유사 함정 우선) + 같은 품사 1개(랜덤)
+    // ── TIER 3 (GROUP 11~15): 같은 품사 필수 + 의미 클러스터/함정 적극 포함
+    // 구성: 같은 클러스터 오답 최대 2개 → 함정 → 같은 품사 랜덤
     const sameCatAll  = WORD_BANK.filter(w => w.word !== targetWord.word && w.category === cat);
     const fallback    = WORD_BANK.filter(w => w.word !== targetWord.word);
+
+    // v1.21: 같은 의미 클러스터에서 오답 최대 2개 (정밀 변별 유도)
+    const cid = WORD_TO_CLUSTER[targetWord.word];
+    if (cid) {
+      const clusterPool = sameCatAll.filter(w => WORD_TO_CLUSTER[w.word] === cid);
+      const before = distractors.length;
+      tryAdd(clusterPool, { sameCatOnly: true, similarityCheck: true });
+      // 클러스터에서 3개가 다 차면 마지막 1개는 비클러스터로 되돌림(과잉 난이도 방지)
+      while (distractors.length - before > 2) {
+        distractors.pop(); const removed = distractorWords.pop();
+        usedKoreans.delete(WORD_BANK.find(w => w.word === removed)?.korean);
+      }
+    }
 
     // 함정 후보: TRAP_SEEDS에 정의된 뜻과 매칭되는 같은 품사 단어
     const trapKoreans = new Set();
