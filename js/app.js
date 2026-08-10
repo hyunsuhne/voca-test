@@ -1,5 +1,5 @@
-import { pickQuestions, buildQuestionFromWord, AUDIO_WORDS } from './wordbank.js?v=1.18';
-import { track, submitResult } from './analytics.js?v=1.18';
+import { pickQuestions, buildQuestionFromWord, AUDIO_WORDS } from './wordbank.js?v=1.19';
+import { track, submitResult } from './analytics.js?v=1.19';
 import { getResultGrade, getRecommendation } from './vocabulary.js';
 import { getResultGrade2, getRecommendation2 } from './vocabulary2.js';
 import { getResultGrade3, getRecommendation3 } from './vocabulary3.js';
@@ -347,6 +347,12 @@ const _pronounce = (() => {
     const el = document.getElementById('audio-fallback-notice-test') || document.getElementById('audio-fallback-notice');
     if (!el) return;
     el.style.display = visible ? 'flex' : 'none';
+    // 듣기 평가 안전장치: 테스트 화면에서 재생 실패 시 단어를 공개해
+    // 부모님이 직접 읽어줄 수 있게 함 (소리 없이는 문제를 풀 수 없으므로)
+    if (visible && el.id === 'audio-fallback-notice-test') {
+      const q = state.queue && state.queue[state.currentQIndex];
+      if (q) revealWord(q.word);
+    }
   }
 
   // ── 메인 재생: 버튼 클릭/자동 모두 3회 반복 ──
@@ -708,12 +714,16 @@ function renderQuestion() {
           animation:pulse 0.6s ease infinite alternate;
         ">🏁 마지막 문제!</span>`;
   }
-  document.getElementById('english-word').textContent = q.word;
+  // 듣기 평가: 문제 중에는 영어 단어를 숨기고, 답변 후 공개
+  const wordEl = document.getElementById('english-word');
+  wordEl.textContent = '🎧';
+  wordEl.classList.add('word-masked');
+  wordEl.classList.remove('word-revealed');
 
   // 발음 버튼 레이블 초기화 + 자동 재생 (0.6초 후, 카드 슬라이드 후)
   const pronounceLabel = document.getElementById('pronounce-label');
   const pronounceIcon  = document.getElementById('pronounce-icon');
-  if (pronounceLabel) pronounceLabel.textContent = '발음 듣기';
+  if (pronounceLabel) pronounceLabel.textContent = '다시 듣기';
   const prevNotice = document.getElementById('audio-fallback-notice-test');
   if (prevNotice) prevNotice.style.display = 'none';
   if (pronounceIcon)  pronounceIcon.textContent  = '🔊';
@@ -775,6 +785,16 @@ window.playPronounce = function () {
 // ══════════════════════════════════════════
 //  답변 처리
 // ══════════════════════════════════════════
+
+// 듣기 평가: 답변/스킵 후 영어 단어 공개
+function revealWord(word) {
+  const el = document.getElementById('english-word');
+  if (!el) return;
+  el.textContent = word;
+  el.classList.remove('word-masked');
+  el.classList.add('word-revealed');
+}
+
 function handleAnswer(isCorrect, clickedBtn, grid, correctIndex) {
   if (state.isAnswering) return;
   state.isAnswering = true;
@@ -786,6 +806,10 @@ function handleAnswer(isCorrect, clickedBtn, grid, correctIndex) {
 
   Array.from(grid.children).forEach(b => (b.disabled = true));
   const q = state.queue[state.currentQIndex];
+
+  // 답변 후 영어 단어 공개 (배움의 순간)
+  revealWord(q.word);
+
   if (isCorrect) {
     state.comboCount++;
     _audio.correct();
@@ -812,7 +836,7 @@ function handleAnswer(isCorrect, clickedBtn, grid, correctIndex) {
 
   state.totalAnswered++;
   state.currentQIndex++;
-  setTimeout(nextStep, isCorrect ? 700 : 1000);
+  setTimeout(nextStep, isCorrect ? 800 : 1400);  // 오답 시 단어 볼 시간 확보
 }
 
 window.handleSkip = function () {
@@ -831,6 +855,9 @@ window.handleSkip = function () {
   Array.from(grid.children).forEach(b => (b.disabled = true));
   Array.from(grid.children)[q.correctIndex].classList.add('correct');
 
+  // 스킵 시에도 영어 단어 공개
+  revealWord(q.word);
+
   // 스킵도 틀린 단어로 기록
   state.wrongWords.push({
     word: q.word,
@@ -841,7 +868,7 @@ window.handleSkip = function () {
   showFeedback(false, true);
   state.totalAnswered++;
   state.currentQIndex++;
-  setTimeout(nextStep, 900);
+  setTimeout(nextStep, 1400);  // 스킵 시 단어 볼 시간 확보
 };
 
 function nextStep() {
