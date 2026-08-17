@@ -1362,3 +1362,13 @@ body {
 .listening-notice .ln-icon { font-size: 1.5rem; line-height: 1; margin-top: 2px; }
 .listening-notice .ln-text strong { color: #6C63FF; }
 .listening-notice .ln-sub { font-size: 0.78rem; color: #888; }
+
+/* v1.22: 총점 계산 방식 안내 각주 */
+.calc-footnote {
+  font-size: 0.72rem;
+  color: #9CA3AF;
+  text-align: center;
+  margin: 6px auto 0;
+  max-width: 400px;
+  line-height: 1.45;
+}
