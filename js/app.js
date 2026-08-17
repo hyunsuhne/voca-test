@@ -1,5 +1,5 @@
-import { pickQuestions, buildQuestionFromWord, AUDIO_WORDS } from './wordbank.js?v=1.21';
-import { track, submitResult } from './analytics.js?v=1.21';
+import { pickQuestions, buildQuestionFromWord, AUDIO_WORDS } from './wordbank.js?v=1.22';
+import { track, submitResult } from './analytics.js?v=1.22';
 import { getResultGrade, getRecommendation } from './vocabulary.js';
 import { getResultGrade2, getRecommendation2 } from './vocabulary2.js';
 import { getResultGrade3, getRecommendation3 } from './vocabulary3.js';
@@ -625,6 +625,14 @@ window.startTest = function (testType) {
   state.startedAt = Date.now();
   track('test-start-' + testType);   // 퍼널: 테스트 시작
 
+  // v1.22: TEST2/3인데 밑단 실측 기록이 없으면 가볍게 안내 (진행은 그대로)
+  if (testType !== 'test1') {
+    const bi = resolveBase(testType, nameInput);
+    if (bi.mode === 'assumed') {
+      showToast('💡 TEST1부터 보면 총 단어 수가 더 정확해져요!');
+    }
+  }
+
   _audio.unlock(); // 모바일 AudioContext 잠금 해제 (터치 이벤트 직접 핸들러 안에서 호출)
   _pronounce.unlock(); // 모바일: <audio>/speechSynthesis 잠금 해제 (효과음과 별개 시스템)
   _audio.launch();
@@ -975,13 +983,16 @@ function showResults() {
   const estimate   = calcEstimate(state.groupResults);   // 이번 테스트 추정 (0~500)
   let totalVocab, grade, maxWords, vocabLabel;
 
+  // v1.22: 같은 아이의 하위 테스트 실측 기록이 있으면 그걸 밑단으로 사용
+  const baseInfo = resolveBase(state.testType, state.childName);
+
   if (isTest3) {
-    totalVocab = 1000 + estimate;   // 기초 1000 + 이번 추정
+    totalVocab = baseInfo.base + estimate;
     grade      = getResultGrade3(estimate);
     maxWords   = 1500;
     vocabLabel = '1~1500단어 중 알고 있는 단어 수';
   } else if (isTest2) {
-    totalVocab = 500 + estimate;    // 기초 500 + 이번 추정
+    totalVocab = baseInfo.base + estimate;
     grade      = getResultGrade2(estimate);
     maxWords   = 1000;
     vocabLabel = '1~1000단어 중 알고 있는 단어 수';
@@ -1004,9 +1015,24 @@ function showResults() {
   // test2 / test3일 때 합산 구성 표시
   if (isTest2 || isTest3) {
     document.getElementById('vocab-breakdown').style.display = 'flex';
-    document.getElementById('breakdown-base').textContent  = (isTest3 ? '기초 1000' : '기초 500') + '(가정)';
+    document.getElementById('breakdown-base').textContent  = baseInfo.srcLabel;
     document.getElementById('breakdown-this').textContent  = `이번 테스트 ${estimate}`;
     document.getElementById('breakdown-total').textContent = `약 ${totalVocab}개`;
+
+    // 계산 방식 안내 각주 (논란 방지용 — 작게, 그러나 명확하게)
+    const footnote = document.getElementById('calc-footnote');
+    if (footnote) {
+      if (baseInfo.mode === 'measured') {
+        footnote.textContent = `* 총 단어 수는 ${state.childName}의 최근 90일 내 이전 테스트 측정값과 이번 결과를 더해 계산했어요.`;
+      } else if (baseInfo.mode === 'partial') {
+        footnote.textContent = '* 중급 구간(501~1000)은 모두 아는 것으로 가정했어요. TEST2를 보면 총 단어 수가 더 정확해져요.';
+      } else {
+        footnote.textContent = isTest3
+          ? '* 기초 구간(1~1000단어)은 모두 아는 것으로 가정한 추정치예요. TEST1·2부터 보면 더 정확해져요.'
+          : '* 기초 구간(1~500단어)은 모두 아는 것으로 가정한 추정치예요. TEST1부터 보면 더 정확해져요.';
+      }
+      footnote.style.display = 'block';
+    }
 
     // 기초 단계 습득이 의심되는 경우(이번 테스트 자체 점수가 낮음) 하위 테스트 확인 유도
     const baseCheckBanner = document.getElementById('base-check-banner');
@@ -1408,7 +1434,8 @@ window.shareResult = function () {
   const estimate   = calcEstimate(state.groupResults);
   const isTest2    = state.testType === 'test2';
   const isTest3    = state.testType === 'test3';
-  const totalVocab = isTest3 ? 1000 + estimate : isTest2 ? 500 + estimate : estimate;
+  const baseInfo = resolveBase(state.testType, state.childName);
+  const totalVocab = (isTest3 || isTest2) ? baseInfo.base + estimate : estimate;
   const rangeLabel = isTest3 ? '1~1500단어 중' : isTest2 ? '1~1000단어 중' : '1~500단어 중';
   const url   = location.href;
   const text = `📖 ${state.childName}의 영어 어휘 테스트 결과\n🌟 ${rangeLabel} 약 ${totalVocab}개 알고 있어요!\n\n🔗 우리 아이 어휘량도 테스트해보세요 😊\n${url}`;
@@ -1459,6 +1486,48 @@ window.saveResultImage = function () {
 // ══════════════════════════════════════════
 const HISTORY_KEY = 'vocaTestHistory';
 const MAX_HISTORY = 10;
+
+
+// ══ v1.22: 하위 테스트 실측 기반 총점 보정 ══
+const BASE_RECORD_VALID_DAYS = 90;   // 이 기간 내 기록만 밑단으로 인정
+
+function normalizeChildName(n) {
+  return (n || '').replace(/\s+/g, '').toLowerCase();
+}
+
+// 같은 이름의 최근(90일 이내) 특정 테스트 기록 반환 (없으면 null)
+function findRecentRecord(childName, testType) {
+  const history = loadHistory();
+  const target = normalizeChildName(childName);
+  const limit  = BASE_RECORD_VALID_DAYS * 24 * 60 * 60 * 1000;
+  const now    = Date.now();
+  return history.find(h =>
+    h.testType === testType &&
+    normalizeChildName(h.childName) === target &&
+    (now - h.id) <= limit
+  ) || null;
+}
+
+// TEST2/3의 기초(밑단) 계산: 실측 기록 우선, 없으면 기존 가정치
+// 반환: { base, mode: 'measured' | 'partial' | 'assumed', srcLabel }
+function resolveBase(testType, childName) {
+  if (testType === 'test2') {
+    const t1 = findRecentRecord(childName, 'test1');
+    if (t1) return { base: Math.min(500, t1.totalVocab), mode: 'measured', srcLabel: `TEST1 측정 ${Math.min(500, t1.totalVocab)}` };
+    return { base: 500, mode: 'assumed', srcLabel: '기초 500(가정)' };
+  }
+  if (testType === 'test3') {
+    const t2 = findRecentRecord(childName, 'test2');
+    if (t2) return { base: Math.min(1000, t2.totalVocab), mode: 'measured', srcLabel: `TEST2까지 측정 ${Math.min(1000, t2.totalVocab)}` };
+    const t1 = findRecentRecord(childName, 'test1');
+    if (t1) {
+      const b = Math.min(500, t1.totalVocab) + 500;
+      return { base: b, mode: 'partial', srcLabel: `TEST1 측정 ${Math.min(500, t1.totalVocab)} + 중급 500(가정)` };
+    }
+    return { base: 1000, mode: 'assumed', srcLabel: '기초 1000(가정)' };
+  }
+  return { base: 0, mode: 'measured', srcLabel: '' };
+}
 
 function saveResultToHistory(totalVocab, grade, testType, childName) {
   const history = loadHistory();
