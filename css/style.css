@@ -1366,7 +1366,7 @@ body {
 /* v1.22: 총점 계산 방식 안내 각주 */
 .calc-footnote {
   font-size: 0.72rem;
-  color: #9CA3AF;
+  color: rgba(255,255,255,0.78);
   text-align: center;
   margin: 6px auto 0;
   max-width: 400px;
