@@ -101,6 +101,25 @@ export function submitResult(r) {
   } catch (e) { /* no-op */ }
 }
 
+
+/**
+ * 또래 비교 통계 조회 (집계 전용 RPC — 개별 데이터 접근 불가)
+ * @returns {Promise<object|null>} {ok, n, scope, buckets[10], below} 또는 null
+ */
+export async function fetchScoreStats(testType, ageGroup, score) {
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return null;
+  try {
+    const headers = { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY };
+    if (!SUPABASE_ANON_KEY.startsWith('sb_')) headers['Authorization'] = `Bearer ${SUPABASE_ANON_KEY}`;
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/get_score_stats`, {
+      method: 'POST', headers,
+      body: JSON.stringify({ p_test_type: testType, p_age_group: ageGroup, p_score: score }),
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (e) { return null; }
+}
+
 // ══════════════════════════════════════════
 //  ③ 결과 화면 링크 클릭 추적 (이벤트 위임)
 //     — 채널 칩은 동적 렌더링이라 document 레벨에서 잡음

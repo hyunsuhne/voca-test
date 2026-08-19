@@ -1,5 +1,5 @@
-import { pickQuestions, buildQuestionFromWord, AUDIO_WORDS } from './wordbank.js?v=1.22';
-import { track, submitResult } from './analytics.js?v=1.22';
+import { pickQuestions, buildQuestionFromWord, AUDIO_WORDS } from './wordbank.js?v=1.23';
+import { track, submitResult, fetchScoreStats } from './analytics.js?v=1.23';
 import { getResultGrade, getRecommendation } from './vocabulary.js';
 import { getResultGrade2, getRecommendation2 } from './vocabulary2.js';
 import { getResultGrade3, getRecommendation3 } from './vocabulary3.js';
@@ -1081,6 +1081,7 @@ function showResults() {
   // localStorage 저장 + 히스토리 렌더링
   saveResultToHistory(totalVocab, grade, state.testType, state.childName);
   setTimeout(() => renderHistory(totalVocab, state.testType), 200);
+  renderPeerStats(state.testType, state.ageGroup, estimate);   // v1.23 또래 비교 (비동기)
 
   // 팡파레 + confetti (점수별 강도 차등 — estimate 비율 기준)
   const fanfareLevel = estimate >= 400 ? 'S' : estimate >= 280 ? 'A' : estimate >= 160 ? 'B' : estimate >= 80 ? 'C' : 'D';
@@ -1527,6 +1528,46 @@ function resolveBase(testType, childName) {
     return { base: 1000, mode: 'assumed', srcLabel: '기초 1000(가정)' };
   }
   return { base: 0, mode: 'measured', srcLabel: '' };
+}
+
+
+// ══ v1.23: 또래 비교 그래프 ══
+async function renderPeerStats(testType, ageGroup, estimate) {
+  const box = document.getElementById('peer-stats');
+  if (!box) return;
+  const stats = await fetchScoreStats(testType, ageGroup, estimate);
+  if (!stats || !stats.ok || !Array.isArray(stats.buckets)) return;  // 표본 부족/실패 시 조용히 미표시
+
+  const myBucket = Math.min(9, Math.floor(estimate / 50));
+  const maxCnt = Math.max(...stats.buckets, 1);
+  const chart = document.getElementById('peer-chart');
+  chart.innerHTML = stats.buckets.map((c, i) => {
+    const h = Math.max(4, Math.round((c / maxCnt) * 72));
+    const mine = i === myBucket;
+    return `<div class="peer-col">
+      ${mine ? `<div class="peer-me">${state.childName}</div>` : ''}
+      <div class="peer-bar${mine ? ' mine' : ''}" style="height:${h}px"></div>
+    </div>`;
+  }).join('');
+
+  // 상위 % 계산 (below = 내 점수 미만 인원) — 점수대별 격려 톤 조절
+  const topPct = Math.max(1, Math.round((1 - stats.below / stats.n) * 100));
+  const pctEl = document.getElementById('peer-percentile');
+  if (topPct <= 30) {
+    pctEl.innerHTML = `${state.childName}는 <strong>상위 ${topPct}%</strong>예요! 🎉`;
+  } else if (topPct <= 60) {
+    pctEl.innerHTML = `${state.childName}는 <strong>상위 ${topPct}%</strong>! 잘하고 있어요 👏`;
+  } else {
+    // 하위권: 숫자 대신 격려 (그래프에는 위치가 정직하게 표시됨)
+    pctEl.innerHTML = `${state.childName}는 또래와 함께 <strong>쑥쑥 성장 중</strong>이에요! 💪`;
+  }
+
+  const scopeLabel = stats.scope === 'age'
+    ? `같은 나이대(${ageGroup}) 친구 ${stats.n}명과 비교`
+    : `전체 응시 친구 ${stats.n}명과 비교 (같은 나이대 데이터는 모이는 중이에요)`;
+  document.getElementById('peer-note').textContent =
+    scopeLabel + ' · 점수가 낮은 쪽부터 높은 쪽 순서예요';
+  box.style.display = 'block';
 }
 
 function saveResultToHistory(totalVocab, grade, testType, childName) {
