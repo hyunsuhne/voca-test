@@ -1372,3 +1372,34 @@ body {
   max-width: 400px;
   line-height: 1.45;
 }
+
+/* ══ v1.23: 또래 비교 그래프 ══ */
+.peer-stats {
+  background: #fff;
+  border: 2px solid #E9E5FF;
+  border-radius: 16px;
+  padding: 16px 14px 12px;
+  margin: 14px 0;
+}
+.peer-title { font-weight: 800; color: #4C1D95; font-size: 0.95rem; margin-bottom: 12px; }
+.peer-chart {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 4px; height: 96px; padding: 0 2px;
+}
+.peer-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 3px; }
+.peer-bar {
+  width: 100%; max-width: 28px;
+  background: #DDD6FE; border-radius: 6px 6px 0 0;
+  transition: height .6s ease;
+}
+.peer-bar.mine { background: #6C63FF; }
+.peer-me {
+  font-size: 0.62rem; font-weight: 800; color: #6C63FF;
+  background: #EDE9FE; padding: 2px 6px; border-radius: 8px;
+  white-space: nowrap; animation: peerBounce 1.2s ease infinite;
+}
+@keyframes peerBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)} }
+.peer-axis { display: flex; justify-content: space-between; font-size: 0.68rem; color: #9CA3AF; padding: 2px 4px 0; }
+.peer-percentile { text-align: center; font-size: 1rem; color: #374151; margin-top: 10px; }
+.peer-percentile strong { color: #6C63FF; font-size: 1.15rem; }
+.peer-note { text-align: center; font-size: 0.72rem; color: #9CA3AF; margin-top: 4px; line-height: 1.4; }
