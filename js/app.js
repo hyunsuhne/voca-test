@@ -1,9 +1,9 @@
-import { pickQuestions, buildQuestionFromWord, AUDIO_WORDS } from './wordbank.js?v=1.25';
-import { track, submitResult, fetchScoreStats } from './analytics.js?v=1.25';
+import { pickQuestions, buildQuestionFromWord, AUDIO_WORDS } from './wordbank.js?v=1.26';
+import { track, submitResult, fetchScoreStats } from './analytics.js?v=1.26';
 import { getResultGrade, getRecommendation } from './vocabulary.js';
 import { getResultGrade2, getRecommendation2 } from './vocabulary2.js';
 import { getResultGrade3, getRecommendation3 } from './vocabulary3.js';
-import { recommendChannels, INTEREST_TAGS, CHANNELS } from './channels.js?v=1.25';
+import { recommendChannels, INTEREST_TAGS, CHANNELS } from './channels.js?v=1.26';
 
 // ══════════════════════════════════════════
 //  효과음 (Web Audio API — 외부 파일 불필요)
@@ -1331,7 +1331,8 @@ function initPersonalizeUI() {
 // ── v1.25: 추천 카드 렌더링 (관심사 바뀔 때마다 재실행) ──
 function renderChannelRecs() {
   const box = document.getElementById('channels-list');
-  const { main, challenge } = recommendChannels(state.recCtx);
+  const { main, challenge, level } = recommendChannels(state.recCtx);
+  const header = `<div class="rec-level-note">🎯 지금 단어 수준 <strong>${level}</strong> · ${state.recCtx.ageGroup} 기준으로 골랐어요</div>`;
   const card = (ch, badge) => `
     <a class="channel-chip" href="${ch.url || '#'}" target="_blank" rel="noopener">
       <span class="channel-chip-icon">${badge || '▶'}</span>
@@ -1343,7 +1344,7 @@ function renderChannelRecs() {
       </span>
       <i class="fas fa-external-link-alt channel-chip-link"></i>
     </a>`;
-  box.innerHTML =
+  box.innerHTML = header +
     main.map(ch => card(ch)).join('') +
     (challenge ? `<div class="challenge-divider">🚀 다음 단계 도전</div>` + card(challenge, '🚀') : '');
 }
@@ -1733,8 +1734,8 @@ function showToast(msg) {
 //  업데이트 안내 팝업 (기간 한정 노출 + 1회 확인 후 재노출 안 함)
 // ══════════════════════════════════════════
 (function initUpdateModal() {
-  const UPDATE_ID   = 'v1.15-2026-08-01';         // 이 업데이트의 고유 식별자
-  const EXPIRE_DATE = new Date('2026-08-08T23:59:59'); // 노출 종료일 (공개일로부터 1주일)
+  const UPDATE_ID   = 'v1.26-2026-09-01';         // 이 업데이트의 고유 식별자
+  const EXPIRE_DATE = new Date('2026-09-08T23:59:59'); // 노출 종료일 (공개일로부터 1주일)
   const STORAGE_KEY = 'updateNoticeSeen';
 
   try {

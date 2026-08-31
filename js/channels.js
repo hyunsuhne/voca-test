@@ -2678,18 +2678,35 @@ function scoreChannel(ch, ctx) {
   return s;
 }
 
-// ── "왜 이 채널" 문구 생성 ──
-function buildReason(ch, ctx) {
-  const parts = [];
+// ── "왜 이 채널" 문구 생성 (카드마다 다른 이유가 나오도록) ──
+function buildReason(ch, ctx, used) {
+  // 1순위: 아이가 고른 관심사와의 일치 (개인화 신호) — 단, 같은 문구 반복 방지
   const hitTags = (ctx.interests || []).filter(t => ch.tags.includes(t));
-  if (hitTags.length) parts.push(`${hitTags.join('·')} 좋아하는 아이 취향 저격`);
+  if (hitTags.length) {
+    const msg = `${hitTags.join('·')} 좋아하는 아이 취향 저격`;
+    if (!used || !used.has(msg)) return msg;
+    // 같은 관심사 문구가 이미 쓰였으면 채널 고유 이유로 대체 (3순위로 진행)
+  } else {
+
+  // 2순위: 즐겨 보는 채널과의 유사성
   if (ctx.fav) {
     const sim = ctx.fav.tags.filter(t => ch.tags.includes(t));
-    if (sim.length) parts.push(`${ctx.fav.name}를 좋아한다면 이어 보기 좋아요`);
+    if (sim.length) {
+      const msg = `${ctx.fav.name} 좋아한다면 이어 보기 좋아요`;
+      if (!used || !used.has(msg)) return msg;
+    }
   }
-  if (levelDist(ch.cls, ctx.level) === 0) parts.push(`지금 단어 수준(${ctx.level})에 딱 맞아요`);
-  if (ch.stars >= 4) parts.push('현서네 강력 추천 채널');
-  return parts.slice(0, 2).join(' · ') || `${ch.age} 아이들이 좋아하는 검증된 채널이에요`;
+  }
+
+  // 3순위: 사장님의 채널별 추천 한마디 (채널마다 고유)
+  if (ch.why) {
+    const w = ch.why.replace(/\s+/g, ' ').trim();
+    return w.length > 55 ? w.slice(0, 54) + '…' : w;
+  }
+
+  // 4순위: 태그 기반 기본 문구
+  if (ch.tags.length) return `${ch.tags[0]} 좋아하는 아이들이 즐겨 보는 채널`;
+  return `${ch.age} 아이들이 좋아하는 검증된 채널이에요`;
 }
 
 /**
@@ -2707,7 +2724,12 @@ export function recommendChannels(ctx) {
     .filter(x => x.score > -100)
     .sort((a, b) => b.score - a.score);
 
-  const main = ranked.slice(0, 3).map(x => ({ ...x.ch, reason: buildReason(x.ch, full) }));
+  const used = new Set();
+  const main = ranked.slice(0, 3).map(x => {
+    const reason = buildReason(x.ch, full, used);
+    used.add(reason);
+    return { ...x.ch, reason };
+  });
 
   // 다음 단계 도전: 한 레벨 위 채널 중 최고 점수 1개 (이미 최고 레벨이면 생략)
   let challenge = null;
