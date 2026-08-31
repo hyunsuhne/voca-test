@@ -1425,3 +1425,9 @@ body {
 .fav-row input:focus { outline: none; border-color: #6C63FF; }
 .channel-reason { display: block; font-size: 0.74rem; color: #7C3AED; font-weight: 600; margin: 2px 0; }
 .challenge-divider { font-size: 0.8rem; font-weight: 800; color: #B45309; margin: 10px 0 4px; }
+
+/* ══ v1.26: 추천 기준 헤더 ══ */
+.rec-level-note {
+  font-size: 0.78rem; color: #6D28D9; background: #EDE9FE;
+  border-radius: 8px; padding: 7px 10px; margin-bottom: 8px;
+}
