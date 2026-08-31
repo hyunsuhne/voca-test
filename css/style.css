@@ -1403,3 +1403,25 @@ body {
 .peer-percentile { text-align: center; font-size: 1rem; color: #374151; margin-top: 10px; }
 .peer-percentile strong { color: #6C63FF; font-size: 1.15rem; }
 .peer-note { text-align: center; font-size: 0.72rem; color: #9CA3AF; margin-top: 4px; line-height: 1.4; }
+
+/* ══ v1.25: 맞춤 채널 추천 ══ */
+.rec-personalize {
+  background: #F5F3FF; border-radius: 12px;
+  padding: 12px; margin-bottom: 12px;
+}
+.rec-p-label { font-size: 0.8rem; font-weight: 700; color: #4C1D95; margin-bottom: 8px; }
+.rec-p-opt { font-weight: 400; color: #8B7EC8; }
+.interest-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.i-chip {
+  border: 1.5px solid #DDD6FE; background: #fff; color: #6D28D9;
+  border-radius: 20px; padding: 5px 11px; font-size: 0.78rem; font-weight: 600;
+  cursor: pointer; transition: all .15s;
+}
+.i-chip.on { background: #6C63FF; border-color: #6C63FF; color: #fff; }
+.fav-row input {
+  width: 100%; border: 1.5px solid #DDD6FE; border-radius: 10px;
+  padding: 9px 12px; font-size: 0.82rem; color: #374151; background: #fff;
+}
+.fav-row input:focus { outline: none; border-color: #6C63FF; }
+.channel-reason { display: block; font-size: 0.74rem; color: #7C3AED; font-weight: 600; margin: 2px 0; }
+.challenge-divider { font-size: 0.8rem; font-weight: 800; color: #B45309; margin: 10px 0 4px; }
