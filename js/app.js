@@ -1,9 +1,9 @@
-import { pickQuestions, buildQuestionFromWord, AUDIO_WORDS } from './wordbank.js?v=1.24';
-import { track, submitResult, fetchScoreStats } from './analytics.js?v=1.24';
+import { pickQuestions, buildQuestionFromWord, AUDIO_WORDS } from './wordbank.js?v=1.25';
+import { track, submitResult, fetchScoreStats } from './analytics.js?v=1.25';
 import { getResultGrade, getRecommendation } from './vocabulary.js';
 import { getResultGrade2, getRecommendation2 } from './vocabulary2.js';
 import { getResultGrade3, getRecommendation3 } from './vocabulary3.js';
-import { getChannelsByAgeAndCategory, getChannelsByAge } from './channels.js';
+import { recommendChannels, INTEREST_TAGS, CHANNELS } from './channels.js?v=1.25';
 
 // ══════════════════════════════════════════
 //  효과음 (Web Audio API — 외부 파일 불필요)
@@ -1063,7 +1063,7 @@ function showResults() {
   renderGroupScores();
   setTimeout(() => renderRadarChart(), 400);
   renderWrongWords();                              // 틀린 단어 목록
-  renderRecommendation(isTest2, isTest3, estimate); // 틀린 단어 기반 추천
+  renderRecommendation(isTest2, isTest3, estimate, totalVocab); // v1.25 맞춤 채널 추천
   renderOtherTestBanner(isTest2, isTest3, estimate);
 
   // 퍼널: 완주 + 익명 결과 수집 (개인정보 없음)
@@ -1202,7 +1202,7 @@ function renderWrongWords() {
 }
 
 // ── 추천 카드 (나이대 × 카테고리 기반 channels.js 활용) ─────
-function renderRecommendation(isTest2, isTest3, estimate) {
+function renderRecommendation(isTest2, isTest3, estimate, totalVocab) {
   const card = document.getElementById('recommendation-card');
 
   // 1. 틀린 단어에서 카테고리 빈도 집계
@@ -1247,51 +1247,20 @@ function renderRecommendation(isTest2, isTest3, estimate) {
     명사:   '집 안 물건에 영어 이름 라벨을 붙여봐요',
   };
 
-  // 4. channels.js에서 나이대+카테고리 기반 채널 추천
+  // 4. v1.25 맞춤 추천 컨텍스트 (관심사·좋아하는 채널은 기기에 저장)
   const ageGroup = state.ageGroup || '초3-4';  // 혹시 미선택시 폴백
-  let recommendedChannels;
-  if (weakCats.length > 0) {
-    recommendedChannels = getChannelsByAgeAndCategory(ageGroup, weakCats, 3);
-  } else {
-    recommendedChannels = getChannelsByAge(ageGroup, 3);
-  }
-
-  // 5. 채널 부족 시 estimate 기반 기본 추천으로 보충
-  if (recommendedChannels.length < 2) {
-    const baseRec = isTest3 ? getRecommendation3(estimate) : isTest2 ? getRecommendation2(estimate) : getRecommendation(estimate);
-    const usedNames = new Set(recommendedChannels.map(c => c.name));
-    baseRec.channels.forEach(ch => {
-      if (!usedNames.has(ch.name) && recommendedChannels.length < 3) {
-        recommendedChannels.push(ch);
-        usedNames.add(ch.name);
-      }
-    });
-  }
+  state.recCtx = {
+    ageGroup, totalVocab,
+    interests: JSON.parse(localStorage.getItem('vt_interests') || '[]'),
+    favName: localStorage.getItem('vt_fav') || '',
+  };
 
   // 6. 팁 생성
   const weakTips = weakCats.length > 0
     ? weakCats.map(cat => `<li><strong>${cat}</strong> 단어가 약해요 → ${CAT_TIPS[cat] || '영상 노출을 늘려봐요'}</li>`).join('')
     : '<li>모든 단어를 잘 알고 있어요! 다음 단계에 도전해봐요 🚀</li>';
 
-  // 7. 채널 카드 렌더링
-  const channelsHTML = recommendedChannels.map(ch => {
-    const starsStr = '★'.repeat(ch.stars || 3);
-    const ageLabel = ch.age || ageGroup;
-    const genreLabel = ch.genre || '';
-    const chUrl = ch.url || '#';
-    const chDesc = ch.desc || '';
-    return `
-      <a class="channel-chip" href="${chUrl}" target="_blank" rel="noopener">
-        <span class="channel-chip-icon">▶</span>
-        <span class="channel-chip-info">
-          <strong>${ch.name}</strong>
-          <span>${chDesc}</span>
-          <span class="channel-chip-meta">${ageLabel} · ${genreLabel} · ${starsStr}</span>
-        </span>
-        <i class="fas fa-external-link-alt channel-chip-link"></i>
-      </a>
-    `;
-  }).join('');
+  // 7. v1.25: 채널 카드는 renderChannelRecs()가 그림 (관심사 변경 시 재호출)
 
   // 8. 다음 목표
   const baseRec2 = isTest3 ? getRecommendation3(estimate) : isTest2 ? getRecommendation2(estimate) : getRecommendation(estimate);
@@ -1308,11 +1277,75 @@ function renderRecommendation(isTest2, isTest3, estimate) {
     </div>
     <ul class="rec-tips">${weakTips}</ul>
     <div class="rec-books">
-      <div class="rec-books-title">📺 ${ageEmoji} ${ageGroup} 맞춤 추천 채널</div>
-      <div class="channels-list">${channelsHTML}</div>
+      <div class="rec-books-title">📺 ${ageEmoji} 우리 아이 맞춤 채널 추천</div>
+      <div class="rec-personalize" id="rec-personalize">
+        <div class="rec-p-label">아이가 좋아하는 걸 고르면 추천이 더 정확해져요 <span class="rec-p-opt">(선택)</span></div>
+        <div class="interest-chips" id="interest-chips"></div>
+        <div class="fav-row">
+          <input type="text" id="fav-input" list="fav-list" placeholder="🔍 요즘 즐겨 보는 채널이 있다면? (예: Peppa Pig)" autocomplete="off">
+          <datalist id="fav-list"></datalist>
+        </div>
+      </div>
+      <div class="channels-list" id="channels-list"></div>
     </div>
     <div class="rec-next-goal">🎯 다음 목표: <strong>${baseRec2.goal}</strong></div>
   `;
+
+  initPersonalizeUI();
+  renderChannelRecs();
+}
+
+// ── v1.25: 관심사·좋아하는 채널 입력 UI ──
+function initPersonalizeUI() {
+  const chipBox = document.getElementById('interest-chips');
+  chipBox.innerHTML = INTEREST_TAGS.map(t =>
+    `<button type="button" class="i-chip${state.recCtx.interests.includes(t) ? ' on' : ''}" data-tag="${t}">${t}</button>`
+  ).join('');
+  chipBox.querySelectorAll('.i-chip').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const t = btn.dataset.tag;
+      const arr = state.recCtx.interests;
+      const i = arr.indexOf(t);
+      if (i >= 0) { arr.splice(i, 1); btn.classList.remove('on'); }
+      else if (arr.length < 4) { arr.push(t); btn.classList.add('on'); }
+      localStorage.setItem('vt_interests', JSON.stringify(arr));
+      renderChannelRecs();
+      track('interest-select');
+    });
+  });
+
+  // 좋아하는 채널 자동완성
+  const dl = document.getElementById('fav-list');
+  dl.innerHTML = CHANNELS.filter(c => !c.excluded).map(c => `<option value="${c.name}">`).join('');
+  const inp = document.getElementById('fav-input');
+  inp.value = state.recCtx.favName;
+  inp.addEventListener('change', () => {
+    const v = inp.value.trim();
+    state.recCtx.favName = CHANNELS.some(c => c.name === v) ? v : '';
+    localStorage.setItem('vt_fav', state.recCtx.favName);
+    renderChannelRecs();
+    if (state.recCtx.favName) track('fav-channel-set');
+  });
+}
+
+// ── v1.25: 추천 카드 렌더링 (관심사 바뀔 때마다 재실행) ──
+function renderChannelRecs() {
+  const box = document.getElementById('channels-list');
+  const { main, challenge } = recommendChannels(state.recCtx);
+  const card = (ch, badge) => `
+    <a class="channel-chip" href="${ch.url || '#'}" target="_blank" rel="noopener">
+      <span class="channel-chip-icon">${badge || '▶'}</span>
+      <span class="channel-chip-info">
+        <strong>${ch.name}</strong>
+        <span>${ch.desc || ''}</span>
+        <span class="channel-reason">💡 ${ch.reason}</span>
+        <span class="channel-chip-meta">${ch.age} · ${ch.genre} · ${'★'.repeat(ch.stars)}</span>
+      </span>
+      <i class="fas fa-external-link-alt channel-chip-link"></i>
+    </a>`;
+  box.innerHTML =
+    main.map(ch => card(ch)).join('') +
+    (challenge ? `<div class="challenge-divider">🚀 다음 단계 도전</div>` + card(challenge, '🚀') : '');
 }
 
 // ── 다른 테스트 도전 배너 ─────────────────────────────
