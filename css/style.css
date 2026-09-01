@@ -1485,3 +1485,6 @@ body {
   border-radius: 8px; padding: 4px 8px; font-size: 0.68rem; font-weight: 700; cursor: pointer;
 }
 .member-badge-note { font-size: 0.76rem; color: #047857; margin: 8px 0 0; line-height: 1.5; }
+
+/* ══ v1.30: 난이도 구간 차트 ══ */
+.radar-note { font-size: 0.74rem; color: #8B8BA7; margin: 0 0 8px; line-height: 1.5; }
