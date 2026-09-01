@@ -1413,11 +1413,27 @@ body {
 .rec-p-opt { font-weight: 400; color: #8B7EC8; }
 .interest-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
 .i-chip {
-  border: 1.5px solid #DDD6FE; background: #fff; color: #6D28D9;
-  border-radius: 20px; padding: 5px 11px; font-size: 0.78rem; font-weight: 600;
-  cursor: pointer; transition: all .15s;
+  display: inline-flex; align-items: center; gap: 5px;
+  border: 2px solid #DDD6FE; background: #fff; color: #4C1D95;
+  border-radius: 22px; padding: 7px 12px 7px 10px; font-size: 0.8rem; font-weight: 700;
+  cursor: pointer; transition: transform .12s, box-shadow .15s, background .15s, border-color .15s;
+  box-shadow: 0 2px 5px rgba(108,99,255,0.12);
 }
-.i-chip.on { background: #6C63FF; border-color: #6C63FF; color: #fff; }
+.i-chip:active { transform: scale(0.94); }
+.i-chip:hover { border-color: #A78BFA; box-shadow: 0 3px 9px rgba(108,99,255,0.22); }
+.i-chip-emoji { font-size: 1.02rem; line-height: 1; }
+.i-chip-mark {
+  font-size: 0.82rem; font-weight: 900; color: #A78BFA;
+  width: 15px; height: 15px; line-height: 15px; text-align: center;
+  border-radius: 50%; background: #F5F3FF;
+}
+.i-chip.on {
+  background: linear-gradient(135deg, #6C63FF, #8B5CF6); border-color: #6C63FF; color: #fff;
+  box-shadow: 0 4px 12px rgba(108,99,255,0.4);
+}
+.i-chip.on .i-chip-mark { background: rgba(255,255,255,0.28); color: #fff; }
+.i-chip.pop { animation: chipPop .26s ease; }
+@keyframes chipPop { 0%{transform:scale(1)} 45%{transform:scale(1.13)} 100%{transform:scale(1)} }
 .fav-row input {
   width: 100%; border: 1.5px solid #DDD6FE; border-radius: 10px;
   padding: 9px 12px; font-size: 0.82rem; color: #374151; background: #fff;
@@ -1434,12 +1450,7 @@ body {
 
 /* ══ v1.29: 홈페이지 유입 CTA ══ */
 .ww-locked { filter: blur(5px); pointer-events: none; user-select: none; }
-.ww-lock-note {
-  display: block; text-align: center; margin-top: 10px;
-  background: linear-gradient(135deg, #6C63FF, #8B5CF6); color: #fff;
-  border-radius: 12px; padding: 11px 14px; font-size: 0.85rem; font-weight: 700;
-  text-decoration: none;
-}
+
 .member-teaser {
   background: linear-gradient(160deg, #FFF7ED, #FFFBEB);
   border: 2px solid #FED7AA; border-radius: 18px;
@@ -1488,3 +1499,35 @@ body {
 
 /* ══ v1.30: 난이도 구간 차트 ══ */
 .radar-note { font-size: 0.74rem; color: #8B8BA7; margin: 0 0 8px; line-height: 1.5; }
+
+/* ══ v1.31: 비회원 게이팅 ══ */
+.gated-blur { filter: blur(6px); pointer-events: none; user-select: none; opacity: 0.85; }
+.section-lock, .ch-lock-note, .ww-lock-note {
+  display: block; text-align: center; margin-top: 10px;
+  background: #F5F3FF; border: 1px dashed #C4B5FD; color: #6D28D9;
+  border-radius: 12px; padding: 10px 14px; font-size: 0.79rem; font-weight: 600;
+  text-decoration: none; line-height: 1.45;
+}
+.section-lock strong, .ch-lock-note strong, .ww-lock-note strong { font-weight: 800; }
+.early-cta {
+  display: flex; align-items: center; gap: 10px;
+  background: #FFF7ED; border: 1px solid #FED7AA; border-radius: 14px;
+  padding: 12px 14px; margin: 14px 0; text-decoration: none;
+  transition: background .15s;
+}
+.early-cta:hover { background: #FFEDD5; }
+.early-cta-icon { font-size: 1.35rem; flex-shrink: 0; }
+.early-cta-text { display: flex; flex-direction: column; flex: 1; }
+.early-cta-text strong { font-size: 0.83rem; font-weight: 800; color: #9A3412; }
+.early-cta-text span { font-size: 0.72rem; color: #B45309; margin-top: 2px; }
+.early-cta-arrow { font-size: 1rem; color: #EA580C; font-weight: 800; flex-shrink: 0; }
+.chart-gate {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 58%;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 0.8rem; font-weight: 700; color: #4C1D95;
+  text-decoration: none; line-height: 1.5;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.93) 42%, #fff 100%);
+  backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+  border-radius: 0 0 12px 12px;
+}
+.tip-locked { color: #7C3AED; font-weight: 700; list-style: none; margin-left: -1.1em; }
