@@ -1,9 +1,9 @@
-import { pickQuestions, buildQuestionFromWord, AUDIO_WORDS } from './wordbank.js?v=1.29';
-import { track, submitResult, fetchScoreStats } from './analytics.js?v=1.29';
+import { pickQuestions, buildQuestionFromWord, AUDIO_WORDS } from './wordbank.js?v=1.30';
+import { track, submitResult, fetchScoreStats } from './analytics.js?v=1.30';
 import { getResultGrade, getRecommendation } from './vocabulary.js';
 import { getResultGrade2, getRecommendation2 } from './vocabulary2.js';
 import { getResultGrade3, getRecommendation3 } from './vocabulary3.js';
-import { recommendChannels, INTEREST_TAGS, CHANNELS } from './channels.js?v=1.29';
+import { recommendChannels, INTEREST_TAGS, CHANNELS } from './channels.js?v=1.30';
 
 // ══════════════════════════════════════════
 //  효과음 (Web Audio API — 외부 파일 불필요)
@@ -508,6 +508,7 @@ const state = {
   currentGroupIndex: 0,
   currentQIndex: 0,
   groupResults: [],
+  catStats: {},          // v1.30: 품사별 {asked, correct} — 정답률 기반 약점 판정
   currentGroupCorrect: 0,
   queue: [],
   isAnswering: false,
@@ -614,6 +615,7 @@ window.startTest = function (testType) {
   state.currentGroupIndex = 0;
   state.currentQIndex = 0;
   state.groupResults = [];
+  state.catStats = {};
   state.currentGroupCorrect = 0;
   state.totalAnswered = 0;
   state.isAnswering = false;
@@ -827,6 +829,7 @@ function handleAnswer(isCorrect, clickedBtn, grid, correctIndex) {
     }
     clickedBtn.classList.add('correct');
     state.currentGroupCorrect++;
+    tallyCat(q.category, true);
     showFeedback(true, false, state.comboCount);
   } else {
     state.comboCount = 0;
@@ -834,6 +837,7 @@ function handleAnswer(isCorrect, clickedBtn, grid, correctIndex) {
     clickedBtn.classList.add('wrong');
     Array.from(grid.children)[correctIndex].classList.add('correct');
     showFeedback(false);
+    tallyCat(q.category, false);
     // 틀린 단어 기록
     state.wrongWords.push({
       word: q.word,
@@ -866,6 +870,7 @@ window.handleSkip = function () {
   // 스킵 시에도 영어 단어 공개
   revealWord(q.word);
 
+  tallyCat(q.category, false);
   // 스킵도 틀린 단어로 기록
   state.wrongWords.push({
     word: q.word,
@@ -878,6 +883,14 @@ window.handleSkip = function () {
   state.currentQIndex++;
   setTimeout(nextStep, 1400);  // 스킵 시 단어 볼 시간 확보
 };
+
+// ── v1.30: 품사별 정답률 집계 ──
+function tallyCat(cat, ok) {
+  if (!cat) return;
+  const s = state.catStats[cat] || (state.catStats[cat] = { asked: 0, correct: 0 });
+  s.asked++;
+  if (ok) s.correct++;
+}
 
 function nextStep() {
   // 화면 전환 전 발음 완전 중단 + 버튼 UI 리셋
@@ -1132,39 +1145,59 @@ function renderGroupScores() {
   }, 200);
 }
 
-// ── 레이더 차트 ───────────────────────────────────────
+// ── v1.30: 난이도 구간별 정답률 (기존 레이더 대체) ──
+//  축이 '빈도 순위 구간'이라 순서가 있는 데이터 → 레이더보다 가로 막대가 정확
 function renderRadarChart() {
-  const ctx    = document.getElementById('radar-chart').getContext('2d');
-  const labels = getCurrentMeta().map(g => g.name);
-  const data   = state.groupResults.map(r => Math.round((r.correct / r.total) * 100));
+  const ctx  = document.getElementById('radar-chart').getContext('2d');
+  const meta = getCurrentMeta();
+  const data = state.groupResults.map(r => Math.round((r.correct / r.total) * 100));
+  const labels = meta.map(g => `${g.emoji} ${g.theme}`);
+  const subLabels = meta.map(g => `${g.range}위`);
+
+  // 정답률에 따라 색 구분 (잘 아는 구간 = 진한 보라, 약한 구간 = 주황)
+  const colors = data.map(v => v >= 80 ? 'rgba(108,99,255,0.9)'
+                            : v >= 60 ? 'rgba(139,124,223,0.75)'
+                            : v >= 40 ? 'rgba(251,146,60,0.8)'
+                                      : 'rgba(239,113,74,0.85)');
 
   if (state.radarChart) state.radarChart.destroy();
   state.radarChart = new Chart(ctx, {
-    type: 'radar',
+    type: 'bar',
     data: {
       labels,
       datasets: [{
-        label: state.childName,
+        label: '정답률',
         data,
-        backgroundColor: 'rgba(108,99,255,0.22)',
-        borderColor:     'rgba(108,99,255,0.9)',
-        borderWidth: 2.5,
-        pointBackgroundColor: 'rgba(108,99,255,1)',
-        pointRadius: 5,
+        backgroundColor: colors,
+        borderRadius: 6,
+        barPercentage: 0.72,
       }]
     },
     options: {
+      indexAxis: 'y',                 // 가로 막대
       responsive: true,
-      animation: { duration: 1000 },
+      maintainAspectRatio: false,
+      animation: { duration: 900 },
       scales: {
-        r: {
+        x: {
           beginAtZero: true, max: 100,
-          ticks: { stepSize: 25, font: { size: 10 }, color: '#7B7B9E' },
-          grid:  { color: 'rgba(108,99,255,0.1)' },
-          pointLabels: { font: { size: 11, weight: '700', family: 'Noto Sans KR' }, color: '#2D2D3F' },
+          ticks: { stepSize: 25, font: { size: 10 }, color: '#7B7B9E', callback: v => v + '%' },
+          grid:  { color: 'rgba(108,99,255,0.09)' },
+        },
+        y: {
+          ticks: { font: { size: 11, weight: '700', family: 'Noto Sans KR' }, color: '#2D2D3F' },
+          grid:  { display: false },
         }
       },
-      plugins: { legend: { display: false } }
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: (items) => labels[items[0].dataIndex],
+            label: (item) => `${subLabels[item.dataIndex]} · 정답률 ${item.raw}%`,
+          }
+        }
+      }
     }
   });
 }
@@ -1266,46 +1299,34 @@ function initMemberTeaser() {
 function renderRecommendation(isTest2, isTest3, estimate, totalVocab) {
   const card = document.getElementById('recommendation-card');
 
-  // 1. 틀린 단어에서 카테고리 빈도 집계
-  const catCount = {};
-  state.wrongWords.forEach(w => {
-    catCount[w.category] = (catCount[w.category] || 0) + 1;
+  // 1~2. v1.30: 품사별 '정답률'로 약점 판정
+  //  (기존엔 틀린 개수로 판정 → 문항이 많은 명사가 늘 1위로 나오는 문제)
+  //  최소 4문항 이상 출제된 품사만 대상, 정답률 70% 미만이면 약점
+  const MIN_ASKED = 4, WEAK_RATE = 0.7;
+  const catRates = Object.entries(state.catStats)
+    .filter(([, s]) => s.asked >= MIN_ASKED)
+    .map(([cat, s]) => ({ cat, rate: s.correct / s.asked, asked: s.asked, correct: s.correct }))
+    .sort((a, b) => a.rate - b.rate);
+  const weakList = catRates.filter(c => c.rate < WEAK_RATE).slice(0, 3);
+  const weakCats = weakList.map(c => c.cat);
+
+  // 난이도 구간(그룹) 중 가장 약한 곳 — 어디서 벽을 만나는지
+  const meta = getCurrentMeta();
+  let weakGroup = null;
+  state.groupResults.forEach((r, i) => {
+    const rate = r.correct / r.total;
+    if (rate < 0.6 && (!weakGroup || rate < weakGroup.rate)) {
+      weakGroup = { rate, theme: meta[i] ? meta[i].theme : '', range: meta[i] ? meta[i].range : '' };
+    }
   });
 
-  // 2. 약점 카테고리 top3
-  const weakCats = Object.entries(catCount)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 3)
-    .map(([cat]) => cat);
-
-  // 3. 카테고리별 학습 팁 매핑
+  // 3. 품사별 학습 팁 (단어 데이터의 category는 품사 5종)
   const CAT_TIPS = {
-    기능어: '짧은 영어 노래로 기능어를 자연스럽게 노출해보세요',
+    명사:   '집 안 물건·음식·동물에 영어 이름을 붙여 부르며 늘려봐요',
     동사:   '동작 단어는 몸으로 같이 움직이며 익혀봐요 (TPR)',
-    형용사: '그림책 읽으며 사물 모양·상태를 영어로 말해봐요',
-    부사:   '일상 대화에서 very, really, so를 자주 써봐요',
-    숫자:   '숫자 세기 게임을 영어로 해봐요',
-    색깔:   '그림 그리며 색깔 이름을 영어로 말해봐요',
-    신체:   'Head, Shoulders, Knees and Toes 노래로 신체 단어를!',
-    감정:   '감정 일기를 영어로 한 줄씩 써봐요',
-    음식:   '식사 시간에 음식 이름을 영어로 말해봐요',
-    동물:   '동물원·자연 다큐로 동물 단어를 재미있게 확장해요',
-    장소:   '외출할 때 장소 이름을 영어로 말해봐요',
-    날씨:   '매일 아침 날씨를 영어로 말하는 습관을 만들어봐요',
-    교통:   '이동할 때 탈것 이름을 영어로 말해봐요',
-    학용품: '학용품에 영어 라벨을 붙여봐요',
-    옷:     '옷 입을 때 색깔·종류를 영어로 말해봐요',
-    자연:   '산책하며 자연물 이름을 영어로 말해봐요',
-    감각:   '음식 먹을 때 맛·질감을 영어로 표현해봐요',
-    운동:   '운동하며 동작 단어를 몸으로 익혀봐요',
-    건강:   '병원·건강 놀이를 영어로 해봐요',
-    직업:   '역할 놀이를 영어로 해봐요 (의사, 소방관 등)',
-    이야기: '짧은 영어 그림책을 소리 내어 읽어봐요',
-    접속사: 'because, but, so로 짧은 문장 만들기 연습을!',
-    시간:   '하루 일과를 영어로 말해봐요 (morning, after, then)',
-    공간:   '위치 단어(top, bottom, inside)를 놀이로 익혀봐요',
-    추상부사:'however, finally 등은 영어 원서 리더스북으로 익혀봐요',
-    명사:   '집 안 물건에 영어 이름 라벨을 붙여봐요',
+    형용사: '그림책을 보며 크기·색깔·기분을 영어로 말해봐요',
+    부사:   '일상 대화에서 very, really, slowly를 자주 써봐요',
+    기능어: '짧은 영어 노래·챈트로 자연스럽게 노출해보세요',
   };
 
   // 4. v1.25 맞춤 추천 컨텍스트 (관심사·좋아하는 채널은 기기에 저장)
@@ -1317,9 +1338,14 @@ function renderRecommendation(isTest2, isTest3, estimate, totalVocab) {
   };
 
   // 6. 팁 생성
-  const weakTips = weakCats.length > 0
-    ? weakCats.map(cat => `<li><strong>${cat}</strong> 단어가 약해요 → ${CAT_TIPS[cat] || '영상 노출을 늘려봐요'}</li>`).join('')
-    : '<li>모든 단어를 잘 알고 있어요! 다음 단계에 도전해봐요 🚀</li>';
+  const tipItems = weakList.map(c =>
+    `<li><strong>${c.cat}</strong> ${Math.round(c.rate * 100)}% (${c.correct}/${c.asked}) → ${CAT_TIPS[c.cat] || '영상 노출을 늘려봐요'}</li>`);
+  if (weakGroup) {
+    tipItems.push(`<li><strong>${weakGroup.range}위 구간</strong>(${weakGroup.theme})에서 어려워했어요 → 이 주제의 영상을 늘려보세요</li>`);
+  }
+  const weakTips = tipItems.length > 0
+    ? tipItems.join('')
+    : '<li>고른 영역에서 안정적으로 알고 있어요! 다음 단계에 도전해봐요 🚀</li>';
 
   // 7. v1.25: 채널 카드는 renderChannelRecs()가 그림 (관심사 변경 시 재호출)
 
@@ -1333,8 +1359,8 @@ function renderRecommendation(isTest2, isTest3, estimate, totalVocab) {
   card.innerHTML = `
     <div class="rec-weak-label">
       ${weakCats.length > 0
-        ? `<span class="rec-weak-text">📊 약점 카테고리:</span><span class="rec-weak-badges">${weakCats.map(c=>`<span class="rec-weak-cat">${c}</span>`).join('')}</span>`
-        : '🎉 약점 카테고리 없음! 완벽해요'}
+        ? `<span class="rec-weak-text">📊 보완하면 좋은 영역:</span><span class="rec-weak-badges">${weakCats.map(c=>`<span class="rec-weak-cat">${c}</span>`).join('')}</span>`
+        : '🎉 고른 영역에서 잘하고 있어요!'}
     </div>
     <ul class="rec-tips">${weakTips}</ul>
     <div class="rec-books">
@@ -1800,7 +1826,7 @@ detectMemberMode();
 //  업데이트 안내 팝업 (기간 한정 노출 + 1회 확인 후 재노출 안 함)
 // ══════════════════════════════════════════
 (function initUpdateModal() {
-  const UPDATE_ID   = 'v1.29-2026-09-01';         // 이 업데이트의 고유 식별자
+  const UPDATE_ID   = 'v1.30-2026-09-01';         // 이 업데이트의 고유 식별자
   const EXPIRE_DATE = new Date('2026-09-08T23:59:59'); // 노출 종료일 (공개일로부터 1주일)
   const STORAGE_KEY = 'updateNoticeSeen';
 
