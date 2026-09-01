@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="css/style.css?v=1.29" />
+  <link rel="stylesheet" href="css/style.css?v=1.30" />
 </head>
 <body>
 
@@ -206,7 +206,7 @@
     <p class="start-note">* 아이와 함께 앉아서 진행해 주세요 😊</p>
     <!-- 버전 정보 -->
     <div class="app-version-info">
-      <span>v1.29</span>
+      <span>v1.30</span>
       <span class="avi-dot">·</span>
       <span>2026년 9월 1일 업데이트</span>
     </div>
@@ -357,8 +357,9 @@
 
     <!-- 레이더 차트 -->
     <section class="result-section">
-      <h3 class="section-title"><i class="fas fa-bullseye"></i> 어휘력 레이더</h3>
-      <div class="radar-wrap" style="height:280px">
+      <h3 class="section-title"><i class="fas fa-chart-simple"></i> 난이도 구간별 정답률</h3>
+      <p class="radar-note">쉬운 단어(위)부터 어려운 단어(아래) 순서예요. 어느 구간에서 벽을 만나는지 보여줘요.</p>
+      <div class="radar-wrap" style="height:300px">
         <canvas id="radar-chart"></canvas>
       </div>
     </section>
@@ -474,8 +475,8 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-<script src="js/app.js?v=1.29" type="module"></script>
+<script src="js/app.js?v=1.30" type="module"></script>
 </body>
 </html>
