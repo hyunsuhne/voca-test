@@ -1,9 +1,9 @@
-import { pickQuestions, buildQuestionFromWord, AUDIO_WORDS } from './wordbank.js?v=1.26';
-import { track, submitResult, fetchScoreStats } from './analytics.js?v=1.26';
+import { pickQuestions, buildQuestionFromWord, AUDIO_WORDS } from './wordbank.js?v=1.29';
+import { track, submitResult, fetchScoreStats } from './analytics.js?v=1.29';
 import { getResultGrade, getRecommendation } from './vocabulary.js';
 import { getResultGrade2, getRecommendation2 } from './vocabulary2.js';
 import { getResultGrade3, getRecommendation3 } from './vocabulary3.js';
-import { recommendChannels, INTEREST_TAGS, CHANNELS } from './channels.js?v=1.26';
+import { recommendChannels, INTEREST_TAGS, CHANNELS } from './channels.js?v=1.29';
 
 // ══════════════════════════════════════════
 //  효과음 (Web Audio API — 외부 파일 불필요)
@@ -1063,6 +1063,7 @@ function showResults() {
   renderGroupScores();
   setTimeout(() => renderRadarChart(), 400);
   renderWrongWords();                              // 틀린 단어 목록
+  initMemberTeaser();                              // v1.27 회원 티저 CTA
   renderRecommendation(isTest2, isTest3, estimate, totalVocab); // v1.25 맞춤 채널 추천
   renderOtherTestBanner(isTest2, isTest3, estimate);
 
@@ -1189,16 +1190,76 @@ function renderWrongWords() {
     추상부사:'💭', 명사:'📦',
   };
 
-  state.wrongWords.forEach(w => {
+  const FREE_LIMIT = isMember() ? Infinity : 4;   // v1.27~28: 무료 4개, 회원 전체
+  state.wrongWords.forEach((w, wi) => {
     const chip = document.createElement('div');
-    chip.className = 'wrong-word-chip';
+    chip.className = 'wrong-word-chip' + (wi >= FREE_LIMIT ? ' ww-locked' : '');
     chip.innerHTML = `
       <div class="wrong-word-en">${w.word}</div>
       <div class="wrong-word-kr">${w.korean}</div>
       <div class="wrong-word-cat">${CAT_EMOJI[w.category] || '📌'} ${w.category}</div>
+      ${isMember() ? `<button type="button" class="ww-replay" data-word="${w.word}">🔊 다시 듣기</button>` : ''}
     `;
+    if (isMember()) {
+      chip.querySelector('.ww-replay').addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        _pronounce.play(w.word);
+        track('member-replay');
+      });
+    }
     grid.appendChild(chip);
   });
+
+  // v1.27: 초과분 잠금 안내 (가입 유도)
+  const oldNote = section.querySelector('.ww-lock-note');
+  if (oldNote) oldNote.remove();
+  const lockedCnt = state.wrongWords.length - FREE_LIMIT;
+  if (lockedCnt > 0) {
+    const note = document.createElement('a');
+    note.className = 'ww-lock-note';
+    note.href = SIGNUP_URL();
+    note.target = '_blank'; note.rel = 'noopener';
+    note.innerHTML = `🔒 나머지 <strong>${lockedCnt}개</strong> 단어와 다시 듣기는 현서네 회원이 볼 수 있어요 →`;
+    note.addEventListener('click', () => track('signup-click-wrongwords'));
+    section.appendChild(note);
+  }
+}
+
+// ══ v1.28: 회원 모드 (홈페이지 회원 전용 페이지 링크로 진입) ══
+// 회원 전용 페이지의 링크: https://hyunsuhne.github.io/voca-test/?k=hsn-voca-2609
+// 키를 바꿀 땐 맨 앞에 새 키를 추가 (이전 키는 즐겨찾기 사용자를 위해 잠시 유지)
+const MEMBER_KEYS = ['hsn-voca-2609'];
+function detectMemberMode() {
+  try {
+    const k = new URLSearchParams(location.search).get('k');
+    if (k && MEMBER_KEYS.includes(k.trim())) {
+      sessionStorage.setItem('vt_member', '1');   // 같은 탭에서는 계속 유지
+      track('member-enter');
+    }
+    return sessionStorage.getItem('vt_member') === '1';
+  } catch (e) { return false; }
+}
+function isMember() {
+  try { return sessionStorage.getItem('vt_member') === '1'; } catch (e) { return false; }
+}
+
+// ── v1.27: 현서네 가입 유도 ──
+function SIGNUP_URL() {
+  const a = localStorage.getItem('voca_anon_id') || '';
+  return 'https://hyunsuhne.com/?ref=voca&a=' + encodeURIComponent(a);
+}
+function initMemberTeaser() {
+  const teaser = document.getElementById('member-teaser');
+  if (teaser) teaser.style.display = isMember() ? 'none' : 'block';
+  const badge = document.getElementById('member-badge');
+  if (badge) badge.style.display = isMember() ? 'block' : 'none';
+  const cta = document.getElementById('member-cta');
+  if (!cta) return;
+  cta.href = SIGNUP_URL();
+  if (!cta.dataset.bound) {
+    cta.dataset.bound = '1';
+    cta.addEventListener('click', () => track('signup-click-cta'));
+  }
 }
 
 // ── 추천 카드 (나이대 × 카테고리 기반 channels.js 활용) ─────
@@ -1731,10 +1792,15 @@ function showToast(msg) {
 }
 
 // ══════════════════════════════════════════
+//  v1.28: 회원 모드 감지 (페이지 로드 즉시 1회)
+// ══════════════════════════════════════════
+detectMemberMode();
+
+// ══════════════════════════════════════════
 //  업데이트 안내 팝업 (기간 한정 노출 + 1회 확인 후 재노출 안 함)
 // ══════════════════════════════════════════
 (function initUpdateModal() {
-  const UPDATE_ID   = 'v1.26-2026-09-01';         // 이 업데이트의 고유 식별자
+  const UPDATE_ID   = 'v1.29-2026-09-01';         // 이 업데이트의 고유 식별자
   const EXPIRE_DATE = new Date('2026-09-08T23:59:59'); // 노출 종료일 (공개일로부터 1주일)
   const STORAGE_KEY = 'updateNoticeSeen';
 
