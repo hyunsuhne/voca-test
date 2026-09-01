@@ -1,9 +1,9 @@
-import { pickQuestions, buildQuestionFromWord, AUDIO_WORDS } from './wordbank.js?v=1.30';
-import { track, submitResult, fetchScoreStats } from './analytics.js?v=1.30';
+import { pickQuestions, buildQuestionFromWord, AUDIO_WORDS } from './wordbank.js?v=1.32';
+import { track, submitResult, fetchScoreStats } from './analytics.js?v=1.32';
 import { getResultGrade, getRecommendation } from './vocabulary.js';
 import { getResultGrade2, getRecommendation2 } from './vocabulary2.js';
 import { getResultGrade3, getRecommendation3 } from './vocabulary3.js';
-import { recommendChannels, INTEREST_TAGS, CHANNELS } from './channels.js?v=1.30';
+import { recommendChannels, INTEREST_TAGS, CHANNELS } from './channels.js?v=1.32';
 
 // ══════════════════════════════════════════
 //  효과음 (Web Audio API — 외부 파일 불필요)
@@ -1160,6 +1160,22 @@ function renderRadarChart() {
                             : v >= 40 ? 'rgba(251,146,60,0.8)'
                                       : 'rgba(239,113,74,0.85)');
 
+  // v1.31: 비회원은 어려운 구간(하위 3개)을 가림
+  const wrap = document.querySelector('.radar-wrap');
+  if (wrap) {
+    const old = wrap.parentElement.querySelector('.chart-gate');
+    if (old) old.remove();
+    if (!isMember()) {
+      const gate = document.createElement('a');
+      gate.className = 'chart-gate';
+      gate.href = SIGNUP_URL(); gate.target = '_blank'; gate.rel = 'noopener';
+      gate.innerHTML = `<span>🔒 어려운 구간 결과는<br>홈페이지 회원에게 공개돼요 →</span>`;
+      gate.addEventListener('click', () => track('signup-click-chart'));
+      wrap.style.position = 'relative';
+      wrap.appendChild(gate);
+    }
+  }
+
   if (state.radarChart) state.radarChart.destroy();
   state.radarChart = new Chart(ctx, {
     type: 'bar',
@@ -1223,7 +1239,7 @@ function renderWrongWords() {
     추상부사:'💭', 명사:'📦',
   };
 
-  const FREE_LIMIT = isMember() ? Infinity : 4;   // v1.27~28: 무료 4개, 회원 전체
+  const FREE_LIMIT = isMember() ? Infinity : 3;   // v1.31: 무료 3개, 회원 전체
   state.wrongWords.forEach((w, wi) => {
     const chip = document.createElement('div');
     chip.className = 'wrong-word-chip' + (wi >= FREE_LIMIT ? ' ww-locked' : '');
@@ -1231,7 +1247,7 @@ function renderWrongWords() {
       <div class="wrong-word-en">${w.word}</div>
       <div class="wrong-word-kr">${w.korean}</div>
       <div class="wrong-word-cat">${CAT_EMOJI[w.category] || '📌'} ${w.category}</div>
-      ${isMember() ? `<button type="button" class="ww-replay" data-word="${w.word}">🔊 다시 듣기</button>` : ''}
+      ${isMember() ? `<button type="button" class="ww-replay" data-word="${w.word}">🔊 발음 듣기</button>` : ''}
     `;
     if (isMember()) {
       chip.querySelector('.ww-replay').addEventListener('click', (ev) => {
@@ -1252,7 +1268,7 @@ function renderWrongWords() {
     note.className = 'ww-lock-note';
     note.href = SIGNUP_URL();
     note.target = '_blank'; note.rel = 'noopener';
-    note.innerHTML = `🔒 나머지 <strong>${lockedCnt}개</strong> 단어와 다시 듣기는 현서네 회원이 볼 수 있어요 →`;
+    note.innerHTML = `🔒 나머지 <strong>${lockedCnt}개</strong> 단어와 발음 듣기 · 홈페이지에서 확인 →`;
     note.addEventListener('click', () => track('signup-click-wrongwords'));
     section.appendChild(note);
   }
@@ -1284,6 +1300,16 @@ function SIGNUP_URL() {
 function initMemberTeaser() {
   const teaser = document.getElementById('member-teaser');
   if (teaser) teaser.style.display = isMember() ? 'none' : 'block';
+  // v1.32: 결과 상단 안내 (회원은 숨김)
+  const early = document.getElementById('early-cta');
+  if (early) {
+    early.style.display = isMember() ? 'none' : 'flex';
+    early.href = SIGNUP_URL();
+    if (!early.dataset.bound) {
+      early.dataset.bound = '1';
+      early.addEventListener('click', () => track('signup-click-early'));
+    }
+  }
   const badge = document.getElementById('member-badge');
   if (badge) badge.style.display = isMember() ? 'block' : 'none';
   const cta = document.getElementById('member-cta');
@@ -1343,9 +1369,15 @@ function renderRecommendation(isTest2, isTest3, estimate, totalVocab) {
   if (weakGroup) {
     tipItems.push(`<li><strong>${weakGroup.range}위 구간</strong>(${weakGroup.theme})에서 어려워했어요 → 이 주제의 영상을 늘려보세요</li>`);
   }
-  const weakTips = tipItems.length > 0
-    ? tipItems.join('')
+  // v1.31: 비회원은 처방 1개만 공개
+  const shownTips = isMember() ? tipItems : tipItems.slice(0, 1);
+  const hiddenTipCnt = tipItems.length - shownTips.length;
+  let weakTips = shownTips.length > 0
+    ? shownTips.join('')
     : '<li>고른 영역에서 안정적으로 알고 있어요! 다음 단계에 도전해봐요 🚀</li>';
+  if (hiddenTipCnt > 0) {
+    weakTips += `<li class="tip-locked">🔒 나머지 학습 처방 ${hiddenTipCnt}가지는 홈페이지 회원에게 공개돼요</li>`;
+  }
 
   // 7. v1.25: 채널 카드는 renderChannelRecs()가 그림 (관심사 변경 시 재호출)
 
@@ -1366,7 +1398,7 @@ function renderRecommendation(isTest2, isTest3, estimate, totalVocab) {
     <div class="rec-books">
       <div class="rec-books-title">📺 ${ageEmoji} 우리 아이 맞춤 채널 추천</div>
       <div class="rec-personalize" id="rec-personalize">
-        <div class="rec-p-label">아이가 좋아하는 걸 고르면 추천이 더 정확해져요 <span class="rec-p-opt">(선택)</span></div>
+        <div class="rec-p-label">👆 아이가 좋아하는 걸 눌러보세요 <span class="rec-p-opt">(고를수록 추천이 정확해져요)</span></div>
         <div class="interest-chips" id="interest-chips"></div>
         <div class="fav-row">
           <input type="text" id="fav-input" list="fav-list" placeholder="🔍 요즘 즐겨 보는 채널이 있다면? (예: Peppa Pig)" autocomplete="off">
@@ -1385,16 +1417,31 @@ function renderRecommendation(isTest2, isTest3, estimate, totalVocab) {
 // ── v1.25: 관심사·좋아하는 채널 입력 UI ──
 function initPersonalizeUI() {
   const chipBox = document.getElementById('interest-chips');
-  chipBox.innerHTML = INTEREST_TAGS.map(t =>
-    `<button type="button" class="i-chip${state.recCtx.interests.includes(t) ? ' on' : ''}" data-tag="${t}">${t}</button>`
-  ).join('');
+  const TAG_EMOJI = {
+    '동물·공룡':'🦖', '탈것':'🚗', '공주·패션':'👑', '히어로·모험':'🦸', '노래·춤':'🎵',
+    '그리기·만들기':'🎨', '과학·우주':'🔬', '장난감·게임':'🎮', '이야기·책':'📚',
+    '스포츠·몸놀이':'⚽', '일상·가족':'🏠',
+  };
+  chipBox.innerHTML = INTEREST_TAGS.map(t => {
+    const on = state.recCtx.interests.includes(t);
+    return `<button type="button" class="i-chip${on ? ' on' : ''}" data-tag="${t}">
+      <span class="i-chip-emoji">${TAG_EMOJI[t] || '✨'}</span>
+      <span class="i-chip-text">${t}</span>
+      <span class="i-chip-mark">${on ? '✓' : '+'}</span>
+    </button>`;
+  }).join('');
   chipBox.querySelectorAll('.i-chip').forEach(btn => {
     btn.addEventListener('click', () => {
       const t = btn.dataset.tag;
       const arr = state.recCtx.interests;
       const i = arr.indexOf(t);
-      if (i >= 0) { arr.splice(i, 1); btn.classList.remove('on'); }
-      else if (arr.length < 4) { arr.push(t); btn.classList.add('on'); }
+      const mark = btn.querySelector('.i-chip-mark');
+      if (i >= 0) { arr.splice(i, 1); btn.classList.remove('on'); if (mark) mark.textContent = '+'; }
+      else if (arr.length < 4) {
+        arr.push(t); btn.classList.add('on');
+        if (mark) mark.textContent = '✓';
+        btn.classList.add('pop'); setTimeout(() => btn.classList.remove('pop'), 260);
+      } else { return; }
       localStorage.setItem('vt_interests', JSON.stringify(arr));
       renderChannelRecs();
       track('interest-select');
@@ -1431,9 +1478,24 @@ function renderChannelRecs() {
       </span>
       <i class="fas fa-external-link-alt channel-chip-link"></i>
     </a>`;
-  box.innerHTML = header +
-    main.map(ch => card(ch)).join('') +
-    (challenge ? `<div class="challenge-divider">🚀 다음 단계 도전</div>` + card(challenge, '🚀') : '');
+  // v1.31: 비회원은 1개만 공개, 나머지는 흐리게
+  const memberMode = isMember();
+  const openCnt = memberMode ? main.length : 1;
+  const cards = main.map((ch, i) =>
+    i < openCnt ? card(ch) : `<div class="gated-blur">${card(ch)}</div>`).join('');
+  const challengeHTML = challenge
+    ? `<div class="challenge-divider">🚀 다음 단계 도전</div>` +
+      (memberMode ? card(challenge, '🚀') : `<div class="gated-blur">${card(challenge, '🚀')}</div>`)
+    : '';
+  const lockHTML = memberMode ? '' :
+    `<a class="ch-lock-note" href="${SIGNUP_URL()}" target="_blank" rel="noopener">
+       🔒 맞는 채널 <strong>${main.length - 1 + (challenge ? 1 : 0)}곳</strong>이 더 있어요 · 홈페이지에서 확인 →
+     </a>`;
+  box.innerHTML = header + cards + challengeHTML + lockHTML;
+  if (!memberMode) {
+    const ln = box.querySelector('.ch-lock-note');
+    if (ln) ln.addEventListener('click', () => track('signup-click-channels'));
+  }
 }
 
 // ── 다른 테스트 도전 배너 ─────────────────────────────
@@ -1670,6 +1732,8 @@ async function renderPeerStats(testType, ageGroup, estimate) {
       <div class="peer-bar${mine ? ' mine' : ''}" style="height:${h}px"></div>
     </div>`;
   }).join('');
+  // v1.31: 비회원은 분포 그래프를 흐리게 (내 위치 % 텍스트는 공개)
+  chart.classList.toggle('gated-blur', !isMember());
 
   // 상위 % 계산 (below = 내 점수 미만 인원) — 점수대별 격려 톤 조절
   const topPct = Math.max(1, Math.round((1 - stats.below / stats.n) * 100));
@@ -1722,6 +1786,18 @@ function renderHistory(currentTotal, testType) {
   if (filtered.length <= 1) { section.style.display = 'none'; return; }
   section.style.display = 'block';
   list.innerHTML = '';
+  // v1.31: 비회원은 이력을 흐리게 (성장 확인은 회원 혜택)
+  list.classList.toggle('gated-blur', !isMember());
+  const oldLock = section.querySelector('.section-lock');
+  if (oldLock) oldLock.remove();
+  if (!isMember()) {
+    const lock = document.createElement('a');
+    lock.className = 'section-lock';
+    lock.href = SIGNUP_URL(); lock.target = '_blank'; lock.rel = 'noopener';
+    lock.innerHTML = `🔒 지난 기록과 성장 그래프는 홈페이지 회원에게 열려 있어요 →`;
+    lock.addEventListener('click', () => track('signup-click-history'));
+    section.appendChild(lock);
+  }
 
   filtered.forEach((h, i) => {
     const isCurrent = (i === 0);
@@ -1826,7 +1902,7 @@ detectMemberMode();
 //  업데이트 안내 팝업 (기간 한정 노출 + 1회 확인 후 재노출 안 함)
 // ══════════════════════════════════════════
 (function initUpdateModal() {
-  const UPDATE_ID   = 'v1.30-2026-09-01';         // 이 업데이트의 고유 식별자
+  const UPDATE_ID   = 'v1.32-2026-09-01';         // 이 업데이트의 고유 식별자
   const EXPIRE_DATE = new Date('2026-09-08T23:59:59'); // 노출 종료일 (공개일로부터 1주일)
   const STORAGE_KEY = 'updateNoticeSeen';
 
