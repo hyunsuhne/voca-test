@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="css/style.css?v=1.26" />
+  <link rel="stylesheet" href="css/style.css?v=1.29" />
 </head>
 <body>
 
@@ -206,7 +206,7 @@
     <p class="start-note">* 아이와 함께 앉아서 진행해 주세요 😊</p>
     <!-- 버전 정보 -->
     <div class="app-version-info">
-      <span>v1.26</span>
+      <span>v1.29</span>
       <span class="avi-dot">·</span>
       <span>2026년 9월 1일 업데이트</span>
     </div>
@@ -377,6 +377,42 @@
     </section>
 
     <!-- 히스토리 비교 섹션 -->
+    <!-- v1.28: 회원 전용 영역 -->
+    <section class="result-section member-badge" id="member-badge" style="display:none">
+      <div class="member-badge-title">✅ 현서네 회원 결과 리포트</div>
+      <p class="member-badge-sub">틀린 단어 전체와 다시 듣기가 열려 있어요.</p>
+      <p class="member-badge-note">📥 1,500단어 리스트와 맞춤 채널 PDF는 <strong>현서네 게시판</strong>에서 받으실 수 있어요.</p>
+    </section>
+
+    <!-- v1.29: 홈페이지 유입 CTA -->
+    <section class="result-section member-teaser" id="member-teaser">
+      <div class="teaser-headline">
+        <div class="teaser-head-emoji">👏</div>
+        <h3>우리 아이의 어휘력 진단이 완료되었습니다!</h3>
+        <p>현서네 홈페이지에서<br><strong>우리 아이에게 꼭 맞는 맞춤형 영어 채널</strong>과<br><strong>지금 함께 익히면 좋은 어휘 리스트</strong>를 만나보세요.</p>
+      </div>
+
+      <div class="teaser-benefits">
+        <div class="benefit-row">
+          <span class="benefit-icon">🎬</span>
+          <span class="benefit-text"><strong>맞춤 유튜브 채널 리스트 (PDF)</strong><span>현서네가 직접 검증한 채널을 아이 수준·관심사별로</span></span>
+        </div>
+        <div class="benefit-row">
+          <span class="benefit-icon">📋</span>
+          <span class="benefit-text"><strong>1,500단어 어휘 리스트 (엑셀)</strong><span>지금 채워야 할 단어부터 순서대로</span></span>
+        </div>
+        <div class="benefit-row">
+          <span class="benefit-icon">🔓</span>
+          <span class="benefit-text"><strong>틀린 단어 전체 + 발음 다시 듣기</strong><span>아이가 놓친 단어를 하나도 빠짐없이</span></span>
+        </div>
+      </div>
+
+      <a class="member-cta" id="member-cta" href="https://hyunsuhne.com/" target="_blank" rel="noopener">
+        현서네 홈페이지에서 무료로 받아보기 →
+      </a>
+      <p class="member-cta-sub">가입은 무료예요 · 이미 회원이시라면 홈페이지 게시판에서 바로 확인하세요</p>
+    </section>
+
     <section class="result-section" id="history-section" style="display:none">
       <h3 class="section-title"><i class="fas fa-history"></i> 성장 히스토리</h3>
       <div class="history-list" id="history-list"></div>
@@ -440,6 +476,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-<script src="js/app.js?v=1.26" type="module"></script>
+<script src="js/app.js?v=1.29" type="module"></script>
 </body>
 </html>
