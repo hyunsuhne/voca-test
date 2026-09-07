@@ -1,9 +1,9 @@
-import { pickQuestions, buildQuestionFromWord, AUDIO_WORDS, resetRecentOptions } from './wordbank.js?v=1.36';
-import { track, submitResult, fetchScoreStats } from './analytics.js?v=1.36';
+import { pickQuestions, buildQuestionFromWord, AUDIO_WORDS, resetRecentOptions, saveRecentQuestionWords } from './wordbank.js?v=1.38';
+import { track, submitResult, fetchScoreStats } from './analytics.js?v=1.38';
 import { getResultGrade, getRecommendation } from './vocabulary.js';
 import { getResultGrade2, getRecommendation2 } from './vocabulary2.js';
 import { getResultGrade3, getRecommendation3 } from './vocabulary3.js';
-import { recommendChannels, INTEREST_TAGS, CHANNELS } from './channels.js?v=1.36';
+import { recommendChannels, INTEREST_TAGS, CHANNELS } from './channels.js?v=1.38';
 
 // ══════════════════════════════════════════
 //  효과음 (Web Audio API — 외부 파일 불필요)
@@ -1076,6 +1076,7 @@ function showResults() {
 
   renderGroupScores();
   setTimeout(() => renderRadarChart(), 400);
+  saveRecentQuestionWords([...state.usedWords]);   // v1.38: 다음 시험에서 같은 문제 회피
   renderWrongWords();                              // 틀린 단어 목록
   initMemberTeaser();                              // v1.27 회원 티저 CTA
   renderRecommendation(isTest2, isTest3, estimate, totalVocab); // v1.25 맞춤 채널 추천
@@ -1935,7 +1936,7 @@ detectMemberMode();
 //  업데이트 안내 팝업 (기간 한정 노출 + 1회 확인 후 재노출 안 함)
 // ══════════════════════════════════════════
 (function initUpdateModal() {
-  const UPDATE_ID   = 'v1.36-2026-09-07';         // 이 업데이트의 고유 식별자
+  const UPDATE_ID   = 'v1.38-2026-09-07';         // 이 업데이트의 고유 식별자
   const EXPIRE_DATE = new Date('2026-09-08T23:59:59'); // 노출 종료일 (공개일로부터 1주일)
   const STORAGE_KEY = 'updateNoticeSeen';
 

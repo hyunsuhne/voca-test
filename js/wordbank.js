@@ -3836,7 +3836,7 @@ const EXCLUDE_FUNCTION_WORD_RANKS = new Set([
   1443, // both
 ]);
 
-const LOANWORD_RANKS = new Set([
+const LOANWORD_RANKS = new Set([   // v1.38: 완전 제외가 아니라 '한 테스트에 10%까지'만 출제
   // ── v1.36 추가: 한글 뜻이 곧 영어 발음이라 듣기만으로 답이 나오는 단어 ──
   25,   // orange → 오렌지
   131,  // bell → 벨/종
@@ -3850,9 +3850,7 @@ const LOANWORD_RANKS = new Set([
   533,  // penguin → 펭귄
   701,  // team → 팀
   707,  // alligator → 악어 (crocodile과 뜻이 같아 변별 불가 · 발음표기로 구분하던 문제 해소)
-  1058, // allergy → 알레르기
   1162, // pipe → 파이프
-  1236, // typhoon → 태풍 (발음이 거의 같음)
   1237, // tornado → 토네이도
   1240, // hurricane → 허리케인
   1354, // check in → 체크인하다
@@ -3975,8 +3973,14 @@ function sameFamily(a, b) {
   return fa !== undefined && fa === FAMILY_OF[b];
 }
 
+// v1.38: 출제 자체를 막는 단어는 최소한으로 —
+//  중복 뜻(alligator=악어=crocodile)처럼 변별이 불가능한 경우만.
+const HARD_EXCLUDE_RANKS = new Set([
+  707,  // alligator → crocodile과 뜻이 완전히 같아 정답이 두 개가 됨
+]);
+
 function isExcluded(word, groupNums) {
-  if (LOANWORD_RANKS.has(word.rank)) return true;
+  if (HARD_EXCLUDE_RANKS.has(word.rank)) return true;
   if (EXCLUDE_FUNCTION_WORD_RANKS.has(word.rank) && groupNums.some(g => TEST1_GROUPS.has(g))) return true;
   return false;
 }
@@ -3987,15 +3991,50 @@ function isExcluded(word, groupNums) {
 // 군집 미지정 단어: 제한 없음(고유 개념이라 여러 개 뽑혀도 문제 없음)
 const CLUSTER_CAP = { closed: 1, open: 2 };
 
+// ════════════════════════════════════════════
+//  v1.38: 시험을 여러 번 볼 때 같은 문제가 반복되지 않도록
+//  최근 2회 시험에서 낸 단어를 기억해두고 다음 선정에서 뒤로 미룬다.
+// ════════════════════════════════════════════
+const RECENT_Q_KEY = 'vt_recent_questions';
+const RECENT_Q_SESSIONS = 2;
+function loadRecentQuestionWords() {
+  try {
+    const arr = JSON.parse(localStorage.getItem(RECENT_Q_KEY) || '[]');
+    return new Set(arr.flat());
+  } catch (e) { return new Set(); }
+}
+export function saveRecentQuestionWords(words) {
+  try {
+    const arr = JSON.parse(localStorage.getItem(RECENT_Q_KEY) || '[]');
+    arr.unshift(words);
+    localStorage.setItem(RECENT_Q_KEY, JSON.stringify(arr.slice(0, RECENT_Q_SESSIONS)));
+  } catch (e) {}
+}
+
 function pickWithClusterCap(pool, count) {
-  const shuffled = [...pool].sort(() => Math.random() - 0.5);
+  // v1.38: 최근 시험에서 냈던 단어는 뒤로 미뤄 매번 다른 문제가 나오게 한다
+  const recent = loadRecentQuestionWords();
+  const fresh  = pool.filter(w => !recent.has(w.word));
+  const seen   = pool.filter(w =>  recent.has(w.word));
+  const shuffled = [
+    ...fresh.sort(() => Math.random() - 0.5),
+    ...seen.sort(() => Math.random() - 0.5),   // 후보가 부족할 때만 사용
+  ];
   const picked = [];
   const clusterCount = {};
   const deferred = [];
 
+  // v1.38: 외래어(뜻이 곧 영어 발음)는 한 테스트에 10%까지만
+  const loanCap = Math.max(1, Math.floor(count * 0.1));
+  let loanUsed = 0;
+
   const usedFamilies = new Set();
   for (const w of shuffled) {
     if (picked.length >= count) break;
+    if (LOANWORD_RANKS.has(w.rank)) {
+      if (loanUsed >= loanCap) { deferred.push(w); continue; }
+      loanUsed++;
+    }
     // v1.36: 같은 어원 묶음은 한 테스트에 1개만
     const fam = FAMILY_OF[w.word];
     if (fam !== undefined) {
@@ -4020,6 +4059,8 @@ function pickWithClusterCap(pool, count) {
   for (const w of deferred) {
     if (picked.length >= count) break;
     if (picked.some(p => sameFamily(p.word, w.word))) continue;
+    if (LOANWORD_RANKS.has(w.rank) && loanUsed >= loanCap) continue;   // 외래어 캡은 끝까지 지킴
+    if (LOANWORD_RANKS.has(w.rank)) loanUsed++;
     picked.push(w);
   }
 
@@ -4251,7 +4292,7 @@ function isPersonVsVerbConflict(wordA, catA, wordB, catB) {
 //  v1.34: 최근 보기 단어 추적 — 연달아 같은 그림이 나오는 문제 해결
 //  최근 N문항에 보기로 쓴 단어는 다음 문제에서 되도록 피한다(부족하면 허용).
 // ════════════════════════════════════════════
-const RECENT_LIMIT = 16;        // 대략 최근 4문항 분량
+const RECENT_LIMIT = 28;        // v1.38: 최근 7문항 분량으로 확대 (보기 다양성)
 let recentOptionWords = [];
 export function resetRecentOptions() { recentOptionWords = []; }
 function isRecentlyUsed(word) { return recentOptionWords.includes(word); }
@@ -4304,7 +4345,10 @@ export function buildQuestionFromWord(targetWord) {
       // 이미 뽑힌 오답들과도 겹치면 차단 (오답끼리 정답성 혼동 방지)
       if (distractorWords.some((dw, di) => isAvoidPair(dw, w.word) || isCategoryContainment(dw, w.word) || meaningPartsOverlap(distractors[di], w.korean))) continue;
       if (similarityCheck && isTooSimilar(correctKorean, w.korean)) continue;
-      if (tier === 1 && isVisuallySimilar(targetWord.word, w.word)) continue;
+      // v1.37: 정답↔오답뿐 아니라 오답끼리도 검사
+      //  (정답이 bed여도 boy와 girl이 함께 나오면 아이 그림이 둘이라 헷갈림)
+      if (isVisuallySimilar(targetWord.word, w.word)) continue;
+      if (distractorWords.some(dw => isVisuallySimilar(dw, w.word))) continue;
       if (tier === 1 && isPersonVsVerbConflict(targetWord.word, cat, w.word, w.category)) continue;
       distractors.push(w.korean);
       distractorWords.push(w.word);
