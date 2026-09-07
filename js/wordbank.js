@@ -4279,6 +4279,38 @@ const EMOTION_STATE_WORDS = [
   'sad','scared','shy','surprised','tired','upset','hungry','thirsty','sleepy',
   'together',
 ];
+
+// ════════════════════════════════════════════
+//  v1.39: "사람(아이)이 그려진 그림" 단어 목록
+//  child/boy 같은 사람 명사뿐 아니라 동사(아이가 동작을 함), 감정 형용사,
+//  인사말(hello=손 흔드는 아이), 직업·가족 명사도 모두 사람이 등장한다.
+//  → 한 문제의 보기 4개 중 사람 그림은 최대 1개만 나오게 한다.
+// ════════════════════════════════════════════
+const PERSON_NOUNS = [
+  // 아이·사람 일반
+  'boy','girl','kid','child','baby','young','doll','people','man','woman',
+  // 가족
+  'father','mother','brother','sister','family','son','daughter','grandma','grandpa',
+  'parent','grandparent','husband','wife','uncle','aunt','friend',
+  // 직업·역할
+  'student','teacher','doctor','nurse','farmer','dancer','driver','firefighter','painter','police',
+  // 인물형 캐릭터
+  'king','queen','prince','princess','fairy',
+];
+const PERSON_SOCIAL = ['hello','goodbye','please','together','name','voice','birthday','party'];
+const PERSON_ADJ = [
+  'happy','sad','hungry','angry','sleepy','sorry','thirsty','funny','busy','excited','scared',
+  'surprised','tired','bored','strong','lazy','kind','clever','smart','careful','beautiful',
+  'handsome','pretty','cute','young','old','tall','glad','afraid','lonely','healthy','weak','gentle',
+];
+function isPersonImage(word, category) {
+  if (PERSON_NOUNS.includes(word)) return true;
+  if (PERSON_SOCIAL.includes(word)) return true;
+  if (PERSON_ADJ.includes(word)) return true;
+  if (category === '동사') return true;      // 동작은 전부 아이 캐릭터로 그려짐
+  return false;
+}
+
 function isPersonVsVerbConflict(wordA, catA, wordB, catB) {
   const aIsChildNoun = CHILD_NOUN_GROUP.includes(wordA);
   const bIsChildNoun = CHILD_NOUN_GROUP.includes(wordB);
@@ -4349,6 +4381,15 @@ export function buildQuestionFromWord(targetWord) {
       //  (정답이 bed여도 boy와 girl이 함께 나오면 아이 그림이 둘이라 헷갈림)
       if (isVisuallySimilar(targetWord.word, w.word)) continue;
       if (distractorWords.some(dw => isVisuallySimilar(dw, w.word))) continue;
+      // v1.39: 그림 문제에서 '사람이 등장하는 그림'은 보기 4개 중 1개까지만
+      if (IMAGE_WORDS.has(w.word) && isPersonImage(w.word, w.category)) {
+        const targetIsPerson = IMAGE_WORDS.has(targetWord.word) && isPersonImage(targetWord.word, cat);
+        const personCount = distractorWords.filter((dw, di) => {
+          const dObj = WORD_BANK.find(x => x.word === dw);
+          return dObj && IMAGE_WORDS.has(dw) && isPersonImage(dw, dObj.category);
+        }).length + (targetIsPerson ? 1 : 0);
+        if (personCount >= 1) continue;
+      }
       if (tier === 1 && isPersonVsVerbConflict(targetWord.word, cat, w.word, w.category)) continue;
       distractors.push(w.korean);
       distractorWords.push(w.word);

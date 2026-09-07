@@ -1,9 +1,9 @@
-import { pickQuestions, buildQuestionFromWord, AUDIO_WORDS, resetRecentOptions, saveRecentQuestionWords } from './wordbank.js?v=1.38';
-import { track, submitResult, fetchScoreStats } from './analytics.js?v=1.38';
+import { pickQuestions, buildQuestionFromWord, AUDIO_WORDS, resetRecentOptions, saveRecentQuestionWords } from './wordbank.js?v=1.39';
+import { track, submitResult, fetchScoreStats } from './analytics.js?v=1.39';
 import { getResultGrade, getRecommendation } from './vocabulary.js';
 import { getResultGrade2, getRecommendation2 } from './vocabulary2.js';
 import { getResultGrade3, getRecommendation3 } from './vocabulary3.js';
-import { recommendChannels, INTEREST_TAGS, CHANNELS } from './channels.js?v=1.38';
+import { recommendChannels, INTEREST_TAGS, CHANNELS } from './channels.js?v=1.39';
 
 // ══════════════════════════════════════════
 //  효과음 (Web Audio API — 외부 파일 불필요)
@@ -1936,7 +1936,7 @@ detectMemberMode();
 //  업데이트 안내 팝업 (기간 한정 노출 + 1회 확인 후 재노출 안 함)
 // ══════════════════════════════════════════
 (function initUpdateModal() {
-  const UPDATE_ID   = 'v1.38-2026-09-07';         // 이 업데이트의 고유 식별자
+  const UPDATE_ID   = 'v1.39-2026-09-07';         // 이 업데이트의 고유 식별자
   const EXPIRE_DATE = new Date('2026-09-08T23:59:59'); // 노출 종료일 (공개일로부터 1주일)
   const STORAGE_KEY = 'updateNoticeSeen';
 
