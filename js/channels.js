@@ -1,8 +1,8 @@
 // ════════════════════════════════════════════════════════
-//  채널 데이터 + 추천 엔진 (v1.25)
+//  채널 데이터 + 추천 엔진 (v1.41)
 //  ⚠️ 이 파일은 에어테이블 "현서네 영상 DB > 신뢰 채널"에서 생성됩니다.
 //  채널 수정은 에어테이블에서 → Claude에게 "채널 동기화" 요청
-//  생성일: 2026-09-01 · ★3 이상 146개 (Wolfoo 2개는 저작권 이슈로 추천 제외)
+//  생성일: 2026-09-07 · ★2 이상 274개 (추천 제외 5개 포함)
 // ════════════════════════════════════════════════════════
 
 export const INTEREST_TAGS = ['동물·공룡','탈것','공주·패션','히어로·모험','노래·춤','그리기·만들기','과학·우주','장난감·게임','이야기·책','스포츠·몸놀이','일상·가족'];
@@ -1650,7 +1650,7 @@ export const CHANNELS = [
   ],
   "form": "실사",
   "url": "https://www.youtube.com/channel/UCJplp5SjeGSdVdwsfb9Q7lQ",
-  "excluded": false
+  "excluded": true
  },
  {
   "name": "Little Angel: Nursery Rhymes & Kids Songs",
@@ -2621,9 +2621,2276 @@ export const CHANNELS = [
   "form": "애니",
   "url": "https://www.youtube.com/user/coilbook",
   "excluded": false
+ },
+ {
+  "name": "AKN Kids House",
+  "desc": "",
+  "why": "아직 그림을 직접 그리지는 못하지만 그림에 관심을 보는 친구들이라면, 간단한 그림과 색칠하는 과정을 지켜보며 알파벳 부터 기초 영어 단어들을 자연스럽게 익힐 수 있는 채널입니다.",
+  "age": "유아",
+  "stars": 2,
+  "genre": "미술/공작",
+  "cls": [
+   "귀500"
+  ],
+  "tags": [
+   "그리기·만들기",
+   "과학·우주"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/channel/UCblEctCnvw237Dt79QPOgKA",
+  "excluded": false
+ },
+ {
+  "name": "Adam Savage’s Tested",
+  "desc": "",
+  "why": "과학적 호기심이 많은 친구들에게 직접 실험을 하며 호기심을 풀어주는 채널",
+  "age": "초3-4",
+  "stars": 2,
+  "genre": "과학/자연/학습",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "과학·우주"
+  ],
+  "form": "설명",
+  "url": "https://www.youtube.com/c/tested/featured",
+  "excluded": false
+ },
+ {
+  "name": "AndrewSchrock",
+  "desc": "",
+  "why": "철없는 스케이트보더 아저씨의 일상과 아들과 함께 노는 영사들이 있어요.",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "가족/취미",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "일상·가족"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/user/AndrewSchrock",
+  "excluded": false
+ },
+ {
+  "name": "Annie's workshop - Books Read Aloud for Kids",
+  "desc": "",
+  "why": "Annie 이모가 직접 고른 창작 동화책을 읽어 줘요.",
+  "age": "유아",
+  "stars": 2,
+  "genre": "Read Aloud",
+  "cls": [
+   "입문",
+   "귀500"
+  ],
+  "tags": [
+   "이야기·책"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/c/AnniesworkshopBooksReadAloudforKids/featured",
+  "excluded": false
+ },
+ {
+  "name": "Aphmau",
+  "desc": "",
+  "why": "",
+  "age": "유아",
+  "stars": 2,
+  "genre": "언박싱/놀이",
+  "cls": [
+   "입문",
+   "귀500"
+  ],
+  "tags": [
+   "장난감·게임"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/@Aphmau",
+  "excluded": false
+ },
+ {
+  "name": "Art with Mati & Dada",
+  "desc": "",
+  "why": "",
+  "age": "유아",
+  "stars": 2,
+  "genre": "TV시리즈",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "그리기·만들기"
+  ],
+  "form": "애니",
+  "url": "Art With Mati & Dada  – VanGogh | Kids Animated Short Stories in English (youtube.com)",
+  "excluded": false
+ },
+ {
+  "name": "Baby Big Mouth",
+  "desc": "",
+  "why": "3~4세 처음 영어 노출 시작하려는 친구들에게 추천",
+  "age": "유아",
+  "stars": 2,
+  "genre": "언박싱/놀이",
+  "cls": [
+   "입문",
+   "귀500"
+  ],
+  "tags": [
+   "장난감·게임"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/user/ItsBabyBigMouth",
+  "excluded": false
+ },
+ {
+  "name": "Baby Big Mouth Kids - Sing, Dance, Explore",
+  "desc": "",
+  "why": "노래와 Surprise Egg를 까면서 알파벳과 기본 영어 단어들을 배울 수 있음. 최소한의 단어만 나와 어린 친구들이 부담없이 영어와 친해질 수 있음.",
+  "age": "유아",
+  "stars": 2,
+  "genre": "동요/챈트/알파벳",
+  "cls": [
+   "귀500"
+  ],
+  "tags": [
+   "노래·춤"
+  ],
+  "form": "노래",
+  "url": "https://www.youtube.com/user/ItsBabyBigMouth",
+  "excluded": false
+ },
+ {
+  "name": "Baby Einstein",
+  "desc": "",
+  "why": "영미권 원어민 아이들을 위해 만든 유아용 교육채널",
+  "age": "유아",
+  "stars": 2,
+  "genre": "과학/자연/학습",
+  "cls": [
+   "귀500"
+  ],
+  "tags": [
+   "과학·우주"
+  ],
+  "form": "설명",
+  "url": "https://www.youtube.com/@BabyEinstein",
+  "excluded": false
+ },
+ {
+  "name": "Baby Zoo | Kids Songs",
+  "desc": "",
+  "why": "고양이, 코알라, 코뿔소 캐릭터와 함께 노래와 춤을",
+  "age": "유아",
+  "stars": 2,
+  "genre": "동요/챈트/알파벳",
+  "cls": [
+   "입문",
+   "귀500"
+  ],
+  "tags": [
+   "동물·공룡",
+   "노래·춤"
+  ],
+  "form": "노래",
+  "url": "https://www.youtube.com/channel/UC73OSCbHaqKlhHLBpQqHPrQ",
+  "excluded": false
+ },
+ {
+  "name": "Ben 10",
+  "desc": "",
+  "why": "카툰네트워크의 인기 시리 Ben 10의 공식 유튜브 채널",
+  "age": "초3-4",
+  "stars": 2,
+  "genre": "TV시리즈",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "일상·가족"
+  ],
+  "form": "애니",
+  "url": "https://www.youtube.com/channel/UCoWgc1mqe-bcfb_lem7EyOg",
+  "excluded": false
+ },
+ {
+  "name": "Blaze and the Monster Machines",
+  "desc": "",
+  "why": "몬스터 트럭들이 나오는 채널. 남자 아이들에게 강력 추천!",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "언박싱/놀이",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "탈것",
+   "장난감·게임"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/@blazeandthemonstermachines",
+  "excluded": false
+ },
+ {
+  "name": "Bob The Train - Nursery Rhymes & Cartoons for Kids",
+  "desc": "",
+  "why": "기차 좋아하는 친구라면 추천이요!",
+  "age": "유아",
+  "stars": 2,
+  "genre": "동요/챈트/알파벳",
+  "cls": [
+   "입문",
+   "귀500"
+  ],
+  "tags": [
+   "탈것",
+   "노래·춤",
+   "그리기·만들기"
+  ],
+  "form": "노래",
+  "url": "https://www.youtube.com/channel/UCdtn2lX0irVHd-MRHBmYuFw",
+  "excluded": false
+ },
+ {
+  "name": "Brain Candy TV",
+  "desc": "",
+  "why": "몬스터 트럭 및 탙것들을 좋아하는 친구들을 위한 채널",
+  "age": "유아",
+  "stars": 2,
+  "genre": "언박싱/놀이",
+  "cls": [
+   "입문",
+   "귀500"
+  ],
+  "tags": [
+   "탈것",
+   "장난감·게임"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/@braincandytv",
+  "excluded": false
+ },
+ {
+  "name": "BrainPOP",
+  "desc": "",
+  "why": "미국 초등 교과목의 내용을 재미있는 애니로 구현한 채널",
+  "age": "초3-4",
+  "stars": 2,
+  "genre": "과학/자연/학습",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "과학·우주"
+  ],
+  "form": "설명",
+  "url": "https://www.youtube.com/@brainpop/videos",
+  "excluded": false
+ },
+ {
+  "name": "Brick Science",
+  "desc": "",
+  "why": "레고 블록으로 자신이 상상한 온갖 것들을 만들어 보는 형이 운영하는 채널!",
+  "age": "초3-4",
+  "stars": 2,
+  "genre": "언박싱/놀이",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "그리기·만들기",
+   "과학·우주",
+   "장난감·게임"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/@Brick_Science",
+  "excluded": false
+ },
+ {
+  "name": "BuzzFeedVideo",
+  "desc": "",
+  "why": "Hanna 아줌마네 가족의 온갖 일상을 소개하는 채널",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "가족/취미",
+  "cls": [
+   "귀500",
+   "귀1000"
+  ],
+  "tags": [
+   "일상·가족"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/user/BuzzFeedVideo",
+  "excluded": false
+ },
+ {
+  "name": "CGMeetup",
+  "desc": "",
+  "why": "",
+  "age": "초3-4",
+  "stars": 2,
+  "genre": "가족/취미",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "일상·가족"
+  ],
+  "form": "실사",
+  "url": "(642) CGMeetup - YouTube",
+  "excluded": false
+ },
+ {
+  "name": "Carl's Car Wash",
+  "desc": "",
+  "why": "",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "TV시리즈",
+  "cls": [
+   "귀500"
+  ],
+  "tags": [
+   "탈것"
+  ],
+  "form": "애니",
+  "url": "(642) Carl's Car Wash - YouTube",
+  "excluded": false
+ },
+ {
+  "name": "ClassDojo",
+  "desc": "",
+  "why": "",
+  "age": "초3-4",
+  "stars": 2,
+  "genre": "과학/자연/학습",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "과학·우주"
+  ],
+  "form": "설명",
+  "url": "(642) ClassDojo - YouTube",
+  "excluded": false
+ },
+ {
+  "name": "Colin Amazing",
+  "desc": "",
+  "why": "",
+  "age": "초3-4",
+  "stars": 2,
+  "genre": "가족/취미",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "일상·가족"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/@ColinAmazing",
+  "excluded": false
+ },
+ {
+  "name": "Come Play With Me",
+  "desc": "",
+  "why": "예쁜 장난감 인형을 좋아하는 여자 친구에게 추천",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "언박싱/놀이",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "공주·패션",
+   "장난감·게임"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/c/ComePlayWithMe",
+  "excluded": false
+ },
+ {
+  "name": "Cool School",
+  "desc": "",
+  "why": "",
+  "age": "초3-4",
+  "stars": 2,
+  "genre": "미술/공작",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "그리기·만들기"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/c/CoolSchool",
+  "excluded": false
+ },
+ {
+  "name": "Crafting Hours",
+  "desc": "",
+  "why": "생일, 크리스마스, 발렌타인, 어버이날 등 주제별로 다양한 재료로 아이들이 만들 수 있는 다양한 공작/공예 방법을 알려 주는 채널. 정말 아기자기하고 예쁜 작품들이 많음. 만드는 방법 설명은 말이 아닌 짧은 자막으로 이루어짐.",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "미술/공작",
+  "cls": [
+   "귀500",
+   "귀1000"
+  ],
+  "tags": [
+   "그리기·만들기"
+  ],
+  "form": "설명",
+  "url": "https://www.youtube.com/channel/UC6j14zd-fJOqH9iJZ6T1BEw",
+  "excluded": false
+ },
+ {
+  "name": "CupcakeJemma",
+  "desc": "",
+  "why": "예쁜 컵케익 만드는 방법을 배울 수 있는 채널이에요.",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "가족/취미",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "일상·가족"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/user/CupcakeJemma",
+  "excluded": false
+ },
+ {
+  "name": "DC Kids",
+  "desc": "",
+  "why": "Marvel과 함께 미국 코믹스 산업의 양대 산맥인 DC의 어린이 전용 공식 유튜브 채널입니다.",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "TV시리즈",
+  "cls": [
+   "귀500",
+   "귀1000"
+  ],
+  "tags": [
+   "일상·가족"
+  ],
+  "form": "애니",
+  "url": "https://www.youtube.com/channel/UCyu8StPfZWapR6rfW_JgqcA",
+  "excluded": false
+ },
+ {
+  "name": "Dave and Ava - Nursery Rhymes and Baby Songs",
+  "desc": "",
+  "why": "귀여운 동물을 좋아하는 아이들에 추천",
+  "age": "유아",
+  "stars": 2,
+  "genre": "동요/챈트/알파벳",
+  "cls": [
+   "입문",
+   "귀500"
+  ],
+  "tags": [
+   "동물·공룡",
+   "노래·춤"
+  ],
+  "form": "노래",
+  "url": "https://www.youtube.com/channel/UC6zhI71atP7YLoZyIyCIGNw",
+  "excluded": false
+ },
+ {
+  "name": "Disney",
+  "desc": "",
+  "why": "설명이 필요 없는 디즈니의 공식 유튜브 채널. 다양한 영상이 정말 많아요~",
+  "age": "초3-4",
+  "stars": 2,
+  "genre": "가족/취미",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "일상·가족"
+  ],
+  "form": "설명",
+  "url": "https://www.youtube.com/user/disneysshows",
+  "excluded": false
+ },
+ {
+  "name": "Disney Kids (구 Disney Junior UK)",
+  "desc": "",
+  "why": "",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "TV시리즈",
+  "cls": [
+   "귀500",
+   "귀1000"
+  ],
+  "tags": [
+   "일상·가족"
+  ],
+  "form": "애니",
+  "url": "(829) Disney Kids - YouTube",
+  "excluded": false
+ },
+ {
+  "name": "Disney Parks",
+  "desc": "",
+  "why": "전세계의 디즈니 공원과 리조트 등을 소개 하는 채널. 요즘 같은 시대에 영상으로 라도 디즈니 월드를 방문할 수 있는 기회를 제공해 주는 채널",
+  "age": "초5-6",
+  "stars": 2,
+  "genre": "가족/취미",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "일상·가족"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/c/DisneyParks",
+  "excluded": false
+ },
+ {
+  "name": "Easy Kids Craft",
+  "desc": "",
+  "why": "",
+  "age": "초3-4",
+  "stars": 2,
+  "genre": "미술/공작",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "그리기·만들기"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/c/EasyKidsCraft",
+  "excluded": false
+ },
+ {
+  "name": "EasyPicturesToDraw",
+  "desc": "",
+  "why": "그림 그리기를 처음 시작하는 남자아이들에게 추천",
+  "age": "유아",
+  "stars": 2,
+  "genre": "미술/공작",
+  "cls": [
+   "귀500"
+  ],
+  "tags": [
+   "그리기·만들기"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/channel/UCHa-w2uf3NmywqSkA4mV-JQ?app=desktop",
+  "excluded": false
+ },
+ {
+  "name": "Farmees - Nursery Rhymes And Kids Songs",
+  "desc": "",
+  "why": "동물을 좋아하는 친구들은 이 채널에서 배우면 최고죠!",
+  "age": "유아",
+  "stars": 2,
+  "genre": "동요/챈트/알파벳",
+  "cls": [
+   "입문",
+   "귀500"
+  ],
+  "tags": [
+   "동물·공룡",
+   "노래·춤"
+  ],
+  "form": "노래",
+  "url": "https://www.youtube.com/channel/UCu9MYfF0vosVcK38oNnnJxw",
+  "excluded": false
+ },
+ {
+  "name": "Free School",
+  "desc": "",
+  "why": "미술, 음악, 문학 등 다양한 학습 콘텐츠가 있어요!",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "과학/자연/학습",
+  "cls": [
+   "귀500",
+   "귀1000"
+  ],
+  "tags": [
+   "과학·우주"
+  ],
+  "form": "설명",
+  "url": "https://www.youtube.com/channel/UCebMFnw6WxozGmqGekJHOJg",
+  "excluded": false
+ },
+ {
+  "name": "Fun Caboodle",
+  "desc": "",
+  "why": "현서가 가장 자주봤던 장난감 채널 중 하나에요. 귀여운 장난감들로 롤플레이를 많이 합니다.",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "언박싱/놀이",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "장난감·게임"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/@FunCaboodle",
+  "excluded": false
+ },
+ {
+  "name": "Go Buster - Bus Cartoons & Kids Stories",
+  "desc": "",
+  "why": "해외판 꼬마버스 타요. 버스를 좋아하는 친구들에 추천",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "TV시리즈",
+  "cls": [
+   "귀500"
+  ],
+  "tags": [
+   "탈것",
+   "그리기·만들기"
+  ],
+  "form": "애니",
+  "url": "https://www.youtube.com/c/GoBusterBusCartoonsKidsStories",
+  "excluded": false
+ },
+ {
+  "name": "Gruffalo World",
+  "desc": "",
+  "why": "그루팔로 한때 큰 인기를 끌었던 TV시리즈죠. 내용이 너무 좋습니다~!",
+  "age": "유아",
+  "stars": 2,
+  "genre": "TV시리즈",
+  "cls": [
+   "귀500"
+  ],
+  "tags": [
+   "일상·가족"
+  ],
+  "form": "애니",
+  "url": "https://www.youtube.com/user/GruffaloWorld",
+  "excluded": false
+ },
+ {
+  "name": "Happy Drawings",
+  "desc": "",
+  "why": "",
+  "age": "초3-4",
+  "stars": 2,
+  "genre": "미술/공작",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "그리기·만들기"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/c/HappyDrawings",
+  "excluded": false
+ },
+ {
+  "name": "Happy Learning English",
+  "desc": "",
+  "why": "과학에 호기심이 많은 친구들에게 추천",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "과학/자연/학습",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "과학·우주"
+  ],
+  "form": "설명",
+  "url": "https://www.youtube.com/channel/UC8eJxPzmvTb12v7LlZUJcLQ",
+  "excluded": false
+ },
+ {
+  "name": "Harry Potter",
+  "desc": "",
+  "why": "해리포터를 좋아하는 친구라면 강추!",
+  "age": "초3-4",
+  "stars": 2,
+  "genre": "가족/취미",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "일상·가족"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/channel/UChPRO1CB_Hvd0TvKRU62iSQ",
+  "excluded": false
+ },
+ {
+  "name": "Hello Everything!",
+  "desc": "",
+  "why": "동물을 좋아하는 어린 친구들이 보기에 딱 좋은 채널",
+  "age": "유아",
+  "stars": 2,
+  "genre": "가족/취미",
+  "cls": [
+   "입문",
+   "귀500"
+  ],
+  "tags": [
+   "동물·공룡",
+   "일상·가족"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/c/HelloEverything",
+  "excluded": false
+ },
+ {
+  "name": "Howcast",
+  "desc": "",
+  "why": "\"How?\" 어떻게 하는지, 어떻게 만드는지 등 모든 것에 대한 방법을 알려주는 영상들이 즐비한 채널. 아이를 채널은 아니지만 다양한 상식을 배울 수 있는 채널",
+  "age": "초5-6",
+  "stars": 2,
+  "genre": "과학/자연/학습",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "과학·우주"
+  ],
+  "form": "설명",
+  "url": "https://www.youtube.com/user/Howcast",
+  "excluded": false
+ },
+ {
+  "name": "Howdytoons",
+  "desc": "",
+  "why": "공룡 좋아하는 친구들을 위한 채널",
+  "age": "유아",
+  "stars": 2,
+  "genre": "동요/챈트/알파벳",
+  "cls": [
+   "입문",
+   "귀500"
+  ],
+  "tags": [
+   "동물·공룡",
+   "노래·춤"
+  ],
+  "form": "노래",
+  "url": "Howdytoons - YouTube",
+  "excluded": false
+ },
+ {
+  "name": "IncrediTales - Fairy Tales Cartoon for Kids",
+  "desc": "",
+  "why": "",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "TV시리즈",
+  "cls": [
+   "귀500"
+  ],
+  "tags": [
+   "탈것",
+   "그리기·만들기",
+   "이야기·책"
+  ],
+  "form": "애니",
+  "url": "(642) IncrediTales - Fairy Tales Cartoon for Kids - YouTube",
+  "excluded": false
+ },
+ {
+  "name": "Jared Owen",
+  "desc": "",
+  "why": "다양한 기계의 작동원리를 애니메이션으로 만들어 알려주는 채널",
+  "age": "초5-6",
+  "stars": 2,
+  "genre": "과학/자연/학습",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "과학·우주"
+  ],
+  "form": "설명",
+  "url": "https://www.youtube.com/@JaredOwen",
+  "excluded": false
+ },
+ {
+  "name": "Joy Joy World - Early Learning Kids' Songs",
+  "desc": "",
+  "why": "",
+  "age": "유아",
+  "stars": 2,
+  "genre": "동요/챈트/알파벳",
+  "cls": [
+   "입문"
+  ],
+  "tags": [
+   "노래·춤"
+  ],
+  "form": "노래",
+  "url": "(642) Joy Joy World - Early Learning Kids' Songs - YouTube",
+  "excluded": false
+ },
+ {
+  "name": "Just For Kids",
+  "desc": "",
+  "why": "",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "Read Aloud",
+  "cls": [
+   "귀500",
+   "귀1000"
+  ],
+  "tags": [
+   "이야기·책"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/@JustForKids",
+  "excluded": false
+ },
+ {
+  "name": "Justin's Collection",
+  "desc": "",
+  "why": "마블, 스타워즈, 드래곤볼 등의 고급 피규어를 보며 대리만족을 할 수 있는 채널이예요!",
+  "age": "초3-4",
+  "stars": 2,
+  "genre": "언박싱/놀이",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "히어로·모험",
+   "장난감·게임"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/channel/UCsqUJuqpBujaBWe-LOfWgsA",
+  "excluded": false
+ },
+ {
+  "name": "KAYCEE & RACHEL in WONDERLAND FAMILY",
+  "desc": "",
+  "why": "Kaycee와 Rachel네 가족의 온갖 재미있는 이야기들을 보며 영어 노출을 할 수 있어요.",
+  "age": "초3-4",
+  "stars": 2,
+  "genre": "가족/취미",
+  "cls": [
+   "귀500"
+  ],
+  "tags": [
+   "이야기·책",
+   "일상·가족"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/channel/UCyPz82J9A8xU5L6lHyLVHpw",
+  "excluded": false
+ },
+ {
+  "name": "KIDZ BOP",
+  "desc": "",
+  "why": "",
+  "age": "초3-4",
+  "stars": 2,
+  "genre": "가족/취미",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "일상·가족"
+  ],
+  "form": "실사",
+  "url": "(1218) KIDZ BOP - YouTube",
+  "excluded": false
+ },
+ {
+  "name": "KLT Anatomy",
+  "desc": "",
+  "why": "",
+  "age": "초5-6",
+  "stars": 2,
+  "genre": "과학/자연/학습",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "과학·우주"
+  ],
+  "form": "설명",
+  "url": "https://www.youtube.com/@KLTAnatomy",
+  "excluded": false
+ },
+ {
+  "name": "Khan Academy Kids",
+  "desc": "",
+  "why": "취학전 아이들에게 읽기와 수학 등 기본 학습을 가르쳐 주는 채널",
+  "age": "유아",
+  "stars": 2,
+  "genre": "과학/자연/학습",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "과학·우주"
+  ],
+  "form": "설명",
+  "url": "https://www.youtube.com/@KhanAcademyKids",
+  "excluded": false
+ },
+ {
+  "name": "Kids Diana Show",
+  "desc": "",
+  "why": "3천만 구독자 Ryan을 훌쩍 뛰어 넘어버린 Diana. 과연 어떤 매력이 있는지 확인해 보세요.",
+  "age": "유아",
+  "stars": 2,
+  "genre": "언박싱/놀이",
+  "cls": [
+   "입문",
+   "귀500"
+  ],
+  "tags": [
+   "장난감·게임"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/channel/UCk8GzjMOrta8yxDcKfylJYw",
+  "excluded": true
+ },
+ {
+  "name": "Kids Learning Tube",
+  "desc": "",
+  "why": "나라 이름, 태양계 행성 이름 등을 중독성 강한 노래를 통해 배울 수 있어요.",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "과학/자연/학습",
+  "cls": [
+   "귀500",
+   "귀1000"
+  ],
+  "tags": [
+   "노래·춤",
+   "과학·우주"
+  ],
+  "form": "노래",
+  "url": "https://www.youtube.com/channel/UC7EFWpvc1wYuUwrtZ_BLi9A",
+  "excluded": false
+ },
+ {
+  "name": "Kids Music Land",
+  "desc": "",
+  "why": "Sandra와 다양한 노래를 하면 영어랑 친해져요!",
+  "age": "유아",
+  "stars": 2,
+  "genre": "동요/챈트/알파벳",
+  "cls": [
+   "입문",
+   "귀500"
+  ],
+  "tags": [
+   "노래·춤"
+  ],
+  "form": "노래",
+  "url": "https://www.youtube.com/channel/UCW4WaUca0UY7KEJNSjG4pfQ",
+  "excluded": false
+ },
+ {
+  "name": "KidsCamp Nursery Rhymes & Learning Videos for Kids",
+  "desc": "",
+  "why": "",
+  "age": "유아",
+  "stars": 2,
+  "genre": "동요/챈트/알파벳",
+  "cls": [
+   "입문",
+   "귀500"
+  ],
+  "tags": [
+   "노래·춤"
+  ],
+  "form": "노래",
+  "url": "(642) KidsCamp Nursery Rhymes & Learning Videos for Kids - YouTube",
+  "excluded": false
+ },
+ {
+  "name": "Kitoons in English",
+  "desc": "",
+  "why": "공주나 샤방샤방한 캐릭터를 좋아하는 여자 친구들에게 추천해요!",
+  "age": "초3-4",
+  "stars": 2,
+  "genre": "TV시리즈",
+  "cls": [
+   "귀500"
+  ],
+  "tags": [
+   "공주·패션"
+  ],
+  "form": "애니",
+  "url": "https://www.youtube.com/c/KitoonsEnglish",
+  "excluded": false
+ },
+ {
+  "name": "Kurzgesagt – In a Nutshell",
+  "desc": "",
+  "why": "과학을 좋아하는 친구들에게 이 보다 좋은 채널은 없을 거예요~!",
+  "age": "초3-4",
+  "stars": 2,
+  "genre": "과학/자연/학습",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "과학·우주"
+  ],
+  "form": "설명",
+  "url": "https://www.youtube.com/c/inanutshell",
+  "excluded": false
+ },
+ {
+  "name": "LDN Movements",
+  "desc": "",
+  "why": "길거리에서 다양한 축구 스킬로 사람들과 흥미로운 이벤트를 하는 채널",
+  "age": "초3-4",
+  "stars": 2,
+  "genre": "가족/취미",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "스포츠·몸놀이",
+   "일상·가족"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/@LdnMovements",
+  "excluded": false
+ },
+ {
+  "name": "LaLiLu",
+  "desc": "",
+  "why": "",
+  "age": "초3-4",
+  "stars": 2,
+  "genre": "미술/공작",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "그리기·만들기"
+  ],
+  "form": "실사",
+  "url": "(1186) LaLiLu - YouTube",
+  "excluded": false
+ },
+ {
+  "name": "Learn English With TV Series",
+  "desc": "",
+  "why": "TV시리즈로 영어를 배워요. 아이들만 말고 부모님들이 보기에도 좋은 채널이에요~",
+  "age": "초5-6",
+  "stars": 2,
+  "genre": "가족/취미",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "일상·가족"
+  ],
+  "form": "애니",
+  "url": "https://www.youtube.com/@LearnEnglishWithTVSeries",
+  "excluded": false
+ },
+ {
+  "name": "Leo the Wildlife Ranger - Official Channel",
+  "desc": "",
+  "why": "동물에 관심이 많은 어린 친구들에게 추천 하는 채널입니다.",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "과학/자연/학습",
+  "cls": [
+   "귀500"
+  ],
+  "tags": [
+   "동물·공룡",
+   "과학·우주"
+  ],
+  "form": "설명",
+  "url": "https://www.youtube.com/channel/UC97bMqA6HrUEw-yNqssyBrQ",
+  "excluded": false
+ },
+ {
+  "name": "MGC Playhouse",
+  "desc": "",
+  "why": "Mother Goose Club의 자매 채널로 노래, 춤으로 다양한 학습을 하도록 돕는 채널",
+  "age": "유아",
+  "stars": 2,
+  "genre": "동요/챈트/알파벳",
+  "cls": [
+   "입문"
+  ],
+  "tags": [
+   "노래·춤"
+  ],
+  "form": "노래",
+  "url": "https://www.youtube.com/@mgcplayhouse",
+  "excluded": false
+ },
+ {
+  "name": "Magic Fingers Art",
+  "desc": "",
+  "why": "쉽고, 귀여운 그림을 그리는 유아용 채널",
+  "age": "유아",
+  "stars": 2,
+  "genre": "미술/공작",
+  "cls": [
+   "귀500"
+  ],
+  "tags": [
+   "그리기·만들기"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/c/MagicFingersArt",
+  "excluded": false
+ },
+ {
+  "name": "Marvel HQ",
+  "desc": "",
+  "why": "마블을 좋아하는 어린이 친구들을 위한 채널이예요.",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "TV시리즈",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "히어로·모험"
+  ],
+  "form": "애니",
+  "url": "https://www.youtube.com/channel/UCxwitsUVNzwS5XBSC5UQV8Q",
+  "excluded": false
+ },
+ {
+  "name": "Maya and Mary",
+  "desc": "",
+  "why": "",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "언박싱/놀이",
+  "cls": [
+   "귀500",
+   "귀1000"
+  ],
+  "tags": [
+   "장난감·게임"
+  ],
+  "form": "실사",
+  "url": "(642) Maya and Mary - YouTube",
+  "excluded": false
+ },
+ {
+  "name": "Miffy",
+  "desc": "",
+  "why": "",
+  "age": "유아",
+  "stars": 2,
+  "genre": "TV시리즈",
+  "cls": [
+   "귀500"
+  ],
+  "tags": [
+   "일상·가족"
+  ],
+  "form": "애니",
+  "url": "(640) Miffy - YouTube",
+  "excluded": false
+ },
+ {
+  "name": "MiniforceTV",
+  "desc": "",
+  "why": "미니특공대 영어 더빙 채널입니다.",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "TV시리즈",
+  "cls": [
+   "귀500"
+  ],
+  "tags": [
+   "일상·가족"
+  ],
+  "form": "애니",
+  "url": "https://www.youtube.com/c/MiniforceTV",
+  "excluded": false
+ },
+ {
+  "name": "MinipangTV",
+  "desc": "",
+  "why": "",
+  "age": "유아",
+  "stars": 2,
+  "genre": "동요/챈트/알파벳",
+  "cls": [
+   "입문"
+  ],
+  "tags": [
+   "노래·춤"
+  ],
+  "form": "노래",
+  "url": "(640) MinipangTV - YouTube",
+  "excluded": false
+ },
+ {
+  "name": "Moonbug Kids - Cartoons and Kids Songs",
+  "desc": "",
+  "why": "Cocomelon, Blippi 등이 소속된 Moonbug! 모두를 한번에 볼 수 있어요.",
+  "age": "유아",
+  "stars": 2,
+  "genre": "동요/챈트/알파벳",
+  "cls": [
+   "입문"
+  ],
+  "tags": [
+   "탈것",
+   "노래·춤",
+   "그리기·만들기"
+  ],
+  "form": "노래",
+  "url": "https://www.youtube.com/channel/UC3_PaZ3Eso1JkuJyE_v4-3g",
+  "excluded": false
+ },
+ {
+  "name": "Mother Goose Club Let's Play",
+  "desc": "",
+  "why": "Mother Goose Club에서 운영하는 게임 채널. 마인크래프트, 마리오 등의 게임을 안전하게 즐길 수 있어요.",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "언박싱/놀이",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "장난감·게임"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/channel/UCyTcCCMxgmVF9-AjBX2n0PQ",
+  "excluded": false
+ },
+ {
+  "name": "MyCupcakeAddiction",
+  "desc": "",
+  "why": "컵케잌을 전문으로 만드는 Elise 아줌마의 레시피를 배워보세요",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "가족/취미",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "일상·가족"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/user/MyCupcakeaddiction",
+  "excluded": false
+ },
+ {
+  "name": "Nat and Essie Too",
+  "desc": "",
+  "why": "현서가 추천하는 여아용 장남감 언박싱 채널입니다.",
+  "age": "유아",
+  "stars": 2,
+  "genre": "언박싱/놀이",
+  "cls": [
+   "입문",
+   "귀500"
+  ],
+  "tags": [
+   "장난감·게임"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/c/ToysUnlimitedJR/featured",
+  "excluded": false
+ },
+ {
+  "name": "Nick Jr.",
+  "desc": "",
+  "why": "도라, 포 패트롤을 좋아하는 친구는 구독하여 시청 추천",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "TV시리즈",
+  "cls": [
+   "귀500",
+   "귀1000"
+  ],
+  "tags": [
+   "일상·가족"
+  ],
+  "form": "애니",
+  "url": "https://www.youtube.com/channel/UCUe6ZpY6TJ0no8jI4l2iLxw",
+  "excluded": false
+ },
+ {
+  "name": "Ninja Kidz TV",
+  "desc": "",
+  "why": "닌자를 좋아하고 모험심이 강한 에너지 넘치는 남자 친구들에게 추천해요!",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "TV시리즈",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "히어로·모험"
+  ],
+  "form": "애니",
+  "url": "https://www.youtube.com/channel/UCpZ88DWlKW0H_AYDaUZptcw",
+  "excluded": false
+ },
+ {
+  "name": "Oxford Owl - Learning at Home",
+  "desc": "",
+  "why": "영국 옥스포드 대학교 출판부에서 나온 이야기책들을 작가가 직접 읽어줘요.",
+  "age": "유아",
+  "stars": 2,
+  "genre": "Read Aloud",
+  "cls": [
+   "입문",
+   "귀500"
+  ],
+  "tags": [
+   "이야기·책"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/c/OxfordOwlHome",
+  "excluded": false
+ },
+ {
+  "name": "Participant",
+  "desc": "",
+  "why": "Kid President, My Last Days, Tell My Story 등 우리의 꿈과 희망을 가지고 세상을 더 살기 좋은 곳으로 만들기 위한 다양한 영상을 만드는 채널",
+  "age": "초5-6",
+  "stars": 2,
+  "genre": "가족/취미",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "그리기·만들기",
+   "이야기·책",
+   "일상·가족"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/user/soulpancake",
+  "excluded": false
+ },
+ {
+  "name": "Paul Cuffaro",
+  "desc": "",
+  "why": "각종 애완동물들을 키우는 Paul 형의 안전한 채널입니다!",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "과학/자연/학습",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "동물·공룡",
+   "과학·우주"
+  ],
+  "form": "설명",
+  "url": "https://www.youtube.com/c/paulcuffaro",
+  "excluded": false
+ },
+ {
+  "name": "Peep and the Big Wide World",
+  "desc": "",
+  "why": "",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "TV시리즈",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "일상·가족"
+  ],
+  "form": "애니",
+  "url": "(642) Peep and the Big Wide World - YouTube",
+  "excluded": false
+ },
+ {
+  "name": "Pixar",
+  "desc": "",
+  "why": "디즈니 픽사의 공식 유튜브 채널. 영화 예고편 및 다양한 영화 관련 영상을 볼 수 있어요.",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "가족/취미",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "일상·가족"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/user/DisneyPixar",
+  "excluded": false
+ },
+ {
+  "name": "Postman Pat Official",
+  "desc": "",
+  "why": "",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "TV시리즈",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "일상·가족"
+  ],
+  "form": "애니",
+  "url": "(1453) Postman Pat Official - YouTube",
+  "excluded": false
+ },
+ {
+  "name": "PuzzLEGO",
+  "desc": "",
+  "why": "레고로 새로운 만들기를 하고 싶은 친구들에 강추합니다.",
+  "age": "초3-4",
+  "stars": 2,
+  "genre": "언박싱/놀이",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "그리기·만들기",
+   "장난감·게임"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/channel/UC4GaWcWGhh5n1WmJvb1oBkA",
+  "excluded": false
+ },
+ {
+  "name": "RJMBricks",
+  "desc": "",
+  "why": "레고로 다양한 작동 모형을 만드는 채널. 레고 덕후에 추천해요.",
+  "age": "초3-4",
+  "stars": 2,
+  "genre": "언박싱/놀이",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "그리기·만들기",
+   "장난감·게임"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/@RJMBricks",
+  "excluded": false
+ },
+ {
+  "name": "Raa Raa the Noisy Lion Official",
+  "desc": "",
+  "why": "귀여운 동물 캐릭터들이 재미있는 노래로 학습을 도와줘요",
+  "age": "유아",
+  "stars": 2,
+  "genre": "TV시리즈",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "동물·공룡",
+   "노래·춤"
+  ],
+  "form": "노래",
+  "url": "https://www.youtube.com/c/RaaRaatheNoisyLionOfficial",
+  "excluded": false
+ },
+ {
+  "name": "Robocar POLI TV",
+  "desc": "한국 애니 로보카 폴리의 공식 영어 채널 — 구조대 로봇 자동차들의 이야기",
+  "why": "우리나라에서 만든 인기 애니매이션 로보카 폴리의 공식 영어 유튜브 채널이에요.",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "TV시리즈",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "탈것"
+  ],
+  "form": "애니",
+  "url": "https://www.youtube.com/user/roivisual",
+  "excluded": false
+ },
+ {
+  "name": "Robot Trains official",
+  "desc": "",
+  "why": "로봇 트레인과 함께 영어를 배워요~!",
+  "age": "유아",
+  "stars": 2,
+  "genre": "동요/챈트/알파벳",
+  "cls": [
+   "입문",
+   "귀500"
+  ],
+  "tags": [
+   "탈것",
+   "노래·춤"
+  ],
+  "form": "노래",
+  "url": "https://www.youtube.com/channel/UCZsUuAkwF_zOK73Hm5VCIzQ",
+  "excluded": false
+ },
+ {
+  "name": "SLICK SLIME SAM - DIY, Comedy, Science",
+  "desc": "",
+  "why": "슬라임을 좋아하고 DIY, 요리는 좋아하는 친구들에게 추천",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "언박싱/놀이",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "그리기·만들기",
+   "과학·우주",
+   "장난감·게임"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/channel/UCw5VDXH8up3pKUppIvcstNQ",
+  "excluded": false
+ },
+ {
+  "name": "Science Insider",
+  "desc": "",
+  "why": "누구나 한번쯤은 궁금해 했을만한 과학 호기심을 재미있는 애니메이션으로 풀어주는 채널이에요.",
+  "age": "초3-4",
+  "stars": 2,
+  "genre": "과학/자연/학습",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "과학·우주"
+  ],
+  "form": "설명",
+  "url": "https://www.youtube.com/channel/UC9uD-W5zQHQuAVT2GdcLCvg",
+  "excluded": false
+ },
+ {
+  "name": "Science Max",
+  "desc": "",
+  "why": "물리학, 화학, 생태학, 생물학에 관련된 실험을 직접해본다. 물로켓이나 대형 종이 비행기, 쿠킹호일 배 등을 직접 만들기도 하면 엉뚱한 실험을 하기도 함",
+  "age": "초5-6",
+  "stars": 2,
+  "genre": "과학/자연/학습",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "탈것",
+   "그리기·만들기",
+   "과학·우주"
+  ],
+  "form": "설명",
+  "url": "https://www.youtube.com/channel/UCbprhISv-0ReKPPyhf7-Dtw",
+  "excluded": false
+ },
+ {
+  "name": "Scratch Garden",
+  "desc": "",
+  "why": "영어로 배우는 수학, 노래 등 웃으면서 즐겁게 배울 수 있는 채널이에요",
+  "age": "유아",
+  "stars": 2,
+  "genre": "동요/챈트/알파벳",
+  "cls": [
+   "입문",
+   "귀500"
+  ],
+  "tags": [
+   "노래·춤",
+   "과학·우주"
+  ],
+  "form": "노래",
+  "url": "https://www.youtube.com/c/ScratchGardenLand",
+  "excluded": false
+ },
+ {
+  "name": "SethBling",
+  "desc": "",
+  "why": "마이크래프트 게임을 하며 팁이나 다양한 정보를 알려주는 방송. 어린이들이 봐도 문제가 안되는 언어로 방송을 한다. 좋아하는 게임의 팁과 영어를 동시에 배울 수 있음",
+  "age": "초5-6",
+  "stars": 2,
+  "genre": "언박싱/놀이",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "장난감·게임"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/user/sethbling",
+  "excluded": false
+ },
+ {
+  "name": "Simple Kids Crafts",
+  "desc": "",
+  "why": "다양한 미니어쳐나 종이접기, 인형 등 집에서 구할 수 있는 재료들로 만들 수 있는 공작놀이를 알려주는 채널.",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "미술/공작",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "공주·패션",
+   "그리기·만들기"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/user/simplekidscrafts",
+  "excluded": false
+ },
+ {
+  "name": "SimplySoccer",
+  "desc": "",
+  "why": "드리블 부터, 킥까지 축구 스킬을 자세히 알려주는 채널",
+  "age": "초3-4",
+  "stars": 2,
+  "genre": "가족/취미",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "스포츠·몸놀이",
+   "일상·가족"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/@SimplySoccer",
+  "excluded": false
+ },
+ {
+  "name": "Smile Family",
+  "desc": "",
+  "why": "남여 아이들이 같이 볼 수 있는 흥미용 언박싱 채널",
+  "age": "초3-4",
+  "stars": 2,
+  "genre": "언박싱/놀이",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "장난감·게임",
+   "일상·가족"
+  ],
+  "form": "실사",
+  "url": "Smile Family - YouTube",
+  "excluded": false
+ },
+ {
+  "name": "Smile and Learn - English",
+  "desc": "",
+  "why": "역사, 인문, 과학 등 아이들이 관심 있어 할만한 대부분의 컨텐츠를 다루고 있는 채널. 모든 컨텐츠가 선생님들에 의해 기획되어서 교육적인 내용들을 재미있게 배울 수 있음",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "과학/자연/학습",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "과학·우주"
+  ],
+  "form": "설명",
+  "url": "https://www.youtube.com/channel/UCxoDMG0tvaYO5Xobvtqw5nw",
+  "excluded": false
+ },
+ {
+  "name": "Sniffycat",
+  "desc": "",
+  "why": "여아들이 좋아할만한 장난감 언박싱 채널",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "언박싱/놀이",
+  "cls": [
+   "귀500",
+   "귀1000"
+  ],
+  "tags": [
+   "장난감·게임"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/channel/UCGcltwAa9xthAVTMF2ZrRYg",
+  "excluded": false
+ },
+ {
+  "name": "Star Wars Kids",
+  "desc": "",
+  "why": "스타워즈를 좋아하는 어린 친구들을 위한 채널입니다.",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "TV시리즈",
+  "cls": [
+   "귀500"
+  ],
+  "tags": [
+   "히어로·모험"
+  ],
+  "form": "애니",
+  "url": "https://www.youtube.com/channel/UCDe7m0POuwkL1gwnQ-FVhMw",
+  "excluded": false
+ },
+ {
+  "name": "Storytime with Ryan & Craig",
+  "desc": "",
+  "why": "Ryan과 Craig 삼촌이 다양한 영어 그림책을 읽어줘요.",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "Read Aloud",
+  "cls": [
+   "귀500",
+   "귀1000"
+  ],
+  "tags": [
+   "그리기·만들기",
+   "이야기·책"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/@StorytimewithRyanandCraig",
+  "excluded": false
+ },
+ {
+  "name": "Suibhne",
+  "desc": "",
+  "why": "각 나라의 역사에 관심 많은 친구들의 위한 최고의 채널",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "과학/자연/학습",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "과학·우주"
+  ],
+  "form": "설명",
+  "url": "https://www.youtube.com/channel/UCQD-0MjUbDBwm2UTVYr0Dag",
+  "excluded": false
+ },
+ {
+  "name": "Super Simple Play with Caitie!",
+  "desc": "",
+  "why": "Caitie 언니와 함께 만들기, 노래 등 놀이를 통해 학습을 하는 영상들을 제공",
+  "age": "유아",
+  "stars": 2,
+  "genre": "동요/챈트/알파벳",
+  "cls": [
+   "귀500"
+  ],
+  "tags": [
+   "노래·춤",
+   "그리기·만들기"
+  ],
+  "form": "노래",
+  "url": "https://www.youtube.com/@SuperSimplePlay",
+  "excluded": false
+ },
+ {
+  "name": "Super Supremes",
+  "desc": "",
+  "why": "",
+  "age": "유아",
+  "stars": 2,
+  "genre": "동요/챈트/알파벳",
+  "cls": [
+   "귀500"
+  ],
+  "tags": [
+   "노래·춤"
+  ],
+  "form": "노래",
+  "url": "(982) Super Supremes - Nursery Rhymes & Kids Songs - YouTube",
+  "excluded": false
+ },
+ {
+  "name": "Super Truck - Car City Universe",
+  "desc": "",
+  "why": "트럭 좋아하는 남자 친구들에 추천",
+  "age": "유아",
+  "stars": 2,
+  "genre": "TV시리즈",
+  "cls": [
+   "귀500"
+  ],
+  "tags": [
+   "탈것"
+  ],
+  "form": "애니",
+  "url": "https://www.youtube.com/user/LouieMillimages",
+  "excluded": false
+ },
+ {
+  "name": "TD BRICKS",
+  "desc": "",
+  "why": "레고로 창의적인 작품을 만들어요",
+  "age": "초3-4",
+  "stars": 2,
+  "genre": "언박싱/놀이",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "그리기·만들기",
+   "장난감·게임"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/c/TDBRICKS",
+  "excluded": false
+ },
+ {
+  "name": "TOBOT English",
+  "desc": "",
+  "why": "또봇 좋아하는 친구들 이젠 영어로 보도록 해주세요.",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "TV시리즈",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "일상·가족"
+  ],
+  "form": "애니",
+  "url": "https://www.youtube.com/channel/UCl72hQm8sFCj5d4Hg_YYGpQ",
+  "excluded": false
+ },
+ {
+  "name": "Talking Tom & Friends",
+  "desc": "",
+  "why": "토킹캣톰 아시나요? 아이들이 좋아하면 톰과 함께 영어도 배울 수 있어요!",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "언박싱/놀이",
+  "cls": [
+   "귀500",
+   "귀1000"
+  ],
+  "tags": [
+   "장난감·게임"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/user/TalkingFriends",
+  "excluded": false
+ },
+ {
+  "name": "Tannerites",
+  "desc": "",
+  "why": "아홉명의 가족이 펼치는 다양한 일상과 재미있는 모험을 다룬 채널이예요~",
+  "age": "초3-4",
+  "stars": 2,
+  "genre": "가족/취미",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "히어로·모험",
+   "일상·가족"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/c/Tannerites/featured",
+  "excluded": false
+ },
+ {
+  "name": "Tasty",
+  "desc": "",
+  "why": "온갖 맛있는 것을 찾아 만들고, 먹어 보는 채널",
+  "age": "초3-4",
+  "stars": 2,
+  "genre": "가족/취미",
+  "cls": [
+   "귀500",
+   "귀1000"
+  ],
+  "tags": [
+   "일상·가족"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/c/buzzfeedtasty",
+  "excluded": false
+ },
+ {
+  "name": "Tayo the Little Bus",
+  "desc": "",
+  "why": "타요타요의 공식 영어 유튜브 채널",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "TV시리즈",
+  "cls": [
+   "귀500"
+  ],
+  "tags": [
+   "일상·가족"
+  ],
+  "form": "애니",
+  "url": "https://www.youtube.com/@Tayo",
+  "excluded": false
+ },
+ {
+  "name": "The Action Lab",
+  "desc": "",
+  "why": "과학과 관련해 가질 수 있는 다양한 호기심을 직접 실험을 통해 답해 주는 채널이예요.",
+  "age": "초3-4",
+  "stars": 2,
+  "genre": "과학/자연/학습",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "과학·우주"
+  ],
+  "form": "설명",
+  "url": "https://www.youtube.com/c/TheActionLab/featured",
+  "excluded": false
+ },
+ {
+  "name": "The Dodo",
+  "desc": "",
+  "why": "동물을 좋아하고 직접 기르고 싶은 친구들을 위한 채널!",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "과학/자연/학습",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "동물·공룡",
+   "과학·우주"
+  ],
+  "form": "설명",
+  "url": "https://www.youtube.com/user/TheDodoSite",
+  "excluded": false
+ },
+ {
+  "name": "The Fable Cottage",
+  "desc": "",
+  "why": "",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "Read Aloud",
+  "cls": [
+   "귀500",
+   "귀1000"
+  ],
+  "tags": [
+   "이야기·책"
+  ],
+  "form": "실사",
+  "url": "The Fable Cottage - YouTube",
+  "excluded": false
+ },
+ {
+  "name": "The Fixes",
+  "desc": "",
+  "why": "고장난건 뭐든지 고치는 Tom 과 그의 친들의 모험을 그린 TV시리즈",
+  "age": "초3-4",
+  "stars": 2,
+  "genre": "미술/공작",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "히어로·모험",
+   "그리기·만들기"
+  ],
+  "form": "애니",
+  "url": "https://www.youtube.com/c/TheFixiesYouTube",
+  "excluded": false
+ },
+ {
+  "name": "The Icing Artist",
+  "desc": "",
+  "why": "케이크를 예술적으로 만들어 내는 Laurie 언니의 영상을 보고 있으면 모든 걱정을 있게함. 예쁜 케이크 만드는 과정을 보고 영어 노출도 시킬 수 있음",
+  "age": "초5-6",
+  "stars": 2,
+  "genre": "가족/취미",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "그리기·만들기",
+   "일상·가족"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/user/TheIcingArtist",
+  "excluded": false
+ },
+ {
+  "name": "The Land Before Time",
+  "desc": "",
+  "why": "공룡들의 모험을 그린 TV 시리즈",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "TV시리즈",
+  "cls": [
+   "귀500"
+  ],
+  "tags": [
+   "동물·공룡",
+   "히어로·모험"
+  ],
+  "form": "애니",
+  "url": "https://www.youtube.com/channel/UCGTPGtMd8ydRNsTcKaDwF1w",
+  "excluded": false
+ },
+ {
+  "name": "The Powerpuff Girls",
+  "desc": "",
+  "why": "미국의 인기 TV시리즈인 Powerpuff Girls. 모험을 좋아하는 여자 친구들이 좋아할거예요.",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "TV시리즈",
+  "cls": [
+   "귀500"
+  ],
+  "tags": [
+   "히어로·모험"
+  ],
+  "form": "애니",
+  "url": "https://www.youtube.com/channel/UCInXezQxpWgrd7uPKeA6gPQ",
+  "excluded": false
+ },
+ {
+  "name": "The Wiggles",
+  "desc": "",
+  "why": "호주의 어린 친구들을 위해 만든 교육 채널로 신나는 노래와 율동을 배워요",
+  "age": "유아",
+  "stars": 2,
+  "genre": "동요/챈트/알파벳",
+  "cls": [
+   "입문"
+  ],
+  "tags": [
+   "노래·춤"
+  ],
+  "form": "노래",
+  "url": "https://www.youtube.com/c/thewiggles",
+  "excluded": false
+ },
+ {
+  "name": "The Wingrove Family",
+  "desc": "",
+  "why": "축구를 사랑하는 아빠 Alan과 아들 Wingrove의 축구에 대한 이야기를 다룬 채널이에요.",
+  "age": "초3-4",
+  "stars": 2,
+  "genre": "가족/취미",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "이야기·책",
+   "스포츠·몸놀이",
+   "일상·가족"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/@TheWingroveFamily",
+  "excluded": false
+ },
+ {
+  "name": "Titi Toys and Dolls",
+  "desc": "",
+  "why": "바비 인형을 좋아하는 여자 친구들에게 강추합니다.",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "언박싱/놀이",
+  "cls": [
+   "귀500",
+   "귀1000"
+  ],
+  "tags": [
+   "공주·패션",
+   "장난감·게임"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/channel/UCXodGGoCUuMgLFoTf42OgIw",
+  "excluded": false
+ },
+ {
+  "name": "Total Football Quiz",
+  "desc": "",
+  "why": "축구팬이라면 관심을 가질만한 다양한 퀴즈를 풀어보는 채널",
+  "age": "초3-4",
+  "stars": 2,
+  "genre": "가족/취미",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "스포츠·몸놀이",
+   "일상·가족"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/@TotalFootballQuiz",
+  "excluded": false
+ },
+ {
+  "name": "Toy Factory",
+  "desc": "",
+  "why": "기차, 지하철 좋아하는 친구들",
+  "age": "유아",
+  "stars": 2,
+  "genre": "언박싱/놀이",
+  "cls": [
+   "입문",
+   "귀500"
+  ],
+  "tags": [
+   "탈것",
+   "장난감·게임"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/c/ToyFactoryTV",
+  "excluded": false
+ },
+ {
+  "name": "Universal Kids",
+  "desc": "",
+  "why": "사랑스런 캐릭터들과 다양한 것을 재미있게 배우며 놀아요.",
+  "age": "초3-4",
+  "stars": 2,
+  "genre": "가족/취미",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "일상·가족"
+  ],
+  "form": "애니",
+  "url": "https://www.youtube.com/user/DreamworksAnimation",
+  "excluded": false
+ },
+ {
+  "name": "Vlad and Niki",
+  "desc": "",
+  "why": "Ryan’s World, CKN Toys를 능가하는 최고 인기 남아용 장난감 언박싱 채널",
+  "age": "유아",
+  "stars": 2,
+  "genre": "언박싱/놀이",
+  "cls": [
+   "입문",
+   "귀500"
+  ],
+  "tags": [
+   "장난감·게임"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/c/VladandNiki",
+  "excluded": true
+ },
+ {
+  "name": "Vooks",
+  "desc": "",
+  "why": "아이들을 위한 다양한 디지털 스토리북을 읽고, 볼 수 있는 채널이에요",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "Read Aloud",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "이야기·책"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/@VooksStorybooks",
+  "excluded": false
+ },
+ {
+  "name": "Walt Disney Animation Studios",
+  "desc": "",
+  "why": "주토피아, 모아나, 빅히어로 6 등 디즈니 애니메이션 영화를 소개하고 캐릭터 디자이너가 직접 그림 그리는 방법을 알려주는 영상이 포함된 채널",
+  "age": "초5-6",
+  "stars": 2,
+  "genre": "가족/취미",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "히어로·모험",
+   "그리기·만들기",
+   "일상·가족"
+  ],
+  "form": "애니",
+  "url": "https://www.youtube.com/user/disneyanimation",
+  "excluded": false
+ },
+ {
+  "name": "WiederDude",
+  "desc": "",
+  "why": "마인크래프트 추천",
+  "age": "초3-4",
+  "stars": 2,
+  "genre": "언박싱/놀이",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "장난감·게임"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/channel/UCpDNnvxEf3iWuJbtmUk6DnA",
+  "excluded": false
+ },
+ {
+  "name": "ellieV",
+  "desc": "",
+  "why": "레고를 좋아하는 여자 친구들을 위한 언박싱 채널. 두 아이의 엄마이자 선생님이 Ellie 아줌마가 운영해요!",
+  "age": "초1-2",
+  "stars": 2,
+  "genre": "언박싱/놀이",
+  "cls": [
+   "귀500",
+   "귀1000"
+  ],
+  "tags": [
+   "그리기·만들기",
+   "장난감·게임"
+  ],
+  "form": "실사",
+  "url": "https://www.youtube.com/c/ellieVtoys",
+  "excluded": false
+ },
+ {
+  "name": "thebrainscoop",
+  "desc": "",
+  "why": "시카고의 The Field Museum에서 일하는 Emily 선생님이 자연사 방물관의 다양한 전시물과 이와 관련된 이야기를 재미있게 설명해 주는 채널",
+  "age": "초5-6",
+  "stars": 2,
+  "genre": "과학/자연/학습",
+  "cls": [
+   "귀1000"
+  ],
+  "tags": [
+   "과학·우주",
+   "이야기·책"
+  ],
+  "form": "설명",
+  "url": "https://www.youtube.com/user/thebrainscoop",
+  "excluded": false
+ },
+ {
+  "name": "toopyandbinootv",
+  "desc": "",
+  "why": "자신의 삶을 사랑하고 모든 사물과 말을 하는 Toopy와 그의 친구 Binoo의 일상에서의 모험을 그린 캐나다의 애니메이션. 아이들의 상상력을 키울 수 있는 흥미로운 스토리가 가득한 시리즈.",
+  "age": "유아",
+  "stars": 2,
+  "genre": "TV시리즈",
+  "cls": [
+   "귀500",
+   "귀1000"
+  ],
+  "tags": [
+   "히어로·모험",
+   "일상·가족"
+  ],
+  "form": "애니",
+  "url": "https://www.youtube.com/user/toopyandbinootv",
+  "excluded": false
  }
 ];
-
 
 // ── 레벨 판정: 총 단어 수 → 현서네 반 체계 ──
 export function levelFromVocab(totalVocab) {
@@ -2725,7 +4992,28 @@ export function recommendChannels(ctx) {
     .sort((a, b) => b.score - a.score);
 
   const used = new Set();
-  const main = ranked.slice(0, 3).map(x => {
+  // v1.41: 매번 같은 채널만 나오지 않도록 상위 후보 중에서 가중 무작위로 고른다.
+  //  (점수가 높을수록 뽑힐 확률이 높지만, 매번 같은 3개가 고정되지는 않음)
+  const POOL_SIZE = 12;
+  const candidates = ranked.slice(0, POOL_SIZE);
+  const chosen = [];
+  const pickWeighted = (arr) => {
+    const min = Math.min(...arr.map(x => x.score));
+    const weights = arr.map(x => Math.pow(x.score - min + 5, 2));   // 점수 우위는 유지
+    let r = Math.random() * weights.reduce((a, b) => a + b, 0);
+    for (let i = 0; i < arr.length; i++) { r -= weights[i]; if (r <= 0) return i; }
+    return 0;
+  };
+  const rest = [...candidates];
+  while (chosen.length < 3 && rest.length) {
+    chosen.push(rest.splice(pickWeighted(rest), 1)[0]);
+  }
+  // 후보가 모자라면 순위대로 보충
+  for (const x of ranked) {
+    if (chosen.length >= 3) break;
+    if (!chosen.includes(x)) chosen.push(x);
+  }
+  const main = chosen.map(x => {
     const reason = buildReason(x.ch, full, used);
     used.add(reason);
     return { ...x.ch, reason };
@@ -2738,11 +5026,13 @@ export function recommendChannels(ctx) {
     const nextLevel = LEVEL_ORDER[li + 1];
     const usedNames = new Set(main.map(c => c.name));
     const ai = AGE_ORDER.indexOf(ctx.ageGroup);
-    const cand = ranked.find(x =>
+    const cands = ranked.filter(x =>
       !usedNames.has(x.ch.name) &&
       x.ch.cls.includes(nextLevel) && !x.ch.cls.includes(level) &&
       Math.abs(AGE_ORDER.indexOf(x.ch.age) - ai) <= 1 &&          // 나이 크게 벗어나면 제외
-      !(ctx.ageGroup === '유아' && x.ch.form === '설명'));         // 유아에겐 강의형 제외
+      !(ctx.ageGroup === '유아' && x.ch.form === '설명'))          // 유아에겐 강의형 제외
+      .slice(0, 6);
+    const cand = cands.length ? cands[Math.floor(Math.random() * cands.length)] : null;
     if (cand) challenge = { ...cand.ch, reason: `조금 어렵지만 도전! 다음 단계(${nextLevel}) 준비 채널` };
   }
 
