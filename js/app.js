@@ -1,9 +1,9 @@
-import { pickQuestions, buildQuestionFromWord, AUDIO_WORDS } from './wordbank.js?v=1.32';
-import { track, submitResult, fetchScoreStats } from './analytics.js?v=1.32';
+import { pickQuestions, buildQuestionFromWord, AUDIO_WORDS, resetRecentOptions } from './wordbank.js?v=1.34';
+import { track, submitResult, fetchScoreStats } from './analytics.js?v=1.34';
 import { getResultGrade, getRecommendation } from './vocabulary.js';
 import { getResultGrade2, getRecommendation2 } from './vocabulary2.js';
 import { getResultGrade3, getRecommendation3 } from './vocabulary3.js';
-import { recommendChannels, INTEREST_TAGS, CHANNELS } from './channels.js?v=1.32';
+import { recommendChannels, INTEREST_TAGS, CHANNELS } from './channels.js?v=1.34';
 
 // ══════════════════════════════════════════
 //  효과음 (Web Audio API — 외부 파일 불필요)
@@ -616,6 +616,7 @@ window.startTest = function (testType) {
   state.currentQIndex = 0;
   state.groupResults = [];
   state.catStats = {};
+  resetRecentOptions();          // v1.34: 보기 중복 방지 기록 초기화
   state.currentGroupCorrect = 0;
   state.totalAnswered = 0;
   state.isAnswering = false;
@@ -1278,18 +1279,21 @@ function renderWrongWords() {
 // 회원 전용 페이지의 링크: https://hyunsuhne.github.io/voca-test/?k=hsn-voca-2609
 // 키를 바꿀 땐 맨 앞에 새 키를 추가 (이전 키는 즐겨찾기 사용자를 위해 잠시 유지)
 const MEMBER_KEYS = ['hsn-voca-2609'];
-function detectMemberMode() {
+// v1.33: 회원 여부는 '지금 이 주소'로만 판단한다.
+//  (이전엔 sessionStorage에 기억해서, 같은 탭에서 공개 주소로 이동해도 회원으로 남는 문제가 있었음.
+//   테스트 중에는 페이지가 새로 열리지 않아 주소의 ?k= 가 그대로 유지되므로 저장이 필요 없음)
+function isMember() {
   try {
     const k = new URLSearchParams(location.search).get('k');
-    if (k && MEMBER_KEYS.includes(k.trim())) {
-      sessionStorage.setItem('vt_member', '1');   // 같은 탭에서는 계속 유지
-      track('member-enter');
-    }
-    return sessionStorage.getItem('vt_member') === '1';
+    return !!k && MEMBER_KEYS.includes(k.trim());
   } catch (e) { return false; }
 }
-function isMember() {
-  try { return sessionStorage.getItem('vt_member') === '1'; } catch (e) { return false; }
+function detectMemberMode() {
+  try {
+    sessionStorage.removeItem('vt_member');   // 이전 버전이 남긴 기록 제거
+  } catch (e) {}
+  if (isMember()) track('member-enter');
+  return isMember();
 }
 
 // ── v1.27: 현서네 가입 유도 ──
@@ -1902,7 +1906,7 @@ detectMemberMode();
 //  업데이트 안내 팝업 (기간 한정 노출 + 1회 확인 후 재노출 안 함)
 // ══════════════════════════════════════════
 (function initUpdateModal() {
-  const UPDATE_ID   = 'v1.32-2026-09-01';         // 이 업데이트의 고유 식별자
+  const UPDATE_ID   = 'v1.34-2026-09-07';         // 이 업데이트의 고유 식별자
   const EXPIRE_DATE = new Date('2026-09-08T23:59:59'); // 노출 종료일 (공개일로부터 1주일)
   const STORAGE_KEY = 'updateNoticeSeen';
 

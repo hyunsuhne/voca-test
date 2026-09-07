@@ -4186,6 +4186,30 @@ function isPersonVsVerbConflict(wordA, catA, wordB, catB) {
   return (aIsChildNoun && bIsMascot) || (bIsChildNoun && aIsMascot);
 }
 
+
+// ════════════════════════════════════════════
+//  v1.34: 최근 보기 단어 추적 — 연달아 같은 그림이 나오는 문제 해결
+//  최근 N문항에 보기로 쓴 단어는 다음 문제에서 되도록 피한다(부족하면 허용).
+// ════════════════════════════════════════════
+const RECENT_LIMIT = 16;        // 대략 최근 4문항 분량
+let recentOptionWords = [];
+export function resetRecentOptions() { recentOptionWords = []; }
+function isRecentlyUsed(word) { return recentOptionWords.includes(word); }
+function pushRecentOptions(words) {
+  recentOptionWords.push(...words);
+  if (recentOptionWords.length > RECENT_LIMIT) {
+    recentOptionWords = recentOptionWords.slice(-RECENT_LIMIT);
+  }
+}
+
+// v1.34: 그림으로 보여줄 단어끼리는 같은 의미 묶음(감정·탈것 등)을 금지.
+//  그림은 '지루한'과 '피곤한'을 구분해 그리기 어렵고, boat와 ship처럼 거의 같은 그림이 됨.
+function isImageClusterConflict(wordA, wordB) {
+  if (!IMAGE_WORDS.has(wordA) || !IMAGE_WORDS.has(wordB)) return false;
+  const ca = CLUSTER_TAGS[wordA], cb = CLUSTER_TAGS[wordB];
+  return !!ca && ca === cb;
+}
+
 export function buildQuestionFromWord(targetWord) {
   const correctKorean = targetWord.korean;
   const g   = targetWord.group;
@@ -4199,12 +4223,17 @@ export function buildQuestionFromWord(targetWord) {
 
   // 공통 헬퍼: pool에서 조건 맞는 것 추가
   const tryAdd = (pool, opts = {}) => {
-    const { sameCatOnly = false, similarityCheck = false, trapCheck = false } = opts;
+    const { sameCatOnly = false, similarityCheck = false, trapCheck = false, allowRecent = false } = opts;
     const shuffled = [...pool].sort(() => Math.random() - 0.5);
     for (const w of shuffled) {
       if (distractors.length >= 3) break;
       if (usedKoreans.has(w.korean)) continue;
       if (sameCatOnly && w.category !== cat) continue;
+      // v1.34: 최근 문항에서 이미 보기로 쓴 단어는 우선 제외 (부족하면 마지막에 허용)
+      if (!allowRecent && isRecentlyUsed(w.word)) continue;
+      // v1.34: 그림끼리 같은 의미 묶음이면 제외 (bored↔tired, boat↔ship)
+      if (isImageClusterConflict(targetWord.word, w.word)) continue;
+      if (distractorWords.some(dw => isImageClusterConflict(dw, w.word))) continue;
       // v1.21 상시 하드 차단: 뜻 조각 겹침 / 상위어 포함 / 유의 쌍
       if (meaningPartsOverlap(correctKorean, w.korean)) continue;
       if (isCategoryContainment(targetWord.word, w.word)) continue;
@@ -4287,6 +4316,11 @@ export function buildQuestionFromWord(targetWord) {
     if (distractors.length < 3) tryAdd(fallback, { similarityCheck: true });
   }
 
+  // v1.34: 위 제약으로 3개를 못 채웠으면 '최근 사용' 제약만 풀어서 보충
+  if (distractors.length < 3) {
+    tryAdd(WORD_BANK.filter(w => w.word !== targetWord.word), { allowRecent: true });
+  }
+
   // 4개 보기 섞기 (한국어 뜻 + 대응 영어 단어를 같은 순서로 섞음)
   const allKoreans = [correctKorean, ...distractors];
   const allWords    = [targetWord.word, ...distractorWords];
@@ -4298,6 +4332,8 @@ export function buildQuestionFromWord(targetWord) {
   // TEST1(tier1)이고, 정답+오답 4개 전부 이미지가 준비된 경우에만 그림 선택형 가능
   const hasImages = tier === 1 && choiceWords.length === 4 &&
     choiceWords.every(w => IMAGE_WORDS.has(w));
+
+  pushRecentOptions(choiceWords);   // v1.34: 이번 문항 보기 기록
 
   return {
     word:         targetWord.word,
