@@ -4222,6 +4222,7 @@ const VISUAL_SIMILAR_GROUPS = [
   ['prince', 'princess'],
   ['king', 'queen'],
   ['note', 'write'],
+  ['leg', 'foot'],        // v1.40: leg 그림에 발이 포함되어 있어 함께 나오면 헷갈림
   ['sunny', 'beach', 'sea'],
 ];
 function isVisuallySimilar(wordA, wordB) {
