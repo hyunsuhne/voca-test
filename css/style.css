@@ -1531,3 +1531,14 @@ body {
   border-radius: 0 0 12px 12px;
 }
 .tip-locked { color: #7C3AED; font-weight: 700; list-style: none; margin-left: -1.1em; }
+
+/* ══ v1.35: 첫 응시 성장 안내 ══ */
+.history-first {
+  display: flex; align-items: center; gap: 12px;
+  background: #F9FAFB; border: 1px dashed #D1D5DB; border-radius: 12px;
+  padding: 12px 14px;
+}
+.hf-mock { display: flex; align-items: flex-end; gap: 4px; flex-shrink: 0; opacity: 0.5; }
+.hf-bar { width: 10px; background: linear-gradient(180deg, #8B7EDF, #C4B5FD); border-radius: 3px 3px 0 0; display: block; }
+.hf-text { font-size: 0.78rem; color: #6B7280; margin: 0; line-height: 1.5; }
+.hf-text strong { color: #4C1D95; font-weight: 800; }
