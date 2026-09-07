@@ -3084,7 +3084,7 @@ export const WORD_BANK = [
   { rank: 780, word: "gloomy",       korean: "우울한",         group: 8,  category: "형용사" },
   { rank: 781, word: "sour",         korean: "(맛이) 신",             group: 8,  category: "형용사" },
   { rank: 782, word: "hippopotamus", korean: "하마",           group: 8,  category: "명사" },
-  { rank: 783, word: "crocodile",    korean: "악어 (크로커다일)",           group: 8,  category: "명사" },
+  { rank: 783, word: "crocodile",    korean: "악어",           group: 8,  category: "명사" },
   { rank: 784, word: "ostrich",      korean: "타조",           group: 8,  category: "명사" },
   { rank: 785, word: "wolf",         korean: "늑대",           group: 8,  category: "명사" },
   { rank: 786, word: "dinosaur",     korean: "공룡",           group: 8,  category: "명사" },
@@ -3837,6 +3837,27 @@ const EXCLUDE_FUNCTION_WORD_RANKS = new Set([
 ]);
 
 const LOANWORD_RANKS = new Set([
+  // ── v1.36 추가: 한글 뜻이 곧 영어 발음이라 듣기만으로 답이 나오는 단어 ──
+  25,   // orange → 오렌지
+  131,  // bell → 벨/종
+  178,  // bench → 벤치
+  210,  // cheese → 치즈
+  215,  // soup → 수프
+  248,  // jump → 점프하다
+  276,  // pineapple → 파인애플
+  357,  // skate → 스케이트 타다
+  406,  // tomato → 토마토
+  533,  // penguin → 펭귄
+  701,  // team → 팀
+  707,  // alligator → 악어 (crocodile과 뜻이 같아 변별 불가 · 발음표기로 구분하던 문제 해소)
+  1058, // allergy → 알레르기
+  1162, // pipe → 파이프
+  1236, // typhoon → 태풍 (발음이 거의 같음)
+  1237, // tornado → 토네이도
+  1240, // hurricane → 허리케인
+  1354, // check in → 체크인하다
+  1382, // sheet → (침대) 시트
+
   19,   // purple → 보라색 (한글화 가능하나 외래어)
   28,   // banana → 바나나
   60,   // dessert → 디저트
@@ -3924,6 +3945,36 @@ const LOANWORD_RANKS = new Set([
 
 const TEST1_GROUPS = new Set([1, 2, 3, 4, 5]);
 
+
+// ════════════════════════════════════════════
+//  v1.36: 어원이 같고 품사만 다른 단어 묶음
+//  같은 테스트에 함께 나오면 서로 힌트가 되므로 한 묶음당 1개만 출제하고,
+//  서로를 오답 보기로도 쓰지 않는다. (color/colorful, rain/rainy 등)
+// ════════════════════════════════════════════
+const WORD_FAMILIES = [
+  ['art','artist','artistic'], ['bake','bakery'], ['beauty','beautiful'], ['build','building'],
+  ['busy','business'], ['buy','buyer'], ['camp','camping'], ['care','careful'],
+  ['chick','chicken'], ['cloud','cloudy'], ['color','colorful'], ['crowd','crowded'],
+  ['dance','dancer'], ['day','daily'], ['design','designer'], ['draw','drawer'],
+  ['drive','driver'], ['ear','earring'], ['engine','engineer'], ['erase','eraser'],
+  ['excite','excited'], ['farm','farmer'], ['fog','foggy'], ['fool','foolish'],
+  ['friend','friendly'], ['fun','funny'], ['garden','gardener'], ['good','goods'],
+  ['happy','happiness'], ['health','healthy'], ['hunt','hunter'], ['interest','interesting'],
+  ['juice','juicy'], ['late','later'], ['luck','lucky'], ['mud','muddy'],
+  ['noise','noisy'], ['own','owner'], ['paint','painter'], ['power','powerful'],
+  ['rain','rainy'], ['report','reporter'], ['rule','ruler'], ['salt','salty'],
+  ['season','seasoning'], ['sleep','sleepy'], ['snow','snowy'], ['spice','spicy'],
+  ['strange','stranger'], ['sun','sunny'], ['surprise','surprised'], ['swim','swimming'],
+  ['taste','tasty'], ['teach','teacher'], ['thank','thankful'], ['tour','tourist'],
+  ['wait','waiter'], ['wind','windy'],
+];
+const FAMILY_OF = {};
+WORD_FAMILIES.forEach((fam, i) => fam.forEach(w => { FAMILY_OF[w] = i; }));
+function sameFamily(a, b) {
+  const fa = FAMILY_OF[a];
+  return fa !== undefined && fa === FAMILY_OF[b];
+}
+
 function isExcluded(word, groupNums) {
   if (LOANWORD_RANKS.has(word.rank)) return true;
   if (EXCLUDE_FUNCTION_WORD_RANKS.has(word.rank) && groupNums.some(g => TEST1_GROUPS.has(g))) return true;
@@ -3942,8 +3993,15 @@ function pickWithClusterCap(pool, count) {
   const clusterCount = {};
   const deferred = [];
 
+  const usedFamilies = new Set();
   for (const w of shuffled) {
     if (picked.length >= count) break;
+    // v1.36: 같은 어원 묶음은 한 테스트에 1개만
+    const fam = FAMILY_OF[w.word];
+    if (fam !== undefined) {
+      if (usedFamilies.has(fam)) { deferred.push(w); continue; }
+      usedFamilies.add(fam);
+    }
     const tag = CLUSTER_TAGS[w.word];
     if (!tag) { picked.push(w); continue; }
     const [type, cat] = tag.split(':');
@@ -3958,8 +4016,10 @@ function pickWithClusterCap(pool, count) {
   }
 
   // 캡 때문에 부족하면 보류된 단어로 채움 (군집 쏠림보다 총 개수 보장 우선)
+  //  단, 같은 어원 묶음끼리는 끝까지 함께 넣지 않는다 (서로 힌트가 되므로)
   for (const w of deferred) {
     if (picked.length >= count) break;
+    if (picked.some(p => sameFamily(p.word, w.word))) continue;
     picked.push(w);
   }
 
@@ -4231,6 +4291,9 @@ export function buildQuestionFromWord(targetWord) {
       if (sameCatOnly && w.category !== cat) continue;
       // v1.34: 최근 문항에서 이미 보기로 쓴 단어는 우선 제외 (부족하면 마지막에 허용)
       if (!allowRecent && isRecentlyUsed(w.word)) continue;
+      // v1.36: 같은 어원 묶음(color/colorful)은 보기로 쓰지 않음
+      if (sameFamily(targetWord.word, w.word)) continue;
+      if (distractorWords.some(dw => sameFamily(dw, w.word))) continue;
       // v1.34: 그림끼리 같은 의미 묶음이면 제외 (bored↔tired, boat↔ship)
       if (isImageClusterConflict(targetWord.word, w.word)) continue;
       if (distractorWords.some(dw => isImageClusterConflict(dw, w.word))) continue;

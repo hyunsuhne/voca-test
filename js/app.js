@@ -1,9 +1,9 @@
-import { pickQuestions, buildQuestionFromWord, AUDIO_WORDS, resetRecentOptions } from './wordbank.js?v=1.34';
-import { track, submitResult, fetchScoreStats } from './analytics.js?v=1.34';
+import { pickQuestions, buildQuestionFromWord, AUDIO_WORDS, resetRecentOptions } from './wordbank.js?v=1.36';
+import { track, submitResult, fetchScoreStats } from './analytics.js?v=1.36';
 import { getResultGrade, getRecommendation } from './vocabulary.js';
 import { getResultGrade2, getRecommendation2 } from './vocabulary2.js';
 import { getResultGrade3, getRecommendation3 } from './vocabulary3.js';
-import { recommendChannels, INTEREST_TAGS, CHANNELS } from './channels.js?v=1.34';
+import { recommendChannels, INTEREST_TAGS, CHANNELS } from './channels.js?v=1.36';
 
 // ══════════════════════════════════════════
 //  효과음 (Web Audio API — 외부 파일 불필요)
@@ -1787,18 +1787,47 @@ function renderHistory(currentTotal, testType) {
   const section  = document.getElementById('history-section');
   const list     = document.getElementById('history-list');
 
-  if (filtered.length <= 1) { section.style.display = 'none'; return; }
-  section.style.display = 'block';
-  list.innerHTML = '';
-  // v1.31: 비회원은 이력을 흐리게 (성장 확인은 회원 혜택)
-  list.classList.toggle('gated-blur', !isMember());
   const oldLock = section.querySelector('.section-lock');
   if (oldLock) oldLock.remove();
-  if (!isMember()) {
+  const oldFirst = section.querySelector('.history-first');
+  if (oldFirst) oldFirst.remove();
+
+  // v1.35: 첫 응시(기록 1개 이하)
+  //  회원  → 비교할 기록이 없으니 섹션 숨김
+  //  비회원 → '다음에 다시 하면 성장이 보인다'는 안내를 노출 (대부분이 여기 해당)
+  if (filtered.length <= 1) {
+    if (isMember()) { section.style.display = 'none'; return; }
+    section.style.display = 'block';
+    list.innerHTML = '';
+    list.classList.remove('gated-blur');
+    const note = document.createElement('div');
+    note.className = 'history-first';
+    note.innerHTML = `
+      <div class="hf-mock">
+        <span class="hf-bar" style="height:22px"></span>
+        <span class="hf-bar" style="height:34px"></span>
+        <span class="hf-bar" style="height:46px"></span>
+      </div>
+      <p class="hf-text">이번이 첫 기록이에요. 나중에 다시 해보면 <strong>단어가 얼마나 늘었는지</strong> 비교할 수 있어요.</p>`;
+    section.appendChild(note);
     const lock = document.createElement('a');
     lock.className = 'section-lock';
     lock.href = SIGNUP_URL(); lock.target = '_blank'; lock.rel = 'noopener';
     lock.innerHTML = `🔒 지난 기록과 성장 그래프는 홈페이지 회원에게 열려 있어요 →`;
+    lock.addEventListener('click', () => track('signup-click-history-first'));
+    section.appendChild(lock);
+    return;
+  }
+
+  section.style.display = 'block';
+  list.innerHTML = '';
+  // v1.31: 비회원은 이력을 흐리게 (성장 확인은 회원 혜택)
+  list.classList.toggle('gated-blur', !isMember());
+  if (!isMember()) {
+    const lock = document.createElement('a');
+    lock.className = 'section-lock';
+    lock.href = SIGNUP_URL(); lock.target = '_blank'; lock.rel = 'noopener';
+    lock.innerHTML = `🔒 지난 기록 <strong>${filtered.length - 1}회</strong>와 성장 그래프는 홈페이지 회원에게 열려 있어요 →`;
     lock.addEventListener('click', () => track('signup-click-history'));
     section.appendChild(lock);
   }
@@ -1906,7 +1935,7 @@ detectMemberMode();
 //  업데이트 안내 팝업 (기간 한정 노출 + 1회 확인 후 재노출 안 함)
 // ══════════════════════════════════════════
 (function initUpdateModal() {
-  const UPDATE_ID   = 'v1.34-2026-09-07';         // 이 업데이트의 고유 식별자
+  const UPDATE_ID   = 'v1.36-2026-09-07';         // 이 업데이트의 고유 식별자
   const EXPIRE_DATE = new Date('2026-09-08T23:59:59'); // 노출 종료일 (공개일로부터 1주일)
   const STORAGE_KEY = 'updateNoticeSeen';
 
